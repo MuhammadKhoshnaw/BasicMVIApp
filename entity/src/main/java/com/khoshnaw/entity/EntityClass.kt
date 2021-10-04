@@ -1,4 +1,7 @@
 package com.khoshnaw.entity
 
-class EntityClass {
+object EntityObject {
+
+    fun entityTest(){
+    }
 }
