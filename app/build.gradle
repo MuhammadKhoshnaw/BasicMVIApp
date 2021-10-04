@@ -39,6 +39,7 @@ android {
 
 dependencies {
     //region setup
+    implementation project(path: ':ui')
     implementation "androidx.core:core-ktx:$core_ktx_version"
     implementation "androidx.appcompat:appcompat:$appcompat_version"
     implementation "com.google.android.material:material:$material_version"
@@ -46,13 +47,6 @@ dependencies {
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
     implementation 'com.android.support:multidex:1.0.3'
     //endregion setup
-
-    //region lifecycle
-    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
-    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
-    implementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:$lifecycle_version"
-    implementation "androidx.lifecycle:lifecycle-common-java8:$lifecycle_version"
-    //endregion lifecycle
 
     //region okhttp
     implementation "com.squareup.okhttp3:okhttp:$okhttp_version"
@@ -81,7 +75,7 @@ dependencies {
     //region moshi
     implementation "com.squareup.moshi:moshi:1.12.0"
     implementation "com.squareup.moshi:moshi-kotlin:1.12.0"
-    implementation "com.squareup.retrofit2:converter-moshi:2.5.0"
+    implementation "com.squareup.retrofit2:converter-moshi:2.6.2"
     //endregion moshi
 
     //region tests
