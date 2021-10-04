@@ -3,8 +3,15 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
-        jcenter() // Warning: this repository is going to shut down soon
     }
 }
 rootProject.name = "Simple MVI App"
 include ':app'
+include ':entity'
+include ':useCase'
+include ':controller'
+include ':repository'
+include ':viewModel'
+include ':remote'
+include ':ui'
+include ':db'
