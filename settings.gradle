@@ -8,3 +8,6 @@ dependencyResolutionManagement {
 rootProject.name = "Simple MVI App"
 include ':app'
 include ':entity'
+include ':useCase'
+include ':controller'
+include ':repository'
