@@ -9,7 +9,7 @@ java {
 }
 
 dependencies {
-    api project(path: ':entity')
+    implementation project(path: ':entity')
 
     //region dagger
     implementation 'com.google.dagger:dagger:2.40'

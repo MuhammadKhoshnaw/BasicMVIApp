@@ -33,7 +33,8 @@ android {
 }
 
 dependencies {
-    api project(path: ':useCase')
+    implementation project(path: ':entity')
+    implementation project(path: ':useCase')
 
     //region tests
     testImplementation "junit:junit:$junit_version"

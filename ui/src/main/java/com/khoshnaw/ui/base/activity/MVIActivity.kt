@@ -2,11 +2,11 @@ package com.khoshnaw.ui.base.activity
 
 import android.os.Bundle
 import androidx.databinding.ViewDataBinding
-import androidx.lifecycle.ViewModel
 import com.khoshnaw.ui.BR
 import com.khoshnaw.ui.base.MVIView
+import com.khoshnaw.viewmodel.mvi.BaseViewModel
 
-abstract class MVIActivity<B : ViewDataBinding, V : ViewModel> :
+abstract class MVIActivity<B : ViewDataBinding, V : BaseViewModel<*, *>> :
     BaseActivity(),
     MVIView<B, V> {
 

@@ -34,6 +34,7 @@ android {
 }
 
 dependencies {
+    implementation project(path: ':entity')
     implementation project(path: ':gateway')
 
     //region hilt

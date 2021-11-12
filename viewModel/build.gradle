@@ -34,8 +34,9 @@ android {
 }
 
 dependencies {
-//    implementation project(path: ':useCase')
-//    implementation project(path: ':controller')
+    implementation project(path: ':entity')
+    implementation project(path: ':useCase')
+    implementation project(path: ':controller')
 
     //region lifecycle
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
@@ -51,6 +52,9 @@ dependencies {
     implementation "androidx.hilt:hilt-lifecycle-viewmodel:$androidx_hilt"*/
     //endregion hilt
 
+    //region timber
+    implementation "com.jakewharton.timber:timber:$timber_version"
+    //endregion timber
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'

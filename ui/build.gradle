@@ -39,6 +39,7 @@ android {
 
 dependencies {
     //region setup
+    implementation project(path: ':entity')
     implementation project(path: ':viewModel')
 
     implementation "androidx.core:core-ktx:$core_ktx_version"
