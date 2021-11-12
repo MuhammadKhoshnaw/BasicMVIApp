@@ -1,6 +1,8 @@
 plugins {
     id 'com.android.library'
     id 'kotlin-android'
+    id 'kotlin-kapt'
+    id 'dagger.hilt.android.plugin'
 }
 
 android {
@@ -32,7 +34,8 @@ android {
 }
 
 dependencies {
-    implementation project(path: ':useCase')
+//    implementation project(path: ':useCase')
+//    implementation project(path: ':controller')
 
     //region lifecycle
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
@@ -40,6 +43,13 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-common-java8:$lifecycle_version"
     //endregion lifecycle
+
+    //region hilt
+    implementation "com.google.dagger:hilt-android:$hilt_version"
+    kapt "com.google.dagger:hilt-compiler:$hilt_version"
+/*    kapt "androidx.hilt:hilt-compiler:$androidx_hilt"
+    implementation "androidx.hilt:hilt-lifecycle-viewmodel:$androidx_hilt"*/
+    //endregion hilt
 
 
     testImplementation 'junit:junit:4.13.2'

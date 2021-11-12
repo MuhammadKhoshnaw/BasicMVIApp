@@ -10,4 +10,8 @@ java {
 
 dependencies {
     implementation project(path: ':useCase')
+
+    //region dagger
+    implementation 'com.google.dagger:dagger:2.40'
+    //endregion dagger
 }

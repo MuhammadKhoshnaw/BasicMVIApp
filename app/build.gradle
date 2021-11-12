@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    compileSdk 30
+    compileSdk rootProject.ext.compile_sdk_version
 
     defaultConfig {
         applicationId "com.khoshnaw.simplemvi"
@@ -40,6 +40,8 @@ android {
 dependencies {
     //region setup
     implementation project(path: ':ui')
+    implementation project(path: ':viewModel')
+
     implementation "androidx.core:core-ktx:$core_ktx_version"
     implementation "androidx.appcompat:appcompat:$appcompat_version"
     implementation "com.google.android.material:material:$material_version"
@@ -47,12 +49,6 @@ dependencies {
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
     implementation 'com.android.support:multidex:1.0.3'
     //endregion setup
-
-    //region okhttp
-    implementation "com.squareup.okhttp3:okhttp:$okhttp_version"
-    implementation "com.squareup.okhttp3:logging-interceptor:4.9.1"
-    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
-    //endregion okhttp
 
     //region glide
     implementation "com.github.bumptech.glide:glide:$glide_version"
@@ -62,21 +58,27 @@ dependencies {
 
     //region hilt
     implementation "com.google.dagger:hilt-android:$hilt_version"
-    kapt "com.google.dagger:hilt-compiler:$hilt_version"
+//    kapt "com.google.dagger:hilt-compiler:$hilt_version"
     kapt "com.google.dagger:hilt-android-compiler:$hilt_version"
     kapt "androidx.hilt:hilt-compiler:$androidx_hilt"
     implementation "androidx.hilt:hilt-lifecycle-viewmodel:$androidx_hilt"
     //endregion hilt
 
-    //region timber
-    implementation "com.jakewharton.timber:timber:$timber_version"
-    //endregion timber
+    //region okhttp
+    implementation "com.squareup.okhttp3:okhttp:$okhttp_version"
+    implementation "com.squareup.okhttp3:logging-interceptor:4.9.2"
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    //endregion okhttp
 
     //region moshi
     implementation "com.squareup.moshi:moshi:1.12.0"
     implementation "com.squareup.moshi:moshi-kotlin:1.12.0"
-    implementation "com.squareup.retrofit2:converter-moshi:2.6.2"
+    implementation "com.squareup.retrofit2:converter-moshi:2.9.0"
     //endregion moshi
+
+    //region timber
+    implementation "com.jakewharton.timber:timber:$timber_version"
+    //endregion timber
 
     //region tests
     testImplementation "junit:junit:$junit_version"
