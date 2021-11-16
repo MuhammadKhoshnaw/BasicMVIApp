@@ -34,8 +34,8 @@ android {
 }
 
 dependencies {
-    implementation project(path: ':entity')
-    implementation project(path: ':gateway')
+    api project(path: ':entity')
+    api project(path: ':gateway')
 
     //region hilt
     implementation "com.google.dagger:hilt-android:$hilt_version"

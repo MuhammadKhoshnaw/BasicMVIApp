@@ -10,4 +10,5 @@
         android:name="com.khoshnaw.ui.view.movies.MoviesFragment"
         android:label="MoviesFragment"
         tools:layout="@layout/fragment_movies" />
+
 </navigation>

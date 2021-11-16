@@ -7,7 +7,9 @@ import com.khoshnaw.ui.databinding.FragmentMoviesBinding
 import com.khoshnaw.ui.extenstion.dataBindings
 import com.khoshnaw.viewmodel.movies.MoviesIntent
 import com.khoshnaw.viewmodel.movies.MoviesViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MoviesFragment : MVIFragment<FragmentMoviesBinding, MoviesViewModel>(
     R.layout.fragment_movies
 ) {

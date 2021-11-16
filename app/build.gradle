@@ -39,14 +39,33 @@ android {
 
 dependencies {
     //region setup
+    api project(path: ':ui')
+    api project(path: ':controller')
+    api project(path: ':db')
+    api project(path: ':remote')
+
+//    api project(path: ':entity')
+//    api project(path: ':viewModel')
+//    api project(path: ':controller')
+//    api project(path: ':ui')
+//    api project(path: ':useCase')
+//    api project(path: ':db')
+//    api project(path: ':gateway')
+//    api project(path: ':remote')
+
+
+/*
+
+implementation project(path: ':entity')
+    implementation project(path: ':viewModel')
     implementation project(path: ':controller')
-    implementation project(path: ':db')
-    implementation project(path: ':entity')
-    implementation project(path: ':gateway')
-    implementation project(path: ':remote')
     implementation project(path: ':ui')
     implementation project(path: ':useCase')
-    implementation project(path: ':viewModel')
+    implementation project(path: ':db')
+    implementation project(path: ':gateway')
+    implementation project(path: ':remote')
+
+    */
 
     implementation "androidx.core:core-ktx:$core_ktx_version"
     implementation "androidx.appcompat:appcompat:$appcompat_version"

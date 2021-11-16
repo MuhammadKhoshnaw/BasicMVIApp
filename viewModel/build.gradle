@@ -34,9 +34,9 @@ android {
 }
 
 dependencies {
-    implementation project(path: ':entity')
-    implementation project(path: ':useCase')
-    implementation project(path: ':controller')
+    api project(path: ':entity')
+    api project(path: ':useCase')
+    api project(path: ':controller')
 
     //region lifecycle
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"

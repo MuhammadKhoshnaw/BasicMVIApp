@@ -9,10 +9,10 @@ java {
 }
 
 dependencies {
-    implementation project(path: ':entity')
+    api project(path: ':entity')
 
     //region dagger
-    implementation 'com.google.dagger:dagger:2.40'
+    implementation 'com.google.dagger:dagger:2.40.1'
     //endregion dagger
 
     //region tests
