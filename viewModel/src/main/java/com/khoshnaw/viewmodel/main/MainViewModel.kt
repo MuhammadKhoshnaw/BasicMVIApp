@@ -1,5 +1,6 @@
 package com.khoshnaw.viewmodel.main
 
+import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.khoshnaw.viewmodel.mvi.BaseViewModel
@@ -9,7 +10,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-) : BaseViewModel<MainState, MainIntent>() {
+    application: Application,
+) : BaseViewModel<MainState, MainIntent>(application) {
     private val _state = MutableLiveData<MainState>()
 
     override val intents: Channel<MainIntent> = Channel()

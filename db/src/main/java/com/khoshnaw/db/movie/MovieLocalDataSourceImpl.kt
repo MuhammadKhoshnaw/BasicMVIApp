@@ -8,6 +8,7 @@ import javax.inject.Inject
 class MovieLocalDataSourceImpl @Inject constructor(
     private val movieDao: MovieDao
 ) : MovieLocalDataSource {
+
     override suspend fun updateMovieList(movieList: List<Movie>) =
         movieDao.insertAll(movieList.toLocalDTO())
 }
