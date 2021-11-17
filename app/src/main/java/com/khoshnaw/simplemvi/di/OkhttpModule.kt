@@ -1,5 +1,7 @@
 package com.khoshnaw.simplemvi.di
 
+import com.khoshnaw.remote.interseptor.AuthenticationInterceptor
+import com.khoshnaw.simplemvi.BuildConfig
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -19,8 +21,7 @@ object OkhttpModule {
 
     @Provides
     @Named(DiNames.TMDB_API)
-//    fun provideKeycloakApiPath(): String = BuildConfig.WORDPRESS_API_BASE_URL
-    fun provideTMDBApiPath(): String = "https://api.themoviedb.org/3/"
+    fun provideTMDBApiPath(): String = BuildConfig.TMDB_API_BASE_URL
 
     @Singleton
     @Provides
@@ -32,8 +33,10 @@ object OkhttpModule {
     @Provides
     @Named(DiNames.TMDB_API)
     fun provideWordPressOkHttpClient(
+        authenticationInterceptor: AuthenticationInterceptor,
         httpLoggingInterceptor: HttpLoggingInterceptor,
     ): OkHttpClient = OkHttpClient().newBuilder()
+        .addInterceptor(authenticationInterceptor)
         .addInterceptor(httpLoggingInterceptor)
         .connectTimeout(TIMEOUT_ONE_MINUTE, TimeUnit.SECONDS)
         .readTimeout(TIMEOUT_ONE_MINUTE, TimeUnit.SECONDS)

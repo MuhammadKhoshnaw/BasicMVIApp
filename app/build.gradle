@@ -28,10 +28,17 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
+    buildTypes.each {
+        it.buildConfigField 'String', 'TMDB_API_BASE_URL', '"' + project.properties['tmdb_api_base_url'] + '"'
+        it.buildConfigField "String", "TMDB_API_KEY", '"' + project.properties["tmdb_api_key"] + '"'
+    }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
     kotlinOptions {
         jvmTarget = '1.8'
     }
@@ -44,29 +51,7 @@ dependencies {
     api project(path: ':db')
     api project(path: ':remote')
 
-//    api project(path: ':entity')
-//    api project(path: ':viewModel')
-//    api project(path: ':controller')
-//    api project(path: ':ui')
-//    api project(path: ':useCase')
-//    api project(path: ':db')
-//    api project(path: ':gateway')
-//    api project(path: ':remote')
-
-
-/*
-
-implementation project(path: ':entity')
-    implementation project(path: ':viewModel')
-    implementation project(path: ':controller')
-    implementation project(path: ':ui')
-    implementation project(path: ':useCase')
-    implementation project(path: ':db')
-    implementation project(path: ':gateway')
-    implementation project(path: ':remote')
-
-    */
-
+    //region setup
     implementation "androidx.core:core-ktx:$core_ktx_version"
     implementation "androidx.appcompat:appcompat:$appcompat_version"
     implementation "com.google.android.material:material:$material_version"
@@ -94,6 +79,14 @@ implementation project(path: ':entity')
     implementation "com.squareup.okhttp3:logging-interceptor:4.9.2"
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     //endregion okhttp
+
+    //region room
+    implementation "androidx.room:room-runtime:$room_version"
+    annotationProcessor "androidx.room:room-compiler:$room_version"
+    kapt("androidx.room:room-compiler:$room_version")
+    implementation("androidx.room:room-ktx:$room_version")
+    testImplementation("androidx.room:room-testing:$room_version")
+    //endregion room
 
     //region moshi
     implementation "com.squareup.moshi:moshi:1.12.0"

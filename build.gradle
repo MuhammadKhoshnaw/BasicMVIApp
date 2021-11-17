@@ -19,6 +19,23 @@ task clean(type: Delete) {
     delete rootProject.buildDir
 }
 
+Properties localProperties = new Properties()
+File localPropertiesFile = file('local.properties')
+localProperties.load(new FileInputStream(localPropertiesFile))
+
+localProperties.each {
+    getProject().ext.setProperty(it.key, it.value)
+}
+
+
+def keystorePropertiesFile = rootProject.file("defaults.properties")
+def defaultsProperties = new Properties()
+defaultsProperties.load(new FileInputStream(keystorePropertiesFile))
+
+defaultsProperties.each {
+    getProject().ext.setProperty(it.key, it.value)
+}
+
 project.ext {
     min_sdk_version = 24
     target_sdk_version = 31
