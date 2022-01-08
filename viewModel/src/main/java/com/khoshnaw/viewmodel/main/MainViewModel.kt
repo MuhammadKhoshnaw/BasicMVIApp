@@ -9,9 +9,7 @@ import kotlinx.coroutines.channels.Channel
 import javax.inject.Inject
 
 @HiltViewModel
-class MainViewModel @Inject constructor(
-    application: Application,
-) : BaseViewModel<MainState, MainIntent>(application) {
+class MainViewModel @Inject constructor() : BaseViewModel<MainState, MainIntent>() {
     private val _state = MutableLiveData<MainState>()
 
     override val intents: Channel<MainIntent> = Channel()

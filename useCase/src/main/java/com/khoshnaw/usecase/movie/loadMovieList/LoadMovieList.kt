@@ -2,21 +2,33 @@ package com.khoshnaw.usecase.movie.loadMovieList
 
 import com.khoshnaw.usecase.movie.base.UseCase
 import com.khoshnaw.usecase.movie.gateway.MovieGateway
-import dagger.Lazy
 import javax.inject.Inject
 
 class LoadMovieList @Inject constructor(
-    override val outputPort: Lazy<LoadMovieListOutputPort>,
     private val movieGateway: MovieGateway
 ) : UseCase<LoadMovieListOutputPort>(), LoadMovieListInputPort {
+    override lateinit var outputPort: LoadMovieListOutputPort
+
+    override suspend fun setOutPutPort(outputPort: LoadMovieListOutputPort) {
+        this.outputPort = outputPort
+        observeMovies()
+    }
 
     override suspend fun startLoadingMovieList() {
         showLoading()
         updateMovies()
+        hideLoading()
     }
 
-    private fun showLoading() = outputPort.get().showLoading(true)
+    private suspend fun observeMovies() {
+        outputPort.observeMovies(movieGateway.observeMovies())
+    }
+
+    private fun showLoading() = outputPort.showLoading(true)
+
+    private fun hideLoading() = outputPort.showLoading(false)
 
     private suspend fun updateMovies() = movieGateway.updateMovieList()
+
 
 }

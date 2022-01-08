@@ -14,8 +14,7 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 
 abstract class BaseViewModel<S : MVIState, I : Intent>(
-    application: Application,
-) : AndroidViewModel(application),
+) : ViewModel(),
     MVIViewModel<S, I> {
 
     override val intents: Channel<I> = Channel()
@@ -26,7 +25,7 @@ abstract class BaseViewModel<S : MVIState, I : Intent>(
         intents.consumeAsFlow().collect { tryToHandleIntent(it) }
     }
 
-    private suspend fun tryToHandleIntent(intent: I) = try {
+    protected suspend fun tryToHandleIntent(intent: I) = try {
         handleIntent(intent)
     } catch (e: Throwable) {
         Timber.e(e)

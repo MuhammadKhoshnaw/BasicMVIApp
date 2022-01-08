@@ -11,4 +11,7 @@ class MovieGatewayImp @Inject constructor(
 ) : MovieGateway {
     override suspend fun updateMovieList() =
         movieLocalDataSource.updateMovieList(movieRemoteDataSource.loadMovieList())
+
+    override suspend fun observeMovies() = movieLocalDataSource.observeMovies()
+
 }

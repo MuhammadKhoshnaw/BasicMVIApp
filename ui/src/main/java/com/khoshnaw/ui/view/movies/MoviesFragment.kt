@@ -18,5 +18,9 @@ class MoviesFragment : MVIFragment<FragmentMoviesBinding, MoviesViewModel>(
 
     override fun onViewReady() {
         viewModel.runIntent(MoviesIntent.RefreshMovies)
+
+        viewModel.movie.observe(viewLifecycleOwner){
+
+        }
     }
 }

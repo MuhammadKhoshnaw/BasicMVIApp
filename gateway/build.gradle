@@ -46,4 +46,8 @@ dependencies {
     //region dagger
     implementation 'com.google.dagger:dagger:2.40.1'
     //endregion dagger
+
+    //region kotlin
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0'
+    //endregion kotlin
 }
