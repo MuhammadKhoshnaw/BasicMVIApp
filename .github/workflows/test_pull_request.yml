@@ -28,11 +28,17 @@ jobs:
           path: ${{ env.GRADLE_USER_HOME }}
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
 
-      - name: set up JDK 1.8
+      - name: set up JDK
         uses: actions/setup-java@v2
         with:
           distribution: 'zulu'
           java-version: '11'
+
+      - name: Generate local.properties
+        run: |
+          echo """
+          tmdb_api_key=${{ secrets.TMDB_API_KEY }}
+          """ > local.properties
 
       - name: build debug
         run: ./gradlew assembleDebug
