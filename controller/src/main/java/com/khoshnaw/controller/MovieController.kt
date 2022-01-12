@@ -5,12 +5,9 @@ import com.khoshnaw.usecase.movie.loadMovieList.LoadMovieListOutputPort
 import javax.inject.Inject
 
 class MovieController @Inject constructor(
-    private val loadMovieListInputPort: LoadMovieListInputPort,
-) {
+    override val inputPort: LoadMovieListInputPort,
+) : Controller<LoadMovieListInputPort, LoadMovieListOutputPort>() {
 
-    suspend fun setOutPutPort(outputPort: LoadMovieListOutputPort) =
-        loadMovieListInputPort.setOutPutPort(outputPort)
-
-    suspend fun loadMoviesList() = loadMovieListInputPort.startLoadingMovieList()
+    suspend fun loadMoviesList() = inputPort.startLoadingMovieList()
 
 }

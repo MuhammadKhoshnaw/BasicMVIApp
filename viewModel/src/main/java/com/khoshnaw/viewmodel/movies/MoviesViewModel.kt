@@ -24,7 +24,6 @@ class MoviesViewModel @Inject constructor(
 
     init {
         init()
-        viewModelScope.launch { movieController.setOutPutPort(this@MoviesViewModel) }
     }
 
     override suspend fun handleIntent(intent: MoviesIntent) = when (intent) {
@@ -45,6 +44,4 @@ class MoviesViewModel @Inject constructor(
     override fun showLoading(loading: Boolean) {
         Timber.i("showLoading $loading")
     }
-
-
 }

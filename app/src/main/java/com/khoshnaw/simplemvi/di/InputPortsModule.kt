@@ -10,7 +10,7 @@ import dagger.hilt.android.scopes.ViewModelScoped
 
 @Module
 @InstallIn(ViewModelComponent::class)
-interface UsecaseModule {
+interface InputPortsModule {
 
     @Binds
     @ViewModelScoped

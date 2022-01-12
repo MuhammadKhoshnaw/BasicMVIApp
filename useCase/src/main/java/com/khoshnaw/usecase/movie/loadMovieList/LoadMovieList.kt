@@ -5,12 +5,10 @@ import com.khoshnaw.usecase.movie.gateway.MovieGateway
 import javax.inject.Inject
 
 class LoadMovieList @Inject constructor(
-    private val movieGateway: MovieGateway
+    private val movieGateway: MovieGateway,
 ) : UseCase<LoadMovieListOutputPort>(), LoadMovieListInputPort {
-    override lateinit var outputPort: LoadMovieListOutputPort
 
-    override suspend fun setOutPutPort(outputPort: LoadMovieListOutputPort) {
-        this.outputPort = outputPort
+    override suspend fun onReady() {
         observeMovies()
     }
 
@@ -20,9 +18,7 @@ class LoadMovieList @Inject constructor(
         hideLoading()
     }
 
-    private suspend fun observeMovies() {
-        outputPort.observeMovies(movieGateway.observeMovies())
-    }
+    private suspend fun observeMovies() = outputPort.observeMovies(movieGateway.observeMovies())
 
     private fun showLoading() = outputPort.showLoading(true)
 
