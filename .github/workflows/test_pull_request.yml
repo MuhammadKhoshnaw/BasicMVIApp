@@ -54,6 +54,12 @@ jobs:
           distribution: 'zulu'
           java-version: '11'
 
+      - name: Generate local.properties
+        run: |
+          echo """
+          tmdb_api_key=${{ secrets.TMDB_API_KEY }}
+          """ > local.properties
+
       # Execute unit tests
       - name: Unit Test
         run: ./gradlew testDebugUnitTest
