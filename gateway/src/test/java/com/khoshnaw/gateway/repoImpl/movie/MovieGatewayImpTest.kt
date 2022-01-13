@@ -11,6 +11,7 @@ import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.MockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
 
@@ -28,12 +29,6 @@ class MovieGatewayImpTest {
     @Before
     fun setUp() = MockKAnnotations.init(this)
 
-    @Test
-    fun `use remote data source to load new movies`() = runBlockingTest {
-        coEvery { movieRemoteDataSource.loadMovieList() } returns DUMMY_MOVIE_REMOTE_LIST
-        gateway.updateMovieList()
-        coVerify { movieRemoteDataSource.loadMovieList() }
-    }
 
     companion object {
         private val DUMMY_MOVIE_REMOTE_LIST = listOf(
