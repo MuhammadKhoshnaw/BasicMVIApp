@@ -9,7 +9,7 @@ android {
     compileSdk rootProject.ext.compile_sdk_version
 
     defaultConfig {
-        applicationId "com.khoshnaw.simplemvi"
+        applicationId "com.khoshnaw.basicmvi"
         minSdkVersion rootProject.ext.min_sdk_version
         targetSdkVersion rootProject.ext.target_sdk_version
         versionCode 1

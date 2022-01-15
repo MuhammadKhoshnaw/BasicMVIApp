@@ -1,4 +1,4 @@
-package com.khoshnaw.simplemvi.di
+package com.khoshnaw.basicmvi.di
 
 object DiNames {
 

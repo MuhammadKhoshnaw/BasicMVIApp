@@ -1,4 +1,4 @@
-package com.khoshnaw.simplemvi
+package com.khoshnaw.basicmvi
 
 import android.app.Application
 import dagger.hilt.android.HiltAndroidApp
