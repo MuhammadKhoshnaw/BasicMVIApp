@@ -40,13 +40,6 @@ class LoadMovieListTest {
         coVerify { movieGateway.updateMovieList() }
     }
 
-    @Test
-    fun `when movie loaded update output port`() = runBlockingTest {
-        coEvery { movieGateway.updateMovieList() } just Runs
-        useCase.startLoadingMovieList()
-        coVerify { outputPort.updateMovieList(DUMMY_MOVIE_LIST) }
-    }
-
     companion object {
         private val DUMMY_MOVIE_LIST = listOf(
             Movie("", "", "", 0.0),
