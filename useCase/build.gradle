@@ -4,10 +4,26 @@ plugins {
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
 }
 
 dependencies {
     api project(path: ':entity')
+
+    //region dagger
+    implementation 'com.google.dagger:dagger:2.40.1'
+    //endregion dagger
+
+    //region tests
+    testImplementation "junit:junit:$junit_version"
+    testImplementation "io.mockk:mockk:$mockk_version"
+    testImplementation "com.google.truth:truth:$google_truth_version"
+    testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.5.2'
+    //endregion tests
+
+    //region kotlin
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0'
+    //endregion kotlin
+
 }

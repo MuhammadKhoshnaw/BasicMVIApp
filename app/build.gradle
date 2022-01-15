@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    compileSdk 30
+    compileSdk rootProject.ext.compile_sdk_version
 
     defaultConfig {
         applicationId "com.khoshnaw.simplemvi"
@@ -28,18 +28,35 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
+    buildTypes.each {
+        it.buildConfigField 'String', 'TMDB_API_BASE_URL', '"' + project.properties['tmdb_api_base_url'] + '"'
+        it.buildConfigField "String", "TMDB_API_KEY", '"' + project.properties["tmdb_api_key"] + '"'
+    }
+
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
     }
+
     kotlinOptions {
-        jvmTarget = '1.8'
+        jvmTarget = JavaVersion.VERSION_11
     }
+
+/*    packagingOptions {
+        exclude "META-INF/AL2.0"
+        exclude "META-INF/LGPL2.1"
+    }*/
 }
 
 dependencies {
     //region setup
-    implementation project(path: ':ui')
+    api project(path: ':ui')
+    api project(path: ':controller')
+    api project(path: ':db')
+    api project(path: ':remote')
+
+    //region setup
     implementation "androidx.core:core-ktx:$core_ktx_version"
     implementation "androidx.appcompat:appcompat:$appcompat_version"
     implementation "com.google.android.material:material:$material_version"
@@ -47,12 +64,6 @@ dependencies {
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
     implementation 'com.android.support:multidex:1.0.3'
     //endregion setup
-
-    //region okhttp
-    implementation "com.squareup.okhttp3:okhttp:$okhttp_version"
-    implementation "com.squareup.okhttp3:logging-interceptor:4.9.1"
-    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
-    //endregion okhttp
 
     //region glide
     implementation "com.github.bumptech.glide:glide:$glide_version"
@@ -62,21 +73,35 @@ dependencies {
 
     //region hilt
     implementation "com.google.dagger:hilt-android:$hilt_version"
-    kapt "com.google.dagger:hilt-compiler:$hilt_version"
+//    kapt "com.google.dagger:hilt-compiler:$hilt_version"
     kapt "com.google.dagger:hilt-android-compiler:$hilt_version"
     kapt "androidx.hilt:hilt-compiler:$androidx_hilt"
     implementation "androidx.hilt:hilt-lifecycle-viewmodel:$androidx_hilt"
     //endregion hilt
 
-    //region timber
-    implementation "com.jakewharton.timber:timber:$timber_version"
-    //endregion timber
+    //region okhttp
+    implementation "com.squareup.okhttp3:okhttp:$okhttp_version"
+    implementation "com.squareup.okhttp3:logging-interceptor:4.9.2"
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    //endregion okhttp
+
+    //region room
+    implementation "androidx.room:room-runtime:$room_version"
+    annotationProcessor "androidx.room:room-compiler:$room_version"
+    kapt("androidx.room:room-compiler:$room_version")
+    implementation("androidx.room:room-ktx:$room_version")
+    testImplementation("androidx.room:room-testing:$room_version")
+    //endregion room
 
     //region moshi
     implementation "com.squareup.moshi:moshi:1.12.0"
     implementation "com.squareup.moshi:moshi-kotlin:1.12.0"
-    implementation "com.squareup.retrofit2:converter-moshi:2.6.2"
+    implementation "com.squareup.retrofit2:converter-moshi:2.9.0"
     //endregion moshi
+
+    //region timber
+    implementation "com.jakewharton.timber:timber:$timber_version"
+    //endregion timber
 
     //region tests
     testImplementation "junit:junit:$junit_version"

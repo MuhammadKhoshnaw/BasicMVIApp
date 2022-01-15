@@ -1,6 +1,8 @@
 plugins {
     id 'com.android.library'
     id 'kotlin-android'
+    id 'kotlin-kapt'
+    id 'dagger.hilt.android.plugin'
 }
 
 android {
@@ -23,16 +25,23 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
     }
     kotlinOptions {
-        jvmTarget = '1.8'
+        jvmTarget = JavaVersion.VERSION_11
     }
+
+/*    packagingOptions {
+        exclude "META-INF/AL2.0"
+        exclude "META-INF/LGPL2.1"
+    }*/
 }
 
 dependencies {
-    implementation project(path: ':useCase')
+    api project(path: ':entity')
+    api project(path: ':useCase')
+    api project(path: ':controller')
 
     //region lifecycle
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
@@ -41,6 +50,20 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-common-java8:$lifecycle_version"
     //endregion lifecycle
 
+    //region hilt
+    implementation "com.google.dagger:hilt-android:$hilt_version"
+    kapt "com.google.dagger:hilt-compiler:$hilt_version"
+/*    kapt "androidx.hilt:hilt-compiler:$androidx_hilt"
+    implementation "androidx.hilt:hilt-lifecycle-viewmodel:$androidx_hilt"*/
+    //endregion hilt
+
+    //region timber
+    implementation "com.jakewharton.timber:timber:$timber_version"
+    //endregion timber
+
+    //region kotlin
+    implementation "org.jetbrains.kotlin:kotlin-reflect:1.6.10"
+    //endregion kotlin
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
