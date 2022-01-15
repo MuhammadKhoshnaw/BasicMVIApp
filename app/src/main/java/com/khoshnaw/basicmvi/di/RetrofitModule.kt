@@ -1,4 +1,4 @@
-package com.khoshnaw.simplemvi.di
+package com.khoshnaw.basicmvi.di
 
 import com.squareup.moshi.Moshi
 import dagger.Module

@@ -1,4 +1,4 @@
-package com.khoshnaw.simplemvi
+package com.khoshnaw.basicmvi
 
 import org.junit.Test
 

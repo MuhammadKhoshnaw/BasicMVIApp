@@ -1,7 +1,7 @@
-package com.khoshnaw.simplemvi.di
+package com.khoshnaw.basicmvi.di
 
 import com.khoshnaw.remote.interseptor.AuthenticationInterceptor
-import com.khoshnaw.simplemvi.BuildConfig
+import com.khoshnaw.basicmvi.BuildConfig
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
