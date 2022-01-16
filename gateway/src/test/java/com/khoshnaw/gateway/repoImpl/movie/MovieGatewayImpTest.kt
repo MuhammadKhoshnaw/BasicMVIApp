@@ -5,15 +5,10 @@ import com.khoshnaw.gateway.localDataSource.MovieLocalDataSource
 import com.khoshnaw.gateway.remoteDataSource.MovieRemoteDataSource
 import com.khoshnaw.gateway.repoImpl.MovieGatewayImp
 import io.mockk.MockKAnnotations
-import io.mockk.coEvery
-import io.mockk.coVerify
 import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.MockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.runBlockingTest
-import kotlinx.coroutines.test.runTest
 import org.junit.Before
-import org.junit.Test
 
 @ExperimentalCoroutinesApi
 class MovieGatewayImpTest {
