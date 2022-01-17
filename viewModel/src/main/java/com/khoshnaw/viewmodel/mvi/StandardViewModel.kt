@@ -13,22 +13,26 @@ import timber.log.Timber
 import kotlin.reflect.full.memberProperties
 import kotlin.reflect.jvm.isAccessible
 
-abstract class StandardViewModel<S : MVIState, I : Intent> : MVIViewModel<S, I>() {
+abstract class StandardViewModel<S : MVIState, I : MVIIntent> : MVIViewModel<S, I>() {
 
     override val intents: Channel<I> = Channel()
     private val _state = MutableLiveData<S>()
     override val state: LiveData<S> = _state
 
     protected fun <O : OutputPort> O.init() = viewModelScope.launch(Dispatchers.IO) {
-        injectOutPutPorts()
-        intents.consumeAsFlow().collect { tryToHandleIntent(it) }
+        injectOutputPorts()
+        consumeIntents()
     }
 
-    private suspend fun <O : OutputPort> O.injectOutPutPorts() = this::class.memberProperties.map {
+    private suspend fun <O : OutputPort> O.injectOutputPorts() = this::class.memberProperties.map {
         it.isAccessible = true
         it.getter.call(this)
     }.filterIsInstance<Controller<*, O>>().forEach {
         it.registerOutputPort(this)
+    }
+
+    private suspend fun consumeIntents() = intents.consumeAsFlow().collect {
+        tryToHandleIntent(it)
     }
 
     private suspend fun tryToHandleIntent(intent: I) = tryTo {
@@ -41,6 +45,6 @@ abstract class StandardViewModel<S : MVIState, I : Intent> : MVIViewModel<S, I>(
         Timber.e(e)
     }
 
-    open suspend fun handleIntent(intent: I): Any = Unit
+    protected open suspend fun handleIntent(intent: I): Any = Unit
 
 }

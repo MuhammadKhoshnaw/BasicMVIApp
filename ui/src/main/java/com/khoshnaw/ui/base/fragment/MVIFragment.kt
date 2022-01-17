@@ -7,7 +7,7 @@ import androidx.databinding.ViewDataBinding
 import androidx.lifecycle.lifecycleScope
 import com.khoshnaw.ui.BR
 import com.khoshnaw.ui.base.MVIView
-import com.khoshnaw.viewmodel.mvi.Intent
+import com.khoshnaw.viewmodel.mvi.MVIIntent
 import com.khoshnaw.viewmodel.mvi.MVIState
 import com.khoshnaw.viewmodel.mvi.StandardViewModel
 import kotlinx.coroutines.launch
@@ -26,7 +26,7 @@ abstract class MVIFragment<B : ViewDataBinding, V : StandardViewModel<*, *>>(
         onViewReady()
     }
 
-    fun <S : MVIState, I : Intent> StandardViewModel<S, I>.runIntent(intent: I) {
+    fun <S : MVIState, I : MVIIntent> StandardViewModel<S, I>.runIntent(intent: I) {
         lifecycleScope.launch {
             intents.send(intent)
         }
