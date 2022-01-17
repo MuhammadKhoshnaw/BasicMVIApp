@@ -25,14 +25,14 @@ class UseCaseTest {
 
     @Test
     fun `when output port is registered call on ready`() = runBlocking {
-        useCase.registerOutPutPort(outputPort)
+        useCase.registerOutputPort(outputPort)
 
         coVerify { useCase.onReady() }
     }
 
     @Test
     fun `when output port is registered outputPort is available`() = runBlocking {
-        useCase.registerOutPutPort(outputPort)
+        useCase.registerOutputPort(outputPort)
 
         Truth.assertThat(useCase.registeredOutputPort).isEqualTo(outputPort)
     }

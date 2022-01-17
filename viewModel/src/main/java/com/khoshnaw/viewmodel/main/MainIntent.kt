@@ -1,6 +1,5 @@
 package com.khoshnaw.viewmodel.main
 
-import com.khoshnaw.viewmodel.base.Intent
+import com.khoshnaw.viewmodel.mvi.Intent
 
-class MainIntent : Intent {
-}
+sealed class MainIntent : Intent

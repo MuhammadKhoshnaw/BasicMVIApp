@@ -42,11 +42,6 @@ android {
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_11
     }
-
-/*    packagingOptions {
-        exclude "META-INF/AL2.0"
-        exclude "META-INF/LGPL2.1"
-    }*/
 }
 
 dependencies {
@@ -57,40 +52,40 @@ dependencies {
     api project(path: ':remote')
 
     //region setup
-    implementation "androidx.core:core-ktx:$core_ktx_version"
-    implementation "androidx.appcompat:appcompat:$appcompat_version"
-    implementation "com.google.android.material:material:$material_version"
-    implementation "androidx.constraintlayout:constraintlayout:$constraintlayout_version"
+    implementation "androidx.core:core-ktx:1.7.0"
+    implementation "androidx.appcompat:appcompat:1.4.0"
+    implementation "com.google.android.material:material:1.4.0"
+    implementation "androidx.constraintlayout:constraintlayout:2.1.2"
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
     implementation 'com.android.support:multidex:1.0.3'
     //endregion setup
 
     //region glide
-    implementation "com.github.bumptech.glide:glide:$glide_version"
-    kapt "com.github.bumptech.glide:compiler:$glide_version"
-    implementation "com.github.bumptech.glide:okhttp3-integration:4.11.0"
+    implementation "com.github.bumptech.glide:glide:4.12.0"
+    kapt "com.github.bumptech.glide:compiler:4.12.0"
+    implementation 'com.github.bumptech.glide:okhttp3-integration:4.12.0'
     //endregion glide
 
     //region hilt
     implementation "com.google.dagger:hilt-android:$hilt_version"
 //    kapt "com.google.dagger:hilt-compiler:$hilt_version"
     kapt "com.google.dagger:hilt-android-compiler:$hilt_version"
-    kapt "androidx.hilt:hilt-compiler:$androidx_hilt"
+    kapt "androidx.hilt:hilt-compiler:1.0.0"
     implementation "androidx.hilt:hilt-lifecycle-viewmodel:$androidx_hilt"
     //endregion hilt
 
     //region okhttp
-    implementation "com.squareup.okhttp3:okhttp:$okhttp_version"
-    implementation "com.squareup.okhttp3:logging-interceptor:4.9.2"
+    implementation "com.squareup.okhttp3:okhttp:5.0.0-alpha.3"
+    implementation 'com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.3'
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     //endregion okhttp
 
     //region room
-    implementation "androidx.room:room-runtime:$room_version"
-    annotationProcessor "androidx.room:room-compiler:$room_version"
-    kapt("androidx.room:room-compiler:$room_version")
-    implementation("androidx.room:room-ktx:$room_version")
-    testImplementation("androidx.room:room-testing:$room_version")
+    implementation "androidx.room:room-runtime:2.4.0"
+    annotationProcessor "androidx.room:room-compiler:2.4.0"
+    kapt("androidx.room:room-compiler:2.4.0")
+    implementation("androidx.room:room-ktx:2.4.0")
+    testImplementation("androidx.room:room-testing:2.4.0")
     //endregion room
 
     //region moshi
@@ -100,13 +95,13 @@ dependencies {
     //endregion moshi
 
     //region timber
-    implementation "com.jakewharton.timber:timber:$timber_version"
+    implementation "com.jakewharton.timber:timber:5.0.1"
     //endregion timber
 
     //region tests
-    testImplementation "junit:junit:$junit_version"
-    testImplementation "io.mockk:mockk:$mockk_version"
-    testImplementation "com.google.truth:truth:$google_truth_version"
+    testImplementation "junit:junit:4.13.2"
+    testImplementation "io.mockk:mockk:1.12.2"
+    testImplementation "com.google.truth:truth:1.1.3"
     //endregion tests
 
     //region android Test

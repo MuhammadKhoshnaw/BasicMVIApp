@@ -26,5 +26,4 @@ class LoadMovieList @Inject constructor(
 
     private suspend fun updateMovies() = movieGateway.updateMovieList()
 
-
 }

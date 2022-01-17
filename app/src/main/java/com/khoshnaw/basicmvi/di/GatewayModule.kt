@@ -1,6 +1,6 @@
 package com.khoshnaw.basicmvi.di
 
-import com.khoshnaw.gateway.repoImpl.MovieGatewayImp
+import com.khoshnaw.gateway.gatewayImp.MovieGatewayImp
 import com.khoshnaw.usecase.movie.gateway.MovieGateway
 import dagger.Binds
 import dagger.Module

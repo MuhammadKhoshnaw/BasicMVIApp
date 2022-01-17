@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.khoshnaw.controller.MovieController
 import com.khoshnaw.entity.Movie
 import com.khoshnaw.usecase.movie.loadMovieList.LoadMovieListOutputPort
-import com.khoshnaw.viewmodel.mvi.BaseViewModel
+import com.khoshnaw.viewmodel.mvi.StandardViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
@@ -16,7 +16,7 @@ import javax.inject.Inject
 @HiltViewModel
 class MoviesViewModel @Inject constructor(
     private val movieController: MovieController
-) : BaseViewModel<MoviesState, MoviesIntent>(),
+) : StandardViewModel<MoviesState, MoviesIntent>(),
     LoadMovieListOutputPort {
 
     private val _movies = MutableLiveData<List<Movie>>()

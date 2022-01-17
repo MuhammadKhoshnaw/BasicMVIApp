@@ -30,11 +30,6 @@ android {
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_11
     }
-
-/*    packagingOptions {
-        exclude "META-INF/AL2.0"
-        exclude "META-INF/LGPL2.1"
-    }*/
 }
 
 dependencies {
@@ -42,14 +37,14 @@ dependencies {
     api project(path: ':useCase')
 
     //region tests
-    testImplementation "junit:junit:$junit_version"
-    testImplementation "io.mockk:mockk:$mockk_version"
-    testImplementation "com.google.truth:truth:$google_truth_version"
-    testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.5.2'
+    testImplementation "junit:junit:4.13.2"
+    testImplementation "io.mockk:mockk:1.12.2"
+    testImplementation "com.google.truth:truth:1.1.3"
+    testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.0-native-mt'
     //endregion tests
 
     //region dagger
-    implementation 'com.google.dagger:dagger:2.40.1'
+    implementation 'com.google.dagger:dagger:2.40.5'
     //endregion dagger
 
     //region kotlin
