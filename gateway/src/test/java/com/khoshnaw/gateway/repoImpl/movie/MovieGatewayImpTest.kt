@@ -1,6 +1,6 @@
 package com.khoshnaw.gateway.repoImpl.movie
 
-import com.khoshnaw.entity.Movie
+import com.khoshnaw.entity.MovieDummies
 import com.khoshnaw.gateway.gatewayImp.MovieGatewayImp
 import com.khoshnaw.gateway.localDataSource.MovieLocalDataSource
 import com.khoshnaw.gateway.remoteDataSource.MovieRemoteDataSource
@@ -70,20 +70,9 @@ class MovieGatewayImpTest {
     }
 
     companion object {
-        private val DUMMY_MOVIE_REMOTE_LIST = listOf(
-            Movie("", "", "", 0.0),
-            Movie("", "", "", 0.0),
-            Movie("", "", "", 0.0),
-            Movie("", "", "", 0.0),
-            Movie("", "", "", 0.0),
-            Movie("", "", "", 0.0),
-            Movie("", "", "", 0.0),
-            Movie("", "", "", 0.0)
-        )
-
+        private val DUMMY_MOVIE_REMOTE_LIST = MovieDummies.dummyMovieList
         private val DUMMY_MOVIE_LIST_FLOW = flow {
             emit(DUMMY_MOVIE_REMOTE_LIST)
         }
     }
-
 }

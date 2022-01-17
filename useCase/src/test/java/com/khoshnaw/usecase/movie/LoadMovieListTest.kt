@@ -1,6 +1,6 @@
 package com.khoshnaw.usecase.movie
 
-import com.khoshnaw.entity.Movie
+import com.khoshnaw.entity.MovieDummies
 import com.khoshnaw.usecase.movie.gateway.MovieGateway
 import com.khoshnaw.usecase.movie.loadMovieList.LoadMovieList
 import com.khoshnaw.usecase.movie.loadMovieList.LoadMovieListOutputPort
@@ -57,19 +57,8 @@ class LoadMovieListTest {
         }
     }
 
-
     companion object {
-        private val DUMMY_MOVIE_LIST = listOf(
-            Movie("", "", "", 0.0),
-            Movie("", "", "", 0.0),
-            Movie("", "", "", 0.0),
-            Movie("", "", "", 0.0),
-            Movie("", "", "", 0.0),
-            Movie("", "", "", 0.0),
-            Movie("", "", "", 0.0),
-            Movie("", "", "", 0.0)
-        )
-
+        private val DUMMY_MOVIE_LIST = MovieDummies.dummyMovieList
         private val DUMMY_MOVIE_LIST_FLOW = flow {
             emit(DUMMY_MOVIE_LIST)
         }
