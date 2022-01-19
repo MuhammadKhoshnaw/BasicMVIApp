@@ -18,8 +18,6 @@ class AuthenticationInterceptorTest {
 
     lateinit var interceptor: AuthenticationInterceptor
 
-    private lateinit var TMDB_API_KEY_HEADER_NAME: String
-
     @Before
     fun setup() {
         MockKAnnotations.init(this, relaxUnitFun = true)
@@ -39,7 +37,7 @@ class AuthenticationInterceptorTest {
     }
 
     private val CapturingSlot<Request>.apikeyQueryParameter: String
-        get() = captured.url.queryParameter(TMDB_API_KEY_HEADER_NAME)!!
+        get() = captured.url.queryParameter(AuthenticationInterceptor.TMDB_API_KEY_HEADER_NAME)!!
 
     companion object {
         private const val DUMMY_API_KEY = "dummyKey"
