@@ -69,7 +69,7 @@ jobs:
         if: ${{ always() }} # IMPORTANT: Upload reports regardless of status
         with:
           name: unit_test_reports
-          path: app/build/test-results # path to where the xml test results are stored
+          path: useCase/build/test-results # path to where the xml test results are stored
 
   report-unit-tests-result:
     runs-on: ubuntu-latest
