@@ -9,7 +9,6 @@ import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Test
 
-
 class UseCaseTest {
 
     @MockK
