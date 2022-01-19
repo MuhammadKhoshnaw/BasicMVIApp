@@ -25,6 +25,6 @@ class AuthenticationInterceptor @Inject constructor(
         .build()
 
     companion object {
-        private const val TMDB_API_KEY_HEADER_NAME = "api_key"
+        const val TMDB_API_KEY_HEADER_NAME = "api_key"
     }
 }

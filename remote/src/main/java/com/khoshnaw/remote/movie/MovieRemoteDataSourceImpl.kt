@@ -11,5 +11,5 @@ class MovieRemoteDataSourceImpl @Inject constructor(
     private val movieApi: MovieApi
 ) : MovieRemoteDataSource {
     override suspend fun loadMovieList(): List<Movie> =
-        movieApi.loadPostList().bodyOrException().movieList.toEntity()
+        movieApi.loadMovieList().bodyOrException().movieList.toEntity()
 }
