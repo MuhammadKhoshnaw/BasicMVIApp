@@ -1,4 +1,4 @@
-package com.khoshnaw.gateway.repoImpl
+package com.khoshnaw.gateway.gatewayImp
 
 import com.khoshnaw.gateway.localDataSource.MovieLocalDataSource
 import com.khoshnaw.gateway.remoteDataSource.MovieRemoteDataSource

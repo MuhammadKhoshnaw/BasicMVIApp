@@ -1,6 +1,5 @@
 package com.khoshnaw.viewmodel.movies
 
-import com.khoshnaw.viewmodel.base.MVIState
+import com.khoshnaw.viewmodel.mvi.MVIState
 
-interface MoviesState : MVIState {
-}
+interface MoviesState : MVIState

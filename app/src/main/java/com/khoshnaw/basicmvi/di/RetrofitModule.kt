@@ -19,12 +19,12 @@ object RetrofitModule {
     @Provides
     @Named(DiNames.TMDB_API)
     fun provideWordPressRetrofit(
-        @Named(DiNames.TMDB_API) wordPressOkHttpClient: OkHttpClient,
+        @Named(DiNames.TMDB_API) TMDBHttpClient: OkHttpClient,
         moshi: Moshi,
         @Named(DiNames.TMDB_API) baseURL: String
     ): Retrofit {
         return Retrofit.Builder()
-            .client(wordPressOkHttpClient)
+            .client(TMDBHttpClient)
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .baseUrl(baseURL)
             .build()

@@ -69,18 +69,4 @@ jobs:
         if: ${{ always() }} # IMPORTANT: Upload reports regardless of status
         with:
           name: unit_test_reports
-          path: app/build/test-results # path to where the xml test results are stored
-
-  report-unit-tests-result:
-    runs-on: ubuntu-latest
-    needs: run-unit-tests # The report job will run after test job
-
-    if: ${{ always() }} # IMPORTANT: Execute report job regardless of status
-    steps:
-      - name: Download Test Reports Folder
-        uses: actions/download-artifact@v2
-        with:
-          name: unit_test_reports
-
-      - name: Android Test Report
-        uses: asadmansr/android-test-report-action@v1.2.0
+          path: useCase/build/test-results # path to where the xml test results are stored

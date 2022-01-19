@@ -4,9 +4,9 @@ import android.os.Bundle
 import androidx.databinding.ViewDataBinding
 import com.khoshnaw.ui.BR
 import com.khoshnaw.ui.base.MVIView
-import com.khoshnaw.viewmodel.mvi.BaseViewModel
+import com.khoshnaw.viewmodel.mvi.StandardViewModel
 
-abstract class MVIActivity<B : ViewDataBinding, V : BaseViewModel<*, *>> :
+abstract class MVIActivity<B : ViewDataBinding, V : StandardViewModel<*, *>> :
     BaseActivity(),
     MVIView<B, V> {
 

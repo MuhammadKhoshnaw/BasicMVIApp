@@ -1,14 +1,18 @@
 package com.khoshnaw.usecase.movie
 
-import com.khoshnaw.entity.Movie
+import com.khoshnaw.entity.MovieDummies
 import com.khoshnaw.usecase.movie.gateway.MovieGateway
 import com.khoshnaw.usecase.movie.loadMovieList.LoadMovieList
 import com.khoshnaw.usecase.movie.loadMovieList.LoadMovieListOutputPort
-import io.mockk.*
+import io.mockk.MockKAnnotations
+import io.mockk.Ordering
+import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
 
@@ -27,29 +31,36 @@ class LoadMovieListTest {
     @Before
     fun setUp() = MockKAnnotations.init(this)
 
+
     @Test
-    fun `while loading movie show loading to user`() = runBlockingTest {
-        useCase.startLoadingMovieList()
-        verify { outputPort.showLoading(true) }
+    fun `when usecase is ready start observing movies`() = runTest {
+        coEvery { movieGateway.observeMovies() } returns DUMMY_MOVIE_LIST_FLOW
+
+        useCase.registerOutputPort(outputPort)
+
+        coVerify(exactly = 1) {
+            movieGateway.observeMovies()
+            outputPort.observeMovies(DUMMY_MOVIE_LIST_FLOW)
+        }
     }
 
     @Test
-    fun `when loading movie started load from repository`() = runBlockingTest {
-        coEvery { movieGateway.updateMovieList() } just Runs
+    fun `on start loading movies show loading then update movies then hide loading`() = runTest {
         useCase.startLoadingMovieList()
-        coVerify { movieGateway.updateMovieList() }
+
+        coVerify(
+            ordering = Ordering.SEQUENCE
+        ) {
+            outputPort.showLoading(true)
+            movieGateway.updateMovieList()
+            outputPort.showLoading(false)
+        }
     }
 
     companion object {
-        private val DUMMY_MOVIE_LIST = listOf(
-            Movie("", "", "", 0.0),
-            Movie("", "", "", 0.0),
-            Movie("", "", "", 0.0),
-            Movie("", "", "", 0.0),
-            Movie("", "", "", 0.0),
-            Movie("", "", "", 0.0),
-            Movie("", "", "", 0.0),
-            Movie("", "", "", 0.0)
-        )
+        private val DUMMY_MOVIE_LIST = MovieDummies.dummyMovieList
+        private val DUMMY_MOVIE_LIST_FLOW = flow {
+            emit(DUMMY_MOVIE_LIST)
+        }
     }
 }
