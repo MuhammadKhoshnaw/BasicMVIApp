@@ -1,6 +1,8 @@
 package com.khoshnaw.usecase.movie
 
+import com.google.common.truth.Truth
 import com.khoshnaw.entity.MovieDummies
+import com.khoshnaw.exception.ExceptionDummies
 import com.khoshnaw.usecase.movie.gateway.MovieGateway
 import com.khoshnaw.usecase.movie.loadMovieList.LoadMovieList
 import com.khoshnaw.usecase.movie.loadMovieList.LoadMovieListOutputPort
@@ -46,8 +48,29 @@ class LoadMovieListTest {
 
     @Test
     fun `on start loading movies show loading then update movies then hide loading`() = runTest {
-        useCase.startLoadingMovieList()
+        useCase.startUpdatingMovieList()
 
+        coVerify(
+            ordering = Ordering.SEQUENCE
+        ) {
+            outputPort.showLoading(true)
+            movieGateway.updateMovieList()
+            outputPort.showLoading(false)
+        }
+    }
+
+    @Test
+    fun `if update failed hide loading and throw the exception`() = runTest {
+        coEvery { movieGateway.updateMovieList() } throws DUMMY_EXCEPTION
+
+        var result: Exception? = null
+        try {
+            useCase.startUpdatingMovieList()
+        } catch (e: Exception) {
+            result = e
+        }
+
+        Truth.assertThat(result).isEqualTo(DUMMY_EXCEPTION)
         coVerify(
             ordering = Ordering.SEQUENCE
         ) {
@@ -62,5 +85,7 @@ class LoadMovieListTest {
         private val DUMMY_MOVIE_LIST_FLOW = flow {
             emit(DUMMY_MOVIE_LIST)
         }
+
+       private val DUMMY_EXCEPTION = ExceptionDummies.dummyException
     }
 }

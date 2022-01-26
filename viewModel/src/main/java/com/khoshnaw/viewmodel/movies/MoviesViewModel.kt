@@ -1,14 +1,11 @@
 package com.khoshnaw.viewmodel.movies
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import com.khoshnaw.controller.MovieController
 import com.khoshnaw.entity.Movie
 import com.khoshnaw.usecase.movie.loadMovieList.LoadMovieListOutputPort
-import com.khoshnaw.viewmodel.mvi.StandardViewModel
+import com.khoshnaw.viewmodel.standard.StandardViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
-import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -16,9 +13,6 @@ class MoviesViewModel @Inject constructor(
     private val movieController: MovieController
 ) : StandardViewModel<MoviesState, MoviesIntent>(),
     LoadMovieListOutputPort {
-
-    private val _movies = MutableLiveData<List<Movie>>()
-    val movie: LiveData<List<Movie>> = _movies
 
     init {
         init()
@@ -29,10 +23,14 @@ class MoviesViewModel @Inject constructor(
     }
 
     override fun observeMovies(flow: Flow<List<Movie>>) {
-        Timber.i("observeMovies")
+        flow.collectResult {
+            updateState(MoviesState.MovieList(it))
+        }
     }
 
     override fun showLoading(loading: Boolean) {
-        Timber.i("showLoading $loading")
+        state.value?.movies?.let { movies ->
+            updateState(MoviesState.MovieList(movies, loading))
+        }
     }
 }

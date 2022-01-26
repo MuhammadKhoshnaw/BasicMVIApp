@@ -28,7 +28,7 @@ class MovieControllerTest() {
     fun `use input port to load movies list`() = runTest {
         controller.loadMoviesList()
 
-        coVerify(exactly = 1) { inputPort.startLoadingMovieList() }
+        coVerify(exactly = 1) { inputPort.startUpdatingMovieList() }
     }
 
 }

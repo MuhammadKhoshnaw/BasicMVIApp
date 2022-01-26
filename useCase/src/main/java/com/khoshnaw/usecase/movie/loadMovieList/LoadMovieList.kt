@@ -2,6 +2,8 @@ package com.khoshnaw.usecase.movie.loadMovieList
 
 import com.khoshnaw.usecase.movie.base.UseCase
 import com.khoshnaw.usecase.movie.gateway.MovieGateway
+import com.khoshnaw.usecase.utils.tryTo
+import kotlinx.coroutines.delay
 import javax.inject.Inject
 
 class LoadMovieList @Inject constructor(
@@ -10,12 +12,18 @@ class LoadMovieList @Inject constructor(
 
     override suspend fun onReady() {
         observeMovies()
+        loadMoviesIfNeeded()
     }
 
-    override suspend fun startLoadingMovieList() {
+    override suspend fun startUpdatingMovieList() {
         showLoading()
-        updateMovies()
+        val e = tryTo { updateMovies() }
         hideLoading()
+        e?.let { throw e }
+    }
+
+    private suspend fun loadMoviesIfNeeded() {
+        if (movieGateway.loadMovieSize() <= 0) startUpdatingMovieList()
     }
 
     private suspend fun observeMovies() = outputPort.observeMovies(movieGateway.observeMovies())

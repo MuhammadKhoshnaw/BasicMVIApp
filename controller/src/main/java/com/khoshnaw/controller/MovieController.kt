@@ -8,6 +8,6 @@ class MovieController @Inject constructor(
     override val inputPort: LoadMovieListInputPort,
 ) : Controller<LoadMovieListInputPort, LoadMovieListOutputPort>() {
 
-    suspend fun loadMoviesList() = inputPort.startLoadingMovieList()
+    suspend fun loadMoviesList() = inputPort.startUpdatingMovieList()
 
 }
