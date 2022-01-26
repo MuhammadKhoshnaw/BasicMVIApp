@@ -2,7 +2,7 @@ package com.khoshnaw.ui.view.movies
 
 import androidx.fragment.app.viewModels
 import com.khoshnaw.ui.R
-import com.khoshnaw.ui.adapters.MovieAdapter
+import com.khoshnaw.ui.adapter.MovieAdapter
 import com.khoshnaw.ui.databinding.FragmentMoviesBinding
 import com.khoshnaw.ui.extenstion.dataBindings
 import com.khoshnaw.ui.mapper.toDTO
@@ -13,7 +13,6 @@ import com.khoshnaw.viewmodel.movies.MoviesViewModel
 import com.khoshnaw.viewmodel.mvi.MVIState
 import dagger.hilt.android.AndroidEntryPoint
 
-
 @AndroidEntryPoint
 class MoviesFragment : StandardFragment<FragmentMoviesBinding, MoviesViewModel>(
     R.layout.fragment_movies
@@ -21,6 +20,9 @@ class MoviesFragment : StandardFragment<FragmentMoviesBinding, MoviesViewModel>(
     override val binding by dataBindings(FragmentMoviesBinding::bind)
     override val viewModel: MoviesViewModel by viewModels()
     private val moviesAdapter by lazy { MovieAdapter() }
+
+    // TODO: 26/01/2022 use data binding for fragment_movies view
+    // TODO: 26/01/2022 set on click listener for movies
 
     override fun onViewReady() {
         binding.movieRV.setHasFixedSize(true)

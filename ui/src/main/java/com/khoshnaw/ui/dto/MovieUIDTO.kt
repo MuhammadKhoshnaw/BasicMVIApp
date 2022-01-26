@@ -6,5 +6,5 @@ data class MovieUIDTO(
     override val id: String,
     val posterPath: String,
     val title: String,
-    val voteAverage: Double,
+    val voteAverage: String,
 ) : StandardListItem

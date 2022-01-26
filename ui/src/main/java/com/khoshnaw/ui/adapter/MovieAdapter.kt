@@ -1,4 +1,4 @@
-package com.khoshnaw.ui.adapters
+package com.khoshnaw.ui.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -27,9 +27,7 @@ class MovieAdapter : StandardAdapter<MovieUIDTO>() {
     ) : StandardHolder<MovieUIDTO>(binding) {
 
         override fun bind(item: MovieUIDTO) {
-            Glide.with(binding.root.context)
-                .load(item.posterPath)
-                .into(binding.moviePoster);
+            binding.movie = item
         }
 
     }
