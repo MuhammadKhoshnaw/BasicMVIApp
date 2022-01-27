@@ -8,6 +8,7 @@ fun Movie.toDTO() = MovieUIDTO(
     posterPath = "https://image.tmdb.org/t/p/w500$posterPath",
     title = title,
     voteAverage = voteAverage.toString(),
+    entity = this
 )
 
 fun List<Movie>.toDTO() = map { it.toDTO() }

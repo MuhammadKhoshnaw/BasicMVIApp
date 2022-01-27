@@ -3,7 +3,6 @@ package com.khoshnaw.usecase.movie.loadMovieList
 import com.khoshnaw.usecase.movie.base.UseCase
 import com.khoshnaw.usecase.movie.gateway.MovieGateway
 import com.khoshnaw.usecase.utils.tryTo
-import kotlinx.coroutines.delay
 import javax.inject.Inject
 
 class LoadMovieList @Inject constructor(

@@ -19,15 +19,11 @@ class MoviesFragment : StandardFragment<FragmentMoviesBinding, MoviesViewModel>(
 ) {
     override val binding by dataBindings(FragmentMoviesBinding::bind)
     override val viewModel: MoviesViewModel by viewModels()
-    private val moviesAdapter by lazy { MovieAdapter() }
-
-    // TODO: 26/01/2022 use data binding for fragment_movies view
-    // TODO: 26/01/2022 set on click listener for movies
+    private val moviesAdapter by lazy { MovieAdapter(viewModel) }
 
     override fun onViewReady() {
         binding.movieRV.setHasFixedSize(true)
         binding.movieRV.adapter = moviesAdapter
-
         binding.swipeRefresh.setOnRefreshListener {
             viewModel.runIntent(MoviesIntent.RefreshMovies)
         }

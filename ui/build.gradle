@@ -52,6 +52,11 @@ dependencies {
     implementation 'com.android.support:multidex:1.0.3'
     //endregion setup
 
+    //region lifecycle
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.4.0"
+    implementation "androidx.lifecycle:lifecycle-common-java8:2.4.0"
+    //endregion lifecycle
+
     //region navigation
     implementation("androidx.navigation:navigation-fragment-ktx:2.3.5")
     implementation("androidx.navigation:navigation-ui-ktx:2.3.5")
@@ -62,6 +67,10 @@ dependencies {
     implementation "com.google.dagger:hilt-android:$hilt_version"
     kapt "com.google.dagger:hilt-compiler:$hilt_version"
     //endregion hilt
+
+    //region timber
+    implementation "com.jakewharton.timber:timber:5.0.1"
+    //endregion timber
 
     //region glide
     implementation 'com.github.bumptech.glide:glide:4.12.0'

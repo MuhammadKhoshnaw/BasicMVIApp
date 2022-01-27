@@ -5,8 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.khoshnaw.controller.Controller
 import com.khoshnaw.usecase.movie.base.OutputPort
-import com.khoshnaw.viewmodel.base.Event
-import com.khoshnaw.viewmodel.extensions.trigger
 import com.khoshnaw.viewmodel.mvi.MVIIntent
 import com.khoshnaw.viewmodel.mvi.MVIState
 import com.khoshnaw.viewmodel.mvi.MVIViewModel
@@ -25,8 +23,7 @@ abstract class StandardViewModel<S : MVIState, I : MVIIntent> : MVIViewModel<S, 
     private val _state = MutableLiveData<S>()
     override val state: LiveData<S> = _state
 
-    private val _error = MutableLiveData<Event<String>>()
-    val error: LiveData<Event<String>> = _error
+    val error = Channel<String>()
 
     protected fun <O : OutputPort> O.init() = viewModelScope.launch(Dispatchers.IO) {
         injectOutputPorts()
@@ -55,8 +52,11 @@ abstract class StandardViewModel<S : MVIState, I : MVIIntent> : MVIViewModel<S, 
         onError(e)
     }
 
-
-    open fun onError(e: Throwable) = _error.trigger("some thing went wrong")
+    open fun onError(e: Throwable) {
+        viewModelScope.launch {
+            error.send("some thing went wrong")
+        }
+    }
 
     protected open suspend fun handleIntent(intent: I): Any = Unit
 

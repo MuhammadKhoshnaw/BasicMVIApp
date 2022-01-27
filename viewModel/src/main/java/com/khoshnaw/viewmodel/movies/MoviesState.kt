@@ -4,7 +4,7 @@ import com.khoshnaw.entity.Movie
 import com.khoshnaw.viewmodel.mvi.MVIState
 
 sealed class MoviesState(
-    open val movies: List<Movie>
+    open val movies: List<Movie> = listOf(),
 ) : MVIState {
 
     class MovieList(
