@@ -5,7 +5,7 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
-rootProject.name = "Simple MVI App"
+rootProject.name = "Basic MVI App"
 include ':app'
 include ':entity'
 include ':useCase'

@@ -1,6 +1,15 @@
 package com.khoshnaw.viewmodel.movies
 
-import com.khoshnaw.viewmodel.base.MVIState
+import com.khoshnaw.entity.Movie
+import com.khoshnaw.viewmodel.mvi.MVIState
 
-interface MoviesState : MVIState {
+sealed class MoviesState(
+    open val movies: List<Movie> = listOf(),
+) : MVIState {
+
+    class MovieList(
+        override val movies: List<Movie>,
+        val isLoading: Boolean = false
+    ) : MoviesState(movies)
+
 }

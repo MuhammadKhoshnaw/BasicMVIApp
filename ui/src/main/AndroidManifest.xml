@@ -5,7 +5,7 @@
 
     <application
         android:supportsRtl="true"
-        android:theme="@style/Theme.SimpleMVIApp">
+        android:theme="@style/Theme.BasicMVIApp">
 
         <activity
             android:name="com.khoshnaw.ui.view.main.MainActivity"

@@ -1,10 +1,13 @@
-# SimpleMVIApp
-This application is a simple study application that implements clean architecture, with MVI architecture pattern. In addition to the most commonly used tools in the android development community.
+# BasicMVIApp
+This application is a basic study application that implements clean architecture, with MVI architecture pattern. In addition to the most commonly used tools in the android development community.
 
 # Architecture
 
-![alt text](https://firebasestorage.googleapis.com/v0/b/simple-mvi-app.appspot.com/o/Blank%20diagram.png?alt=media&token=96acc2d0-52c8-46ad-aef7-7b3b9eb362f1)
+![alt text](https://firebasestorage.googleapis.com/v0/b/simple-mvi-app.appspot.com/o/Architecture.png?alt=media&token=346d4c2b-66ed-409e-b378-207f1c00c0d5)
 
+# Components
+
+![alt text](https://firebasestorage.googleapis.com/v0/b/simple-mvi-app.appspot.com/o/Component%20Diagram.png?alt=media&token=2d9da482-ef31-4627-893a-a67a8430f128)
 
 
 

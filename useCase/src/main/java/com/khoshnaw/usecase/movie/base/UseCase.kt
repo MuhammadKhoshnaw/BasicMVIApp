@@ -5,7 +5,7 @@ abstract class UseCase<O : OutputPort> : InputPort<O> {
 
     protected open suspend fun onReady() = Unit
 
-    override suspend fun registerOutPutPort(outputPort: O) {
+    override suspend fun registerOutputPort(outputPort: O) {
         this.outputPort = outputPort
         onReady()
     }

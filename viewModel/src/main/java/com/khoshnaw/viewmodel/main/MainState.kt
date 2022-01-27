@@ -1,6 +1,5 @@
 package com.khoshnaw.viewmodel.main
 
-import com.khoshnaw.viewmodel.base.MVIState
+import com.khoshnaw.viewmodel.mvi.MVIState
 
-interface MainState : MVIState {
-}
+interface MainState : MVIState

@@ -6,4 +6,5 @@ import kotlinx.coroutines.flow.Flow
 interface MovieLocalDataSource {
     suspend fun updateMovieList(movieList: List<Movie>)
     suspend fun observeMovies(): Flow<List<Movie>>
+    suspend fun loadMovieSize(): Int
 }
