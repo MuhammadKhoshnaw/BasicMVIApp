@@ -17,4 +17,6 @@ class MovieLocalDataSourceImpl @Inject constructor(
 
     override suspend fun observeMovies(): Flow<List<Movie>> =
         movieDao.observeMovies().map { it.toEntity() }
+
+    override suspend fun loadMovieSize(): Int = movieDao.loadMovieSize()
 }

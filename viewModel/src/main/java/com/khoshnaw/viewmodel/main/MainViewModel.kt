@@ -1,6 +1,6 @@
 package com.khoshnaw.viewmodel.main
 
-import com.khoshnaw.viewmodel.mvi.StandardViewModel
+import com.khoshnaw.viewmodel.standard.StandardViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 

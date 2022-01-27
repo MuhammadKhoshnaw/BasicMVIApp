@@ -3,6 +3,7 @@ package com.khoshnaw.viewmodel.mvi
 import com.khoshnaw.controller.Controller
 import com.khoshnaw.usecase.movie.base.InputPort
 import com.khoshnaw.usecase.movie.base.OutputPort
+import com.khoshnaw.viewmodel.standard.StandardViewModel
 import io.mockk.MockKAnnotations
 import io.mockk.coVerify
 import io.mockk.impl.annotations.InjectMockKs

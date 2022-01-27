@@ -14,4 +14,6 @@ class MovieGatewayImp @Inject constructor(
 
     override suspend fun observeMovies() = movieLocalDataSource.observeMovies()
 
+    override suspend fun loadMovieSize(): Int = movieLocalDataSource.loadMovieSize()
+
 }

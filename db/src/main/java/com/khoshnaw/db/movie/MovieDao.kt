@@ -14,4 +14,8 @@ interface MovieDao {
 
     @Query("SELECT * FROM MovieLocalDTO")
     fun observeMovies(): Flow<List<MovieLocalDTO>>
+
+
+    @Query("SELECT COUNT(*) FROM MovieLocalDTO")
+    fun loadMovieSize(): Int
 }
