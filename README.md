@@ -1,62 +1,50 @@
 # BasicMVIApp
 
-This application is a basic study application that implements clean architecture, with MVI
-architecture pattern. In addition to the most commonly used tools in the android development
-community.
+This application is a basic study application that implements clean architecture, with MVI architecture pattern. In addition to the most commonly used
+tools in the android development community.
 
 # Motivation
 
-When starting a new project it is always difficult to build the setup environment. Building the
-application architecture and choosing the desired architecture pattern (MVI, MVVM or MVP) can be
-challenging. I always Liked to have a template that I can use whenever I need it. In addition, when
-using this template in a large application you discover the pros and cons of your template
-structure. And you can always come back to the template and improve it for the next project. This
-Repository Will be my first android application template. In this template clean architecture and
-MVI architecture pattern is my weapon of choice.
+When starting a new project it is always difficult to build the setup environment. Building the application architecture and choosing the desired
+architecture pattern (MVI, MVVM or MVP) can be challenging. I always Liked to have a template that I can use whenever I need it. In addition, when
+using this template in a large application you discover the pros and cons of your template structure. And you can always come back to the template and
+improve it for the next project. This Repository Will be my first android application template. In this template clean architecture and MVI
+architecture pattern is my weapon of choice. m
 
 # Application
 
-For this template we don't need to go crazy with features. We just need enough to understand the
-architecture and have some basic configurations that we can reuse In future. The application is a
-basic movie app. That uses [TMDB API](https://www.themoviedb.org/documentation/api) to cash a list
-of popular movies. And then show it to the user. With the ability to refresh the cache when the user
-needed it.
+For this template we don't need to go crazy with features. We just need enough to understand the architecture and have some basic configurations that
+we can reuse In future. The application is a basic movie app. That uses [TMDB API](https://www.themoviedb.org/documentation/api) to cash a list of
+popular movies. And then show it to the user. With the ability to refresh the cache when the user needed it.
 
 # Architecture
 
 ## Introduction
 
-Starting the development of software without a clear architecture will cause a disaster. The same
-way that starting construction of a building without a clear architecture will cause a disaster. It
-is true that without an architecture you can go really fast for the first few features in the app
-but does that really matter!
-If you are not able to do any major changes in the software after a year. Logging with google took
-one week to implement but after one year of development logging in with Facebook took a month or two
-and even then it was really buggy. If you are too scared to do anything in the software after a few
-years. Does building the first few features fast really matter?
+Starting the development of software without a clear architecture will cause a disaster. The same way that starting construction of a building without
+a clear architecture will cause a disaster. It is true that without an architecture you can go really fast for the first few features in the app but
+does that really matter!
+If you are not able to do any major changes in the software after a year. Logging with google took one week to implement but after one year of
+development logging in with Facebook took a month or two and even then it was really buggy. If you are too scared to do anything in the software after
+a few years. Does building the first few features fast really matter?
 
 > “The only way to go fast, is to go well.”
 > ― Robert C. Martin, Clean Architecture
 
 ## Clean Architecture
 
-There are multiple common architectures that you can use for your software. But I think clean
-architecture is the most commonly used architecture in the android development community. So I
-choose to use clean architecture for this template. While studying Clean architecture I read
-multiple articles about implementing clean architecture in android. I also checked a few GitHub
-repositories but most of them didn’t have what I wanted. I believe most of them are the wrong
-implementation of clean architecture and the implementation violated the architecture principles. So
-for this template, I will depend on this article
-by [Robert C. Martin](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)
+There are multiple common architectures that you can use for your software. But I think clean architecture is the most commonly used architecture in
+the android development community. So I choose to use clean architecture for this template. While studying Clean architecture I read multiple articles
+about implementing clean architecture in android. I also checked a few GitHub repositories but most of them didn't have what I wanted. I believe most
+of them are the wrong implementation of clean architecture and the implementation violated the architecture principles. So for this template, I will
+depend on this article by [Robert C. Martin](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)
 
 ![Architecture](.github/res/Architecture.svg)
 
-As shown in the above diagram the template consists of 4 architecture layers. Be careful that those
-layers are architecture layers AND YOU DON’T HAVE TO CREATE A MODULE FOR EACH LAYER. Software
-components (modules) are different from architecture layers. You can have as many software
-components as you need in each architecture layer. In android, we create software components by
-modules. So for example we can separate our entities into two different modules or even more. The
-same thing applies to use cases and other layers.
+As shown in the above diagram the template consists of 4 architecture layers. Be careful that those layers are architecture layers AND YOU DON’T HAVE
+TO CREATE A MODULE FOR EACH LAYER. Software components (modules) are different from architecture layers. You can have as many software components as
+you need in each architecture layer. In android, we create software components by modules. So for example we can separate our entities into two
+different modules or even more. The same thing applies to use cases and other layers.
 
 ![ComponentDiagram](.github/res/ComponentDiagram.svg)
 
@@ -64,33 +52,31 @@ For this template, nine different software components have been used as shown in
 
 1. In the innermost layer, we have an entity which is a java module.
 2. Then In the second layer, we have useCase another java module.
-3. For the third layer, we have three modules: controller and gateway are java modules. But
-   ViewModel is an android module with a minimum dependency on the android platform as possible.
-4. And in the outermost layer, We have 4 heavily dependent on the android framework modules. The
-   application is our actual application module. UI, Remote and DB which are also android modules.
+3. For the third layer, we have three modules: controller and gateway are java modules. But ViewModel is an android module with a minimum dependency
+   on the android platform as possible.
+4. And in the outermost layer, We have 4 heavily dependent on the android framework modules. The application is our actual application module. UI,
+   Remote and DB which are also android modules.
 
-Of Course, you can have more layers but I don’t think having fewer layers will be a good idea. For
-this template, we are trying to have the most basic implementation possible so we go with 4 layers.
+Of Course, you can have more layers but I don’t think having fewer layers will be a good idea. For this template, we are trying to have the most basic
+implementation possible so we go with 4 layers.
 
 ## Entity
 
-In our entity, we have our [Movie](entity/src/main/java/com/khoshnaw/entity/Movie.kt) Class which
-have some movie properties.
+In our entity, we have our [Movie](entity/src/main/java/com/khoshnaw/entity/Movie.kt) Class which have some movie properties.
 
 ```
-data class Movie(  
-	val id: String,
-	val posterPath: String,
-	val title: String,
-	val voteAverage: Double,  
+data class Movie(
+    val id: String,
+    val posterPath: String,
+    val title: String,
+    val voteAverage: Double,
 )
 ```
 
 ## TestFixtures
 
-In this module, we also have some test
-fixtures. [MovieDummies](entity/src/testFixtures/java/com/khoshnaw/entity/MovieDummies.kt) have some
-dummy movie objects that we will need in our tests.
+In this module, we also have some test fixtures. [MovieDummies](entity/src/testFixtures/java/com/khoshnaw/entity/MovieDummies.kt) have some dummy
+movie objects that we will need in our tests.
 
 ```
 @Suppress("unused", "MemberVisibilityCanBePrivate")
@@ -149,24 +135,100 @@ object MovieDummies {
 }
 ```
 
+ExceptionDummies have a FakeException object that we will use in our tests.
+
+```
+object ExceptionDummies {
+    val dummyException = FakeException()
+}
+
+```
+
+```
+class FakeException : Exception()
+```
+
+## UseCase
+
+In most clean architecture implementations you see that useCasees are just a class with a single method. I don’t know where that concept comes from.
+But I don’t think that this concept is related to clean architecture. UseCase is much more than a class with a single method. It is your user story.
+your business rules. You basically need to translate the user story that you have in your Jira ticket to a UseCase class in your Application Business
+Rules layer.
+
+## Base Implementation
+
+Back to our template in the base package, you will see InputPort, OutputPort And UseCase base classes.
+
+![Architecture](.github/res/UseCaseClassDiagram.svg)
+
+As you can see the controller has an object of the UseCase that has an InputPort type. And then the UseCase has an Object of ViewModel with the type
+OutputPort. This will reverse the dependency between UseCase and ViewModel. Let’s look at the actual code.
+
+```
+interface InputPort<in O : OutputPort> {
+suspend fun registerOutputPort(outputPort: O)
+}
+```
+
+Our InputPort has a general type of OutputPort. We will be using this general type in the registerOutputPort function to register the ViewModel in the
+UseCase as an outputPort. You might think that this is better to be done with dependency injection. Well, you are absolutely right, But I faced some
+limitations with android ViewModels that made me not able to use dependency injection to bind the ViewModel to the outPort. So I’m sticking to this
+function for now. Maybe in the future, I will find a better solution for this.
+
+The OutputPort is a simple interface.
+
+```
+interface OutputPort
+```
+
+Now coming to the main course, UseCase has a general type of OutputPort that we use for the outputPort variable. The onReady function will be called
+right after the outputPort is registered. So you can run your setup code. We also have the default implementation for registerOuputPort.
+
+```
+abstract class UseCase<O : OutputPort> : InputPort<O> {
+    protected lateinit var outputPort: O
+
+    protected open suspend fun onReady() = Unit
+
+    override suspend fun registerOutputPort(outputPort: O) {
+        this.outputPort = outputPort
+        onReady()
+    }
+}
+```
+
+Then last but not least we have the base Gateway interface. Which is an empty interface that might be useful in future for some polymorphism
+implementation. We will discuss Gateways in more detail later on. But for now, you just need to know that Usecases will use a gateway to access data
+in our android framework. Like data in remote API or local DB.
+
+```
+interface Gateway
+```
+
+## Gateways
+
+For this template, we only have one gateway called MovieGateway
+
+```
+[MovieGateway](useCase/src/main/java/com/khoshnaw/usecase/movie/gateway/MovieGateway.kt)
+interface MovieGateway : Gateway {
+    suspend fun updateMovieList()
+    suspend fun observeMovies(): Flow<List<Movie>>
+    suspend fun loadMovieSize(): Int
+}
+```
+
 ```
 Copyright (c) <2021> <Muhammad Khoshnaw>
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to
+deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+IN THE SOFTWARE.
 ```
