@@ -400,6 +400,83 @@ class MovieController @Inject constructor(
 }
 ```
 
+# MVI
+
+Before discussing ViewModel we need to discuss a litlebit about MVI architecture pattern.
+
+# ViewModel
+
+# UI
+
+# Remote
+
+The Remote module is an Android module that is heavenly depending on the android framework to do any remote operation. This module is using tools like
+OkHttp, Retrofit and Moshi. To perform a network HTTP requests to the Movie DB API then parse and map the result to an entity represented object.
+
+## APIDataSource
+
+The API data source is the actual implementation of the remote data sources. Those classes are using movie DB API to access the remote data in the
+system.
+
+The base implementation is an empty Class called [APIDataSource](remote/src/main/java/com/khoshnaw/remote/apiDataSource/base/APIDataSource.kt)
+
+```
+abstract class APIDataSource
+```
+
+The (MovieAPIDataSource)[remote/src/main/java/com/khoshnaw/remote/apiDataSource/movie/MovieAPIDataSource.kt] is using movieApi that is provided by
+retrofit to perform movie-related remote operating. Like loading movie list using LoadMovieList function. Notice that the movieApi class is returning
+a MovieRemoteDTO movie object but we use a mapper to map the DTO to an entity.
+
+```
+class MovieAPIDataSource @Inject constructor(
+    private val movieApi: MovieApi
+) : APIDataSource(), MovieRemoteDataSource {
+    override suspend fun loadMovieList(): List<Movie> =
+        movieApi.loadMovieList().bodyOrException().movieList.toEntity()
+}
+```
+
+## RemoteDTO
+
+The package DTO has our remoteDTO s like [MovieRemoteDTO](remote/src/main/java/com/khoshnaw/remote/dto/MovieRemoteDTO.kt) those DTO are data transfer
+objects that can be used to pars API JSON or encode data to JSON.
+
+```
+data class MovieRemoteDTO(
+    val id: String,
+    @Json(name = "poster_path") val posterPath: String,
+    @Json(name = "original_title") val title: String,
+    @Json(name = "vote_average") val voteAverage: Double,
+)
+```
+
+## Mapper
+
+Our mappers are responsible to map entities to RemoteDTO or vice versa. For example, check
+out [MovieMapper.kt](remote/src/main/java/com/khoshnaw/remote/mapper/MovieMappers.kt) file
+
+```
+fun MovieRemoteDTO.toEntity() = Movie(
+    id = id,
+    posterPath = posterPath,
+    title = title,
+    voteAverage = voteAverage,
+)
+
+fun List<MovieRemoteDTO>.toEntity() = map { it.toEntity() }
+```
+
+# DB
+
+# APP
+
+# What to improve
+
+## Injecting Output Port
+
+## Controller
+
 ```
 Copyright (c) <2021> <Muhammad Khoshnaw>
 
