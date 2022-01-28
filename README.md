@@ -60,7 +60,7 @@ For this template, nine different software components have been used as shown in
 Of Course, you can have more layers but I don’t think having fewer layers will be a good idea. For this template, we are trying to have the most basic
 implementation possible so we go with 4 layers.
 
-## Entity
+# Entity
 
 In our entity, we have our [Movie](entity/src/main/java/com/khoshnaw/entity/Movie.kt) Class which have some movie properties.
 
@@ -148,7 +148,7 @@ object ExceptionDummies {
 class FakeException : Exception()
 ```
 
-## UseCase
+# UseCase
 
 In most clean architecture implementations you see that useCasees are just a class with a single method. I don’t know where that concept comes from.
 But I don’t think that this concept is related to clean architecture. UseCase is much more than a class with a single method. It is your user story.
@@ -205,7 +205,7 @@ in our android framework. Like data in remote API or local DB.
 interface Gateway
 ```
 
-## Gateways
+# Gateways
 
 For this template, we only have one gateway called [MovieGateway](useCase/src/main/java/com/khoshnaw/usecase/movie/gateway/MovieGateway.kt)
 
@@ -225,6 +225,178 @@ one command that starts updating a movie list in the system cash.
 ```
 interface LoadMovieListInputPort : InputPort<LoadMovieListOutputPort> {
     suspend fun startUpdatingMovieList()
+}
+```
+
+Then we have [LoadMovieListOutputPort](useCase/src/main/java/com/khoshnaw/usecase/movie/loadMovieList/LoadMovieListOutputPort.kt) which has two
+commands showLoading that hide and show loading while the movie is loading. And observeMovies provides a flow that can be used to observe the list of
+movies in our cash.
+
+```
+interface LoadMovieListOutputPort : OutputPort {
+    suspend fun showLoading(loading: Boolean)
+    suspend fun observeMovies(flow: Flow<List<Movie>>)
+}
+```
+
+Now let's check the [LoadMovieList](useCase/src/main/java/com/khoshnaw/usecase/movie/loadMovieList/LoadMovieList.kt). Our usecase has a movieGateway
+object that will be used to access systems data. In onReady we are making our output port observe the locally cached movie list using our movieGateway
+object. When the usecase is ready we also load new movies if we don’t have any movies in our cash.
+
+The startUpdatingMovieList is used to start the loading of a new movie process. First, we tell our output port to show the loading. Then we try to
+update our movies locally using our gateway, then we hide the loading again. Notice that if we fail to update movies we throw an exception. But we are
+throwing the exception after we hide the loading.
+
+```
+class LoadMovieList @Inject constructor(
+    private val movieGateway: MovieGateway,
+) : UseCase<LoadMovieListOutputPort>(), LoadMovieListInputPort {
+
+    override suspend fun onReady() {
+        observeMovies()
+        loadMoviesIfNeeded()
+    }
+
+    override suspend fun startUpdatingMovieList() {
+        showLoading()
+        val e = tryTo { updateMovies() }
+        hideLoading()
+        e?.let { throw e }
+    }
+
+    private suspend fun loadMoviesIfNeeded() {
+        if (movieGateway.loadMovieSize() <= 0) startUpdatingMovieList()
+    }
+
+    private suspend fun observeMovies() = outputPort.observeMovies(movieGateway.observeMovies())
+
+    private suspend fun showLoading() = outputPort.showLoading(true)
+
+    private suspend fun hideLoading() = outputPort.showLoading(false)
+
+    private suspend fun updateMovies() = movieGateway.updateMovieList()
+
+}
+```
+
+## Utils
+
+For utils, we have [tryTo](useCase/src/main/java/com/khoshnaw/usecase/utils/util.kt) function that tries to do some action then return the exception
+if the action failed it returns the exception.
+
+```
+suspend inline fun tryTo(crossinline action: suspend () -> Unit): Exception? = try {
+    action()
+    null
+} catch (e: Exception) {
+    e
+}
+```
+
+# Gateway
+
+The gateway module is a pure java module. This module contains our gateway implementation with it is data sources.
+
+![GatewayClassDiagram](.github/res/GatewayClassDiagram.svg)
+
+As shown in the UML diagram, our usecase has a weak reference to the gatewayImp class which is the gateway implementation in the third layer of our
+architecture. Then our gateway implementation has multiple local or remote data sources. Those interfaces are in the third layer as well. But the
+implementation of those data sources is in the fourth layer. The Implementation of the remote data sources is in the remote module. And we call them
+API data sources. Those data sources are using public movie DB APIs. And then the implementation of the local data source is in the DB module and we
+call them DBDataSource. DB data sources are using room databases to do their tasks.
+
+## Base Implementation
+
+Our base implementation is just an empty class called [GatewayImp](gateway/src/main/java/com/khoshnaw/gateway/base/GatewayImp.kt) that implements the
+Base Gateway interface. Again this can be useful in future for polymorphism reasons.
+
+```
+abstract class GatewayImp : Gateway
+```
+
+## gatewayImps
+
+Our only GatewayImp is MovieGatewayImp this is gateway is responsible to provide movie data that the system needs. The gateway has one remote data
+source and one local data source. It is also implementing our MovieGateway interface in the second layer.
+
+Then the updateMovieList function is using a remote data source to load new remote movies and then uses the local data source to update the locally
+cashed movie list.
+
+The function observeMovies is returning a flow of movies that can be used to observe the locally cashed movies.
+
+And loadMovieSize is just returning the size of locally cached movies.
+
+```
+class MovieGatewayImp @Inject constructor(
+    private val movieRemoteDataSource: MovieRemoteDataSource,
+    private val movieLocalDataSource: MovieLocalDataSource,
+) : GatewayImp(), MovieGateway {
+
+    override suspend fun updateMovieList() =
+        movieLocalDataSource.updateMovieList(movieRemoteDataSource.loadMovieList())
+
+    override suspend fun observeMovies() = movieLocalDataSource.observeMovies()
+
+    override suspend fun loadMovieSize(): Int = movieLocalDataSource.loadMovieSize()
+
+}
+```
+
+## LocalDataSources
+
+Our local data source [MovieLocalDataSource](gateway/src/main/java/com/khoshnaw/gateway/localDataSource/MovieLocalDataSource.kt) has three functions
+to update the movie list another to observe the movies and the last one to load movies size.
+
+```
+interface MovieLocalDataSource {
+    suspend fun updateMovieList(movieList: List<Movie>)
+    suspend fun observeMovies(): Flow<List<Movie>>
+    suspend fun loadMovieSize(): Int
+}
+```
+
+## RemoteDataSource
+
+The remote data source [MovieRemoteDataSource](gateway/src/main/java/com/khoshnaw/gateway/remoteDataSource/MovieRemoteDataSource.kt) has one function
+to load a list of remote movies.
+
+```
+interface MovieRemoteDataSource {
+    suspend fun loadMovieList(): List<Movie>
+}
+```
+
+# Controller
+
+Controllers are intermediates between our view model and use cases. A controller can have multiple use cases of the type input port.
+
+## Base Implementation
+
+Our base implementation named (Controller)[controller/src/main/java/com/khoshnaw/controller/base/Controller.kt] has a generic type InputPort, Also
+another generic type OutputPort. We need an object of the inputPort in order to be able to register the output port to the input. And then the
+registerOutputPort do the registration of the output port.
+
+```
+abstract class Controller<out I : InputPort<O>, in O : OutputPort> {
+    abstract val inputPort: I
+
+    suspend fun registerOutputPort(outputPort: O) = inputPort.registerOutputPort(outputPort)
+}
+```
+
+## Controllers
+
+Our [MovieController](controller/src/main/java/com/khoshnaw/controller/movie/MovieController.kt) have two functions one to start loading movies. And
+another to show a specific movie. That is just printing a log.
+
+```
+class MovieController @Inject constructor(
+    override val inputPort: LoadMovieListInputPort,
+) : Controller<LoadMovieListInputPort, LoadMovieListOutputPort>() {
+
+    suspend fun loadMoviesList() = inputPort.startUpdatingMovieList()
+
+    suspend fun showMovie(movie: Movie) = println("showing movie : $movie")
 }
 ```
 

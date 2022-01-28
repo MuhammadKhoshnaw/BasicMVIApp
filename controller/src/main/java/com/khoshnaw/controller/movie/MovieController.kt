@@ -13,5 +13,4 @@ class MovieController @Inject constructor(
     suspend fun loadMoviesList() = inputPort.startUpdatingMovieList()
 
     suspend fun showMovie(movie: Movie) = println("showing movie : $movie")
-
 }
