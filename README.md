@@ -1,15 +1,16 @@
 # BasicMVIApp
-This application is a basic study application that implements clean architecture, with MVI architecture pattern. In addition to the most commonly used tools in the android development community.
+
+This application is a basic study application that implements clean architecture, with MVI
+architecture pattern. In addition to the most commonly used tools in the android development
+community.
 
 # Architecture
 
-![alt text](https://github.com/MuhammadKhoshnaw/BasicMVIApp/blob/master/.github/res/Architecture.svg)
+![alt text](.github/res/Architecture.svg)
 
 # Components
 
-![alt text](https://github.com/MuhammadKhoshnaw/BasicMVIApp/blob/master/.github/res/ComponentDiagram.png)
-
-
+![alt text](.github/res/ComponentDiagram.png)
 
 ```
 Copyright (c) <2021> <Muhammad Khoshnaw>

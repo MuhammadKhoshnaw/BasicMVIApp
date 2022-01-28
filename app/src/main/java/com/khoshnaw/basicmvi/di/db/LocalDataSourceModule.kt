@@ -1,4 +1,4 @@
-package com.khoshnaw.basicmvi.di
+package com.khoshnaw.basicmvi.di.db
 
 import com.khoshnaw.db.movie.MovieDBDataSource
 import com.khoshnaw.gateway.localDataSource.MovieLocalDataSource

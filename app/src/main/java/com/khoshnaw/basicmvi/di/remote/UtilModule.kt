@@ -1,4 +1,4 @@
-package com.khoshnaw.basicmvi.di
+package com.khoshnaw.basicmvi.di.remote
 
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory

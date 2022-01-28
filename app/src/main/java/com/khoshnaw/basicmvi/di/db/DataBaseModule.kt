@@ -1,4 +1,4 @@
-package com.khoshnaw.db.di
+package com.khoshnaw.basicmvi.di.db
 
 import android.content.Context
 import androidx.room.Room

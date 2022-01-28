@@ -1,4 +1,4 @@
-package com.khoshnaw.basicmvi.di
+package com.khoshnaw.basicmvi.di.remote
 
 import com.khoshnaw.remote.interseptor.AuthenticationInterceptor
 import com.khoshnaw.basicmvi.BuildConfig

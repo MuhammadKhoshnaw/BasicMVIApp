@@ -1,5 +1,6 @@
-package com.khoshnaw.basicmvi.di
+package com.khoshnaw.basicmvi.di.remote
 
+import com.khoshnaw.basicmvi.di.remote.DiNames
 import com.squareup.moshi.Moshi
 import dagger.Module
 import dagger.Provides

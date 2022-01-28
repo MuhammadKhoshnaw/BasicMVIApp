@@ -1,4 +1,4 @@
-package com.khoshnaw.basicmvi.di
+package com.khoshnaw.basicmvi.di.remote
 
 import com.khoshnaw.gateway.remoteDataSource.MovieRemoteDataSource
 import com.khoshnaw.remote.apiDataSource.movie.MovieAPIDataSource

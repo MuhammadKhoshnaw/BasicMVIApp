@@ -1,4 +1,4 @@
-package com.khoshnaw.basicmvi.di
+package com.khoshnaw.basicmvi.di.controler
 
 import com.khoshnaw.usecase.movie.loadMovieList.LoadMovieList
 import com.khoshnaw.usecase.movie.loadMovieList.LoadMovieListInputPort

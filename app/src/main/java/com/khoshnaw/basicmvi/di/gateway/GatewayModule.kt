@@ -1,4 +1,4 @@
-package com.khoshnaw.basicmvi.di
+package com.khoshnaw.basicmvi.di.gateway
 
 import com.khoshnaw.gateway.gatewayImp.MovieGatewayImp
 import com.khoshnaw.usecase.movie.gateway.MovieGateway
