@@ -207,10 +207,9 @@ interface Gateway
 
 ## Gateways
 
-For this template, we only have one gateway called MovieGateway
+For this template, we only have one gateway called [MovieGateway](useCase/src/main/java/com/khoshnaw/usecase/movie/gateway/MovieGateway.kt)
 
 ```
-[MovieGateway](useCase/src/main/java/com/khoshnaw/usecase/movie/gateway/MovieGateway.kt)
 interface MovieGateway : Gateway {
     suspend fun updateMovieList()
     suspend fun observeMovies(): Flow<List<Movie>>
