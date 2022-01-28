@@ -217,6 +217,17 @@ interface MovieGateway : Gateway {
 }
 ```
 
+## LoadMovieList
+
+Let's look at [LoadMovieListInputPort](useCase/src/main/java/com/khoshnaw/usecase/movie/loadMovieList/LoadMovieListInputPort.kt). Your input port has
+one command that starts updating a movie list in the system cash.
+
+```
+interface LoadMovieListInputPort : InputPort<LoadMovieListOutputPort> {
+    suspend fun startUpdatingMovieList()
+}
+```
+
 ```
 Copyright (c) <2021> <Muhammad Khoshnaw>
 
