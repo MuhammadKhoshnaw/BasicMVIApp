@@ -12,6 +12,12 @@ community.
 
 ![alt text](.github/res/ComponentDiagram.svg)
 
+# Classes
+
+![alt text](.github/res/GatewayClassDiagram.svg)
+
+![alt text](.github/res/UseCaseClassDiagram.svg)
+
 ```
 Copyright (c) <2021> <Muhammad Khoshnaw>
 
