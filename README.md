@@ -10,7 +10,7 @@ community.
 
 # Components
 
-![alt text](.github/res/ComponentDiagram.png)
+![alt text](.github/res/ComponentDiagram.svg)
 
 ```
 Copyright (c) <2021> <Muhammad Khoshnaw>
