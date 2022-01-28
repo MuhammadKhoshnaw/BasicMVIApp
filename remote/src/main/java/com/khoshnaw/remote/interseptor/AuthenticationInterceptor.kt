@@ -1,6 +1,6 @@
 package com.khoshnaw.remote.interseptor
 
-import com.khoshnaw.remote.authentication.TMDBApiKey
+import com.khoshnaw.remote.module.TMDBApiKey
 import okhttp3.HttpUrl
 import okhttp3.Interceptor
 import okhttp3.Request

@@ -1,7 +1,7 @@
 package com.khoshnaw.basicmvi.di
 
 import com.khoshnaw.remote.api.MovieApi
-import com.khoshnaw.remote.authentication.TMDBApiKey
+import com.khoshnaw.remote.module.TMDBApiKey
 import com.khoshnaw.basicmvi.BuildConfig
 import dagger.Module
 import dagger.Provides

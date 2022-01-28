@@ -1,4 +1,4 @@
-package com.khoshnaw.remote.movie
+package com.khoshnaw.remote.apiDataSource.movie
 
 import com.khoshnaw.remote.dto.MovieRemoteDTO
 import com.squareup.moshi.Json

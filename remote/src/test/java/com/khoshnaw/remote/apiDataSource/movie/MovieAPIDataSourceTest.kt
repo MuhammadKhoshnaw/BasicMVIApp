@@ -1,4 +1,4 @@
-package com.khoshnaw.remote.movie
+package com.khoshnaw.remote.apiDataSource.movie
 
 import com.google.common.truth.Truth
 import com.khoshnaw.entity.MovieDummies
