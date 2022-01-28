@@ -16,13 +16,13 @@ import org.junit.Before
 import org.junit.Test
 
 @ExperimentalCoroutinesApi
-class MovieLocalDataSourceImplTest {
+class MovieDBDataSourceTest {
 
     @MockK
     lateinit var movieDao: MovieDao
 
     @InjectMockKs
-    lateinit var dataSource: MovieLocalDataSourceImpl
+    lateinit var dataSource: MovieDBDataSource
 
     @Before
     fun setup() {

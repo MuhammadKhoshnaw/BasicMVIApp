@@ -1,6 +1,6 @@
 package com.khoshnaw.basicmvi.di
 
-import com.khoshnaw.db.movie.MovieLocalDataSourceImpl
+import com.khoshnaw.db.movie.MovieDBDataSource
 import com.khoshnaw.gateway.localDataSource.MovieLocalDataSource
 import dagger.Binds
 import dagger.Module
@@ -12,6 +12,6 @@ import dagger.hilt.components.SingletonComponent
 interface LocalDataSourceModule {
 
     @Binds
-    fun provide(movieRemoteDataSource: MovieLocalDataSourceImpl): MovieLocalDataSource
+    fun provide(movieRemoteDataSource: MovieDBDataSource): MovieLocalDataSource
 
 }

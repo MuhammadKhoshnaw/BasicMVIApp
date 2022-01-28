@@ -7,7 +7,7 @@ import com.khoshnaw.gateway.remoteDataSource.MovieRemoteDataSource
 import com.khoshnaw.remote.mapper.toEntity
 import javax.inject.Inject
 
-class MovieRemoteDataSourceImpl @Inject constructor(
+class MovieAPIDataSource @Inject constructor(
     private val movieApi: MovieApi
 ) : MovieRemoteDataSource {
     override suspend fun loadMovieList(): List<Movie> =

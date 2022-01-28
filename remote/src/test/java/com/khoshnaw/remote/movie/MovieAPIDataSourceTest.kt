@@ -16,13 +16,13 @@ import org.junit.Test
 import retrofit2.Response
 
 @ExperimentalCoroutinesApi
-class MovieRemoteDataSourceImplTest {
+class MovieAPIDataSourceTest {
 
     @MockK
     lateinit var movieApi: MovieApi
 
     @InjectMockKs
-    lateinit var dataSource: MovieRemoteDataSourceImpl
+    lateinit var dataSource: MovieAPIDataSource
 
     @Before
     fun setUp() = MockKAnnotations.init(this, relaxUnitFun = true)

@@ -3,7 +3,7 @@ package com.khoshnaw.viewmodel.standard
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.khoshnaw.controller.Controller
+import com.khoshnaw.controller.base.Controller
 import com.khoshnaw.usecase.movie.base.OutputPort
 import com.khoshnaw.viewmodel.mvi.MVIIntent
 import com.khoshnaw.viewmodel.mvi.MVIState

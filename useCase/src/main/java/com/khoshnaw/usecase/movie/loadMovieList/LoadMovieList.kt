@@ -27,9 +27,9 @@ class LoadMovieList @Inject constructor(
 
     private suspend fun observeMovies() = outputPort.observeMovies(movieGateway.observeMovies())
 
-    private fun showLoading() = outputPort.showLoading(true)
+    private suspend fun showLoading() = outputPort.showLoading(true)
 
-    private fun hideLoading() = outputPort.showLoading(false)
+    private suspend fun hideLoading() = outputPort.showLoading(false)
 
     private suspend fun updateMovies() = movieGateway.updateMovieList()
 

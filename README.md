@@ -3,7 +3,7 @@ This application is a basic study application that implements clean architecture
 
 # Architecture
 
-![alt text](https://github.com/MuhammadKhoshnaw/BasicMVIApp/blob/master/.github/res/Architecture.png)
+![alt text](https://github.com/MuhammadKhoshnaw/BasicMVIApp/blob/master/.github/res/Architecture.svg)
 
 # Components
 
