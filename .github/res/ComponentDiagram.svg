@@ -110,7 +110,7 @@
         <path d="M1180 400h20.13v20.13H1180z" fill="url(#u)" />
         <path d="M776.82 202.6h20.13v20.13h-20.13z" fill="url(#v)" />
         <g class="lucid-layer" display="block">
-            <path d="M40 100h461v260H40z" stroke="#333" stroke-width="2" fill-opacity="0" />
+            <path d="M40 100h461v260H40z" stroke="#333" stroke-width="2" fill="#fff" />
             <path d="M65 118.87h44.96v42.26H65z" stroke="#333" stroke-width="2" fill="#b2d6ef" />
             <path d="M126.26 118.87h351.7v42.26h-351.7z" stroke="#000" stroke-opacity="0"
                 stroke-width="2" fill="#fff" fill-opacity="0" />
