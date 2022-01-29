@@ -433,6 +433,98 @@ The state is representing a UI state. States contain all the data that is requir
 
 ## Base Implementation
 
+For ViewModel Base Implementation first, we have an abstract class
+called [BaseViewModel](viewModel/src/main/java/com/khoshnaw/viewmodel/base/BaseViewModel.kt) Which is extending android ViewModel and also implements
+the output port. notice that this class doesn't have any MVI logic since it is just a simple ViewModel.
+
+```
+abstract class BaseViewModel : ViewModel(), OutputPort
+```
+
+And then we have our MVI ViewModel Implementation. First We need an interface
+called [MVIIntent](viewModel/src/main/java/com/khoshnaw/viewmodel/mvi/MVIIntent.kt) this will be our system Intents, of course, this is different from
+android intents.
+
+```
+interface MVIIntent
+```
+
+Then we need another interface called [MVIState](viewModel/src/main/java/com/khoshnaw/viewmodel/mvi/MVIState.kt) which will be for our UI states.
+
+```
+interface MVIState
+```
+
+For the ViewModel implementation, we will have an abstract class
+called [MVIViewModel](viewModel/src/main/java/com/khoshnaw/viewmodel/mvi/MVIViewModel.kt) that will extend our BaseViewModel.The class also have two
+generics State and Intent. Our kotlin channel intent will be used to get intents from the view. using intent the view can send a one-time event to
+ViewModel. The State LiveData will be used by the ViewModel to update the View.
+
+```
+abstract class MVIViewModel<S : MVIState, I : MVIIntent> : BaseViewModel() {
+    abstract val intents: Channel<I>
+    abstract val state: LiveData<S>
+}
+```
+
+We also need another class called [StandardViewModel](viewModel/src/main/java/com/khoshnaw/viewmodel/standard/StandardViewModel.kt) this class have
+some default configuration that is needed in most of our ViewModels. This class have some default behaviour for injecting output ports, consuming
+intents that come from the view. and also showing a default error message when something goes wrong.
+
+```
+abstract class StandardViewModel<S : MVIState, I : MVIIntent> : MVIViewModel<S, I>() {
+
+    override val intents: Channel<I> = Channel()
+    private val _state = MutableLiveData<S>()
+    override val state: LiveData<S> = _state
+
+    val error = Channel<String>()
+
+    protected fun <O : OutputPort> O.init() = viewModelScope.launch(Dispatchers.IO) {
+        injectOutputPorts()
+        consumeIntents()
+    }
+
+    private suspend fun <O : OutputPort> O.injectOutputPorts() = this::class.memberProperties.map {
+        it.isAccessible = true
+        it.getter.call(this)
+    }.filterIsInstance<Controller<*, O>>().forEach {
+        it.registerOutputPort(this)
+    }
+
+    private suspend fun consumeIntents() = intents.consumeAsFlow().collect {
+        tryToHandleIntent(it)
+    }
+
+    private suspend fun tryToHandleIntent(intent: I) = tryTo {
+        handleIntent(intent)
+    }
+
+    private suspend fun tryTo(callback: suspend () -> Unit) = try {
+        callback()
+    } catch (e: Throwable) {
+        Timber.e(e)
+        onError(e)
+    }
+
+    open fun onError(e: Throwable) {
+        viewModelScope.launch {
+            error.send("some thing went wrong")
+        }
+    }
+
+    protected open suspend fun handleIntent(intent: I): Any = Unit
+
+    protected fun <T> Flow<T>.collectResult(
+        action: suspend (value: T) -> Unit
+    ) = viewModelScope.launch(Dispatchers.Main) { tryTo { collect { action(it) } } }
+
+    protected fun updateState(state: S) {
+        _state.postValue(state)
+    }
+}
+```
+
 # UI
 
 # Remote
