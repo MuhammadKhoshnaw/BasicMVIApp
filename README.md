@@ -400,11 +400,38 @@ class MovieController @Inject constructor(
 }
 ```
 
-# MVI
-
-Before discussing ViewModel we need to discuss a litlebit about MVI architecture pattern.
-
 # ViewModel
+
+Our ViewModel module is an android module that have as minimum dependency on android frame work as possible. This module contains ViewModels in MVI
+architecture pattern.
+
+MVI is the abbreviation of Model - View - Intent. But In the MVI architecture pattern, we also have other components like ViewModel and State.
+
+### Model
+
+The model holds data and the logic of the application. The view cannot access the model. Instead, ViewModel exposes the model to the view throw
+observables. In our template, the first and second layer of the architecture acts as the model in the MVI architecture pattern. So Use Cases and
+entities are our models in MVI.
+
+### View
+
+The view is observing the mutable states provided by ViewModel and draws the UI accordingly. In android fragments and activities are our views. The
+view is also responsible for sending intents to the ViewModel.
+
+### Intent
+
+The intent is an action that the user performs like clicking a button or swapping the screen. or some system events like when the connection is down.
+
+### ViewModel
+
+ViewModel is the intermediate between view and model. When the user interacts with the view. The view is sending an intent to the ViewModel and
+ViewModel is using the module to responds to the Intent. And then updates the UI throw an observable property called state.
+
+### State
+
+The state is representing a UI state. States contain all the data that is required to draw a specific UI screen.
+
+## Base Implementation
 
 # UI
 
@@ -491,3 +518,5 @@ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTH
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 IN THE SOFTWARE.
 ```
+
+[comment]: <> (improving project SEO https://itnext.io/seo-for-open-source-projects-1a6b17ffeb8b)
