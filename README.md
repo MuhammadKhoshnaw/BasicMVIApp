@@ -279,20 +279,6 @@ class LoadMovieList @Inject constructor(
 }
 ```
 
-## Utils
-
-For utils, we have [tryTo](useCase/src/main/java/com/khoshnaw/usecase/utils/util.kt) function that tries to do some action then return the exception
-if the action failed it returns the exception.
-
-```
-suspend inline fun tryTo(crossinline action: suspend () -> Unit): Exception? = try {
-    action()
-    null
-} catch (e: Exception) {
-    e
-}
-```
-
 # Gateway
 
 The gateway module is a pure java module. This module contains our gateway implementation with it is data sources.
