@@ -511,6 +511,8 @@ abstract class StandardViewModel<S : MVIState, I : MVIIntent> : MVIViewModel<S, 
 }
 ```
 
+## MovieViewModel
+
 # UI
 
 # Remote

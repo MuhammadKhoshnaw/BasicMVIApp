@@ -1,3 +1,4 @@
+<!--suppress ALL -->
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1220.48"
     height="1127.19">
     <g transform="translate(-9 -20)">
@@ -675,15 +676,18 @@
                     transform="matrix(0.06172839506172839,0,0,0.06172839506172839,49.197530864197525,0)"
                     xlink:href="#ay" />
             </g>
-            <pattern id="o" x="472.44" y="598.43" width="20.16" height="20.16">
+            <pattern id="o" patternUnits="userSpaceOnUse" x="472.44" y="598.43" width="20.16"
+                height="20.16">
                 <use xlink:href="#aE"
                     transform="translate(0, 0) scale(20.15748031496063,20.15748031496063)" />
             </pattern>
-            <pattern id="p" x="1074.02" y="598.43" width="20.16" height="20.16">
+            <pattern id="p" patternUnits="userSpaceOnUse" x="1074.02" y="598.43" width="20.16"
+                height="20.16">
                 <use xlink:href="#aE"
                     transform="translate(0, 0) scale(20.15748031496063,20.15748031496063)" />
             </pattern>
-            <pattern id="r" x="762.2" y="800" width="20.16" height="20.16">
+            <pattern id="r" patternUnits="userSpaceOnUse" x="762.2" y="800" width="20.16"
+                height="20.16">
                 <use xlink:href="#aE"
                     transform="translate(0, 0) scale(20.15748031496063,20.15748031496063)" />
             </pattern>
@@ -695,27 +699,33 @@
                     values="0 0 0 0 0.2 0 0 0 0 0.2 0 0 0 0 0.2 0 0 0 1 0" />
                 <feBlend in="SourceGraphic" in2="colorOut" />
             </filter>
-            <pattern id="s" x="762.2" y="1001.57" width="20.16" height="20.16">
+            <pattern id="s" patternUnits="userSpaceOnUse" x="762.2" y="1001.57" width="20.16"
+                height="20.16">
                 <use xlink:href="#aE"
                     transform="translate(0, 0) scale(20.15748031496063,20.15748031496063)" />
             </pattern>
-            <pattern id="t" x="762.2" y="598.43" width="20.16" height="20.16">
+            <pattern id="t" patternUnits="userSpaceOnUse" x="762.2" y="598.43" width="20.16"
+                height="20.16">
                 <use xlink:href="#aF"
                     transform="translate(0, 0) scale(20.15748031496063,20.15748031496063)" />
             </pattern>
-            <pattern id="u" x="762.2" y="403.15" width="20.16" height="20.16">
+            <pattern id="u" patternUnits="userSpaceOnUse" x="762.2" y="403.15" width="20.16"
+                height="20.16">
                 <use xlink:href="#aF"
                     transform="translate(0, 0) scale(20.15748031496063,20.15748031496063)" />
             </pattern>
-            <pattern id="v" x="973.23" y="403.15" width="20.16" height="20.16">
+            <pattern id="v" patternUnits="userSpaceOnUse" x="973.23" y="403.15" width="20.16"
+                height="20.16">
                 <use xlink:href="#aF"
                     transform="translate(0, 0) scale(20.15748031496063,20.15748031496063)" />
             </pattern>
-            <pattern id="w" x="1171.65" y="403.15" width="20.16" height="20.16">
+            <pattern id="w" patternUnits="userSpaceOnUse" x="1171.65" y="403.15" width="20.16"
+                height="20.16">
                 <use xlink:href="#aF"
                     transform="translate(0, 0) scale(20.15748031496063,20.15748031496063)" />
             </pattern>
-            <pattern id="x" x="762.2" y="201.57" width="20.16" height="20.16">
+            <pattern id="x" patternUnits="userSpaceOnUse" x="762.2" y="201.57" width="20.16"
+                height="20.16">
                 <use xlink:href="#aF"
                     transform="translate(0, 0) scale(20.15748031496063,20.15748031496063)" />
             </pattern>
