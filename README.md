@@ -513,16 +513,69 @@ abstract class StandardViewModel<S : MVIState, I : MVIIntent> : MVIViewModel<S, 
 
 ## MovieViewModel
 
-Check out [MoviesIntent](src/main/java/com/khoshnaw/viewmodel/movies/MoviesViewModel.kt) as you can see we have two intents RefreshMovies which asks
-view model to refresh the movie list and OnMovieClicked which will be used to inform the view model that a movie has been clicked
+Check out [MoviesIntent](viewModel/src/main/java/com/khoshnaw/viewmodel/movies/MoviesIntent.kt) as you can see we have two intents RefreshMovies which
+asks view model to refresh the movie list and OnMovieClicked which will be used to inform the view model that a movie has been clicked
 
-For the [MoviesState](src/main/java/com/khoshnaw/viewmodel/movies/MoviesState.kt) we have movie list state which has a list of movies to show and a
-boolean that indicates whether the loading is showing or not.
+```
+sealed class MoviesIntent : MVIIntent {
 
-The [MoviesViewModel](src/main/java/com/khoshnaw/viewmodel/movies/MoviesViewModel.kt) has an init block that call init() method in the super class
-which is injecting MovieViewModel as an output port to the controller. then handleIntent(intent: MoviesIntent) method handling movie state using the
-movie controller. observeMovies(flow: Flow<List<Movie>>) method is overriding from LoadMovieListOutputPort interface which is giving a flow so the
+    object RefreshMovies : MoviesIntent()
+
+    class OnMovieClicked(val movie: Movie) : MoviesIntent()
+
+}
+```
+
+For the [MoviesState](viewModel/src/main/java/com/khoshnaw/viewmodel/movies/MoviesState.kt) we have movie list state which has a list of movies to
+show and a boolean that indicates whether the loading is showing or not.
+
+```
+sealed class MoviesState(
+    open val movies: List<Movie> = listOf(),
+) : MVIState {
+
+    class MovieList(
+        override val movies: List<Movie>,
+        val isLoading: Boolean = false
+    ) : MoviesState(movies)
+
+}
+```
+
+The [MoviesViewModel](viewModel/src/main/java/com/khoshnaw/viewmodel/movies/MoviesViewModel.kt) has an init block that call init() method in the super
+class which is injecting MovieViewModel as an output port to the controller. then handleIntent(intent: MoviesIntent) method handling movie state using
+the movie controller. observeMovies(flow: Flow<List<Movie>>) method is overriding from LoadMovieListOutputPort interface which is giving a flow so the
 view model can observe changes in the local movie list. and the showLoading(loading: Boolean) inform view model to show the loading or not.
+
+```
+@HiltViewModel
+class MoviesViewModel @Inject constructor(
+    private val movieController: MovieController
+) : StandardViewModel<MoviesState, MoviesIntent>(),
+    LoadMovieListOutputPort {
+
+    init {
+        init()
+    }
+
+    override suspend fun handleIntent(intent: MoviesIntent) = when (intent) {
+        MoviesIntent.RefreshMovies -> movieController.loadMoviesList()
+        is MoviesIntent.OnMovieClicked -> movieController.showMovie(intent.movie)
+    }
+
+    override suspend fun observeMovies(flow: Flow<List<Movie>>) {
+        flow.collectResult {
+            updateState(MoviesState.MovieList(it))
+        }
+    }
+
+    override suspend fun showLoading(loading: Boolean) {
+        state.value?.movies?.let { movies ->
+            updateState(MoviesState.MovieList(movies, loading))
+        }
+    }
+}
+```
 
 # UI
 
