@@ -579,6 +579,84 @@ class MoviesViewModel @Inject constructor(
 
 # UI
 
+The UI module contains any UI related code Activity, Fragment, Adapter, XML resources etc...,
+
+## Base Implementation
+
+### Activity
+
+At the top level we have [BaseActivity](ui/src/main/java/com/khoshnaw/ui/base/activity/BaseActivity.kt) which is not doing much. it is just a good
+practise to have this class.
+
+```
+abstract class BaseActivity : AppCompatActivity()
+```
+
+And then we have the [MVIActivity](ui/src/main/java/com/khoshnaw/ui/mvi/MVIActivity.kt) which
+implements [MVIView](ui/src/main/java/com/khoshnaw/ui/mvi/MVIView.kt) and has two generics for data binding and viewmodel.
+
+```
+abstract class MVIActivity<B : ViewDataBinding, V : StandardViewModel<*, *>> :
+    BaseActivity(),
+    MVIView<B, V>
+```
+
+[MVIView](ui/src/main/java/com/khoshnaw/ui/mvi/MVIView.kt) in the other hand has a binding and viewModel variable with addition to viewModelVariableId
+this is the id of the ViewModel in the xml layouts.
+
+```
+interface MVIView<B : ViewDataBinding, V : StandardViewModel<*, *>> {
+    val binding: B
+    val viewModel: V
+    val viewModelVariableId: Int
+
+    fun onViewReady()
+}
+```
+
+Then We have [StandardActivity](ui/src/main/java/com/khoshnaw/ui/standard/activity/StandardActivity.kt) which has some common behaviors for our
+activity. for example we choose that the default value for viewModelVariableId in our activities are BR.viewModel. But you still can change that by
+overriding the variable. then in the onCreate method we use binding to set content view so you don't need to do that in every activity.
+
+We also injecting the view model to the data binding object. and then we call observeState() method which is observing the view model states. and we
+also observe the errors from from view model. and we also have the onViewReady() method which will be called when the view is ready for extra change
+that the child activity might need.
+
+```
+abstract class StandardActivity<B : ViewDataBinding, V : StandardViewModel<*, *>> :
+    MVIActivity<B, V>(), StandardView<B, V> {
+
+    override val viewModelVariableId = BR.viewModel
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(binding.root)
+        binding.setVariable(viewModelVariableId, viewModel)
+        viewModel.observeState()
+        viewModel.observeError()
+        onViewReady()
+    }
+
+    private fun V.observeState() =
+        state.observe(this@StandardActivity) { it?.let { handleState(it) } }
+
+    private fun V.observeError() {
+        lifecycleScope.launch {
+            error.receiveAsFlow().collect { showError(it) }
+        }
+    }
+
+    override fun showError(message: String) {
+        Timber.tag("delete_me").i(message)
+        Snackbar.make(binding.root, message, Snackbar.LENGTH_SHORT).show()
+    }
+
+    override fun onViewReady() = Unit
+    override fun handleState(state: MVIState) = Unit
+
+}
+```
+
 # Remote
 
 The Remote module is an Android module that is heavenly depending on the android framework to do any remote operation. This module is using tools like
@@ -647,6 +725,8 @@ fun List<MovieRemoteDTO>.toEntity() = map { it.toEntity() }
 ## Injecting Output Port
 
 ## Controller
+
+## Moving mapper to view model
 
 ```
 Copyright (c) <2021> <Muhammad Khoshnaw>
