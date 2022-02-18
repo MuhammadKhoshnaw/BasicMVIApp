@@ -49,12 +49,14 @@ abstract class StandardViewModel<S : MVIState, I : MVIIntent> : MVIViewModel<S, 
         callback()
     } catch (e: Throwable) {
         Timber.e(e)
-        onError(e)
+        sendError(e)
     }
 
-    open fun onError(e: Throwable) {
+    open fun sendError(e: Throwable) = sendError("some thing went wrong")
+
+    open fun sendError(message: String) {
         viewModelScope.launch {
-            error.send("some thing went wrong")
+            error.send(message)
         }
     }
 

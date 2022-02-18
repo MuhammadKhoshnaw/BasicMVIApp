@@ -622,6 +622,8 @@ We also injecting the view model to the data binding object. and then we call ob
 also observe the errors from from view model. and we also have the onViewReady() method which will be called when the view is ready for extra change
 that the child activity might need.
 
+We also have runIntent method which used by the sub activities to run an intent in the lifecycle scope of the activity.
+
 ```
 abstract class StandardActivity<B : ViewDataBinding, V : StandardViewModel<*, *>> :
     MVIActivity<B, V>(), StandardView<B, V> {
@@ -635,6 +637,10 @@ abstract class StandardActivity<B : ViewDataBinding, V : StandardViewModel<*, *>
         viewModel.observeState()
         viewModel.observeError()
         onViewReady()
+    }
+
+    fun <I : MVIIntent> MVIViewModel<*, I>.runIntent(intent: I) {
+        runIntentInScope(lifecycleScope, intent)
     }
 
     private fun V.observeState() =
@@ -654,6 +660,67 @@ abstract class StandardActivity<B : ViewDataBinding, V : StandardViewModel<*, *>
     override fun onViewReady() = Unit
     override fun handleState(state: MVIState) = Unit
 
+}
+```
+
+### Fragment
+
+For the Fragments we have a similar structure as activity the [BaseFragment](ui/src/main/java/com/khoshnaw/ui/base/fragment/BaseFragment.kt) is an
+important empty class. Notice that the BaseFragment is getting it is layout from the constructor. this is making implementing data binding easier.
+
+```
+abstract class BaseFragment(@LayoutRes contentLayoutId: Int) : Fragment(contentLayoutId)
+```
+
+And then we have[MVIFragment](ui/src/main/java/com/khoshnaw/ui/mvi/MVIFragment.kt) which is very similar to MVIActivity. It is implementing MVIView
+with addition to data binding and view model generics.
+
+```
+abstract class MVIFragment<B : ViewDataBinding, V : StandardViewModel<*, *>>(
+    @LayoutRes contentLayoutId: Int
+) : BaseFragment(contentLayoutId),
+    MVIView<B, V>
+```
+
+And then [StandardFragment](ui/src/main/java/com/khoshnaw/ui/standard/fragment/StandardFragment.kt) is also similar to StandardActivity. but notice
+that standard fragment is using the main activity viewModel to send the error. this will give us a more stable error message implementation.
+
+```
+abstract class StandardFragment<B : ViewDataBinding, V : StandardViewModel<*, *>>(
+    @LayoutRes contentLayoutId: Int
+) : MVIFragment<B, V>(contentLayoutId), StandardView<B, V> {
+
+    override val viewModelVariableId = BR.viewModel
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        binding.setVariable(viewModelVariableId, viewModel)
+        viewModel.observeState()
+        viewModel.observeError()
+        onViewReady()
+    }
+
+    fun <I : MVIIntent> MVIViewModel<*, I>.runIntent(intent: I) {
+        runIntentInScope(viewLifecycleOwner.lifecycleScope, intent)
+    }
+
+    private fun V.observeState() = state.observe(viewLifecycleOwner) { it?.let { handleState(it) } }
+
+    private fun V.observeError() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            error.receiveAsFlow().collect { showError(it) }
+        }
+    }
+
+    override fun showError(message: String) {
+        if (activity is StandardView<*, *>) {
+            val standardActivity = (activity as StandardView<*, *>)
+            standardActivity.viewModel.sendError(message)
+        }
+    }
+
+    override fun onViewReady() = Unit
+    override fun handleState(state: MVIState) = Unit
 }
 ```
 

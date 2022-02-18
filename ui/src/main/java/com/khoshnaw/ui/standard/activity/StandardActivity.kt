@@ -5,9 +5,12 @@ import androidx.databinding.ViewDataBinding
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.snackbar.Snackbar
 import com.khoshnaw.ui.BR
+import com.khoshnaw.ui.extenstion.runIntentInScope
 import com.khoshnaw.ui.mvi.MVIActivity
 import com.khoshnaw.ui.standard.view.StandardView
+import com.khoshnaw.viewmodel.mvi.MVIIntent
 import com.khoshnaw.viewmodel.mvi.MVIState
+import com.khoshnaw.viewmodel.mvi.MVIViewModel
 import com.khoshnaw.viewmodel.standard.StandardViewModel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
@@ -25,6 +28,10 @@ abstract class StandardActivity<B : ViewDataBinding, V : StandardViewModel<*, *>
         viewModel.observeState()
         viewModel.observeError()
         onViewReady()
+    }
+
+    fun <I : MVIIntent> MVIViewModel<*, I>.runIntent(intent: I) {
+        runIntentInScope(lifecycleScope, intent)
     }
 
     private fun V.observeState() =
