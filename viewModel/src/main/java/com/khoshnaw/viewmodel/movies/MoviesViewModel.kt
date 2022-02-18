@@ -19,8 +19,18 @@ class MoviesViewModel @Inject constructor(
     }
 
     override suspend fun handleIntent(intent: MoviesIntent) = when (intent) {
-        MoviesIntent.RefreshMovies -> movieController.loadMoviesList()
-        is MoviesIntent.OnMovieClicked -> movieController.showMovie(intent.movie)
+        is MoviesIntent.RefreshMovies -> handleRefreshMovies()
+        is MoviesIntent.OnMovieClicked -> handleMovieClicked(intent)
+    }
+
+    private suspend fun handleRefreshMovies() {
+        movieController.loadMoviesList()
+    }
+
+    private suspend fun handleMovieClicked(intent: MoviesIntent.OnMovieClicked) {
+        state.value?.movies?.getOrNull(intent.position)?.takeIf { it.id == intent.id }?.let {
+            movieController.showMovie(it)
+        }
     }
 
     override suspend fun observeMovies(flow: Flow<List<Movie>>) {

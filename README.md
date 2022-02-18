@@ -724,6 +724,16 @@ abstract class StandardFragment<B : ViewDataBinding, V : StandardViewModel<*, *>
 }
 ```
 
+### Adapters
+
+The Base Adapter is one more empty class that service polymorphism. So it doesn't really do much.
+
+```
+abstract class BaseAdapter<VH : RecyclerView.ViewHolder> : RecyclerView.Adapter<VH>()
+```
+
+
+
 # Remote
 
 The Remote module is an Android module that is heavenly depending on the android framework to do any remote operation. This module is using tools like
