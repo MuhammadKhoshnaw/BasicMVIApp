@@ -732,7 +732,11 @@ The Base Adapter is one more empty class that service polymorphism. So it doesn'
 abstract class BaseAdapter<VH : RecyclerView.ViewHolder> : RecyclerView.Adapter<VH>()
 ```
 
+## UI DTO
 
+## Mappers
+
+## Movie View
 
 # Remote
 

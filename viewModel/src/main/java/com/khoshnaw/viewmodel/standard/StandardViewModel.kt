@@ -26,8 +26,10 @@ abstract class StandardViewModel<S : MVIState, I : MVIIntent> : MVIViewModel<S, 
     val error = Channel<String>()
 
     protected fun <O : OutputPort> O.init() = viewModelScope.launch(Dispatchers.IO) {
-        injectOutputPorts()
-        consumeIntents()
+        tryTo {
+            injectOutputPorts()
+            consumeIntents()
+        }
     }
 
     private suspend fun <O : OutputPort> O.injectOutputPorts() = this::class.memberProperties.map {
@@ -42,7 +44,7 @@ abstract class StandardViewModel<S : MVIState, I : MVIIntent> : MVIViewModel<S, 
     }
 
     private suspend fun tryToHandleIntent(intent: I) = tryTo {
-        handleIntent(intent)
+        viewModelScope.launch(Dispatchers.IO) { handleIntent(intent) }
     }
 
     private suspend fun tryTo(callback: suspend () -> Unit) = try {
