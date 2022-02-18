@@ -40,11 +40,11 @@ abstract class StandardViewModel<S : MVIState, I : MVIIntent> : MVIViewModel<S, 
     }
 
     private suspend fun consumeIntents() = intents.consumeAsFlow().collect {
-        tryToHandleIntent(it)
+        viewModelScope.launch(Dispatchers.IO) { tryToHandleIntent(it) }
     }
 
     private suspend fun tryToHandleIntent(intent: I) = tryTo {
-        viewModelScope.launch(Dispatchers.IO) { handleIntent(intent) }
+        handleIntent(intent)
     }
 
     private suspend fun tryTo(callback: suspend () -> Unit) = try {

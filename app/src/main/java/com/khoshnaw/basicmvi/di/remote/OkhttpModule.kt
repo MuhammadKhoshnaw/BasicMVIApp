@@ -17,7 +17,10 @@ import javax.inject.Singleton
 @Module
 object OkhttpModule {
     private const val LOGGING_INTERCEPTOR_TAG = "okhttp"
-    private const val TIMEOUT_ONE_MINUTE = 60L
+    private const val DEFAULT_TIMEOUT = 30L
+    private const val CONNECT_TIMEOUT = DEFAULT_TIMEOUT
+    private const val READ_TIMEOUT = DEFAULT_TIMEOUT
+    private const val WRITE_TIMEOUT = DEFAULT_TIMEOUT
 
     @Provides
     @Named(DiNames.TMDB_API)
@@ -38,9 +41,9 @@ object OkhttpModule {
     ): OkHttpClient = OkHttpClient().newBuilder()
         .addInterceptor(authenticationInterceptor)
         .addInterceptor(httpLoggingInterceptor)
-        .connectTimeout(TIMEOUT_ONE_MINUTE, TimeUnit.SECONDS)
-        .readTimeout(TIMEOUT_ONE_MINUTE, TimeUnit.SECONDS)
-        .writeTimeout(TIMEOUT_ONE_MINUTE, TimeUnit.SECONDS)
+        .connectTimeout(CONNECT_TIMEOUT, TimeUnit.SECONDS)
+        .readTimeout(READ_TIMEOUT, TimeUnit.SECONDS)
+        .writeTimeout(WRITE_TIMEOUT, TimeUnit.SECONDS)
         .build()
 
 }
