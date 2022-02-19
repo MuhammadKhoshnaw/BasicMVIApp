@@ -5,11 +5,11 @@
 
     <data>
 
-        <import type="com.khoshnaw.ui.dto.MovieUIDTO" />
+        <import type="com.khoshnaw.viewmodel.dto.MovieUIDTO" />
 
         <variable
             name="movie"
-            type="MovieUIDTO" />
+            type="com.khoshnaw.viewmodel.dto.MovieUIDTO" />
 
     </data>
 

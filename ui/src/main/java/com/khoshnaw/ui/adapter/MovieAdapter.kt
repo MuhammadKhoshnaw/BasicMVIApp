@@ -3,7 +3,7 @@ package com.khoshnaw.ui.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.khoshnaw.ui.databinding.MovieItemBinding
-import com.khoshnaw.ui.dto.MovieUIDTO
+import com.khoshnaw.viewmodel.dto.MovieUIDTO
 import com.khoshnaw.ui.standard.adapter.StandardAdapter
 import com.khoshnaw.ui.standard.adapter.StandardHolder
 import com.khoshnaw.viewmodel.movies.MoviesIntent
