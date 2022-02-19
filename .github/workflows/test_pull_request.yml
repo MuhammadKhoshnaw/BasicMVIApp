@@ -62,7 +62,7 @@ jobs:
 
       # Execute unit tests
       - name: Unit Test
-        run: ./gradlew testDebugUnitTest
+        run: ./gradlew testDebugUnitTest --stacktrace
 
       - name: Upload Test Reports Folder
         uses: actions/upload-artifact@v2
