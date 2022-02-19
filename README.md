@@ -511,6 +511,39 @@ abstract class StandardViewModel<S : MVIState, I : MVIIntent> : MVIViewModel<S, 
 }
 ```
 
+## UI DTO
+
+UI DTO s are data transfer objects between our business logic and our UI. The MovieUIDTO is an example.
+The [MovieUIDTO](viewModel/src/main/java/com/khoshnaw/viewmodel/dto/MovieUIDTO.kt) is implementing StandardStateListItem so it can be used in our
+StandardAdapters.
+
+```
+data class MovieUIDTO(
+    override val id: String,
+    val posterPath: String,
+    val title: String,
+    val voteAverage: String,
+) : StandardStateListItem
+```
+
+## Mappers
+
+The UI mappers are mapping our entity objects to the UID TO objects. for example,
+the [MovieMappers](viewModel/src/main/java/com/khoshnaw/viewmodel/mapper/MovieMappers.kt) is mapping our movie class to
+the [MovieUIDTO](viewModel/src/main/java/com/khoshnaw/viewmodel/dto/MovieUIDTO.kt) notice that we are setting the base URL for poster path and we also
+change not average to string so it can be used easier by our UI.
+
+```
+fun Movie.toDTO() = MovieUIDTO(
+    id = id,
+    posterPath = BuildConfig.TMDB_API_BASE_IMG_URL + posterPath,
+    title = title,
+    voteAverage = voteAverage.toString(),
+)
+
+fun List<Movie>.toDTO() = map { it.toDTO() }
+```
+
 ## MovieViewModel
 
 Check out [MoviesIntent](viewModel/src/main/java/com/khoshnaw/viewmodel/movies/MoviesIntent.kt) as you can see we have two intents RefreshMovies which
@@ -722,38 +755,6 @@ abstract class StandardFragment<B : ViewDataBinding, V : StandardViewModel<*, *>
     override fun onViewReady() = Unit
     override fun handleState(state: MVIState) = Unit
 }
-```
-
-## UI DTO
-
-UI DTO s are data transfer objects between our business logic and our UI. The MovieUIDTO is an example.
-The [MovieUIDTO](ui/src/main/java/com/khoshnaw/ui/dto/MovieUIDTO.kt) is implementing StandardStateListItem so it can be used in our StandardAdapters.
-
-```
-data class MovieUIDTO(
-    override val id: String,
-    val posterPath: String,
-    val title: String,
-    val voteAverage: String,
-) : StandardStateListItem
-```
-
-## Mappers
-
-The UI mappers are mapping our entity objects to the UID TO objects. for example,
-the [MovieMappers](ui/src/main/java/com/khoshnaw/ui/mapper/MovieMappers.kt) is mapping our movie class to
-the [MovieUIDTO](ui/src/main/java/com/khoshnaw/ui/dto/MovieUIDTO.kt) notice that we are setting the base URL for poster path and we also change not
-average to string so it can be used easier by our UI.
-
-```
-fun Movie.toDTO() = MovieUIDTO(
-    id = id,
-    posterPath = BuildConfig.TMDB_API_BASE_IMG_URL + posterPath,
-    title = title,
-    voteAverage = voteAverage.toString(),
-)
-
-fun List<Movie>.toDTO() = map { it.toDTO() }
 ```
 
 ## Movie Fragment
