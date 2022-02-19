@@ -856,6 +856,75 @@ fun List<MovieRemoteDTO>.toEntity() = map { it.toEntity() }
 
 # DB
 
+The DB module is also an Android module that is heavenly depending on the android framework to cash data locally. This module is using Room library to
+perform it's actions.
+
+## DBDataSource
+
+DB data sources is the actual implementation of the Local data source introduced in gateway module. Those data sources are using room DB to cash data
+locally and perform operations on it.
+
+Our [MovieDBDataSource](db/src/main/java/com/khoshnaw/db/movie/MovieDBDataSource.kt) Implements MovieLocalDataSource interface and give concrete
+implementation for it. and notice that it takes a MovieDao object in its constructor and using it to perform it's operations. for example
+updateMovieList function is using insertAll function in MovieDao to insert the movies to the movie table. and notice that it is using toLocalDTO to
+map the movie entity to MovieLocalDTO which is needed by insertAll method.
+
+```
+class MovieDBDataSource @Inject constructor(
+    private val movieDao: MovieDao
+) : MovieLocalDataSource {
+
+    override suspend fun updateMovieList(movieList: List<Movie>): Unit =
+        movieDao.insertAll(movieList.toLocalDTO())
+
+    override suspend fun observeMovies(): Flow<List<Movie>> =
+        movieDao.observeMovies().map { it.toEntity() }
+
+    override suspend fun loadMovieSize(): Int = movieDao.loadMovieSize()
+}
+```
+
+## Local DTO
+
+Our local DTO is used by our room library to cash data in our database. check
+out [MovieLocalDTO](db/src/main/java/com/khoshnaw/db/dto/MovieLocalDTO.kt) as example. notice that we can have @PrimaryKey to make our id a primary
+key to our movie table.
+
+```
+@Entity(tableName = "movie")
+data class MovieLocalDTO(
+    @PrimaryKey val id: String,
+    val posterPath: String,
+    val title: String,
+    val voteAverage: Double
+)
+```
+
+## Mapper
+
+DB mapper are like other mappers in the project they are mapping entity objects to DBDTO objects and vise versa. check
+out [MovieMappers](db/src/main/java/com/khoshnaw/db/mapper/MovieMappers.kt) as an example.
+
+```
+fun MovieLocalDTO.toEntity() = Movie(
+    id = id,
+    posterPath = posterPath,
+    title = title,
+    voteAverage = voteAverage,
+)
+
+fun List<MovieLocalDTO>.toEntity() = map { it.toEntity() }
+
+fun Movie.toLocalDTO() = MovieLocalDTO(
+    id = id,
+    posterPath = posterPath,
+    title = title,
+    voteAverage = voteAverage,
+)
+
+fun List<Movie>.toLocalDTO() = map { it.toLocalDTO() }
+```
+
 # APP
 
 # What to improve

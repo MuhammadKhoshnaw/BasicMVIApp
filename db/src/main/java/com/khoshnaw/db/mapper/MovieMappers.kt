@@ -20,6 +20,3 @@ fun Movie.toLocalDTO() = MovieLocalDTO(
 )
 
 fun List<Movie>.toLocalDTO() = map { it.toLocalDTO() }
-
-
-
