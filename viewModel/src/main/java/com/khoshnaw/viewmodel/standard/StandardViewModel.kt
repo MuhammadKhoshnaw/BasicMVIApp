@@ -66,7 +66,7 @@ abstract class StandardViewModel<S : MVIState, I : MVIIntent> : MVIViewModel<S, 
 
     protected fun <T> Flow<T>.collectResult(
         action: suspend (value: T) -> Unit
-    ) = viewModelScope.launch(Dispatchers.Main) { tryTo { collect { action(it) } } }
+    ) = viewModelScope.launch(Dispatchers.IO) { tryTo { collect { action(it) } } }
 
     protected fun updateState(state: S) {
         _state.postValue(state)

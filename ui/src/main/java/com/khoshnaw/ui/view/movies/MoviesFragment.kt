@@ -5,7 +5,6 @@ import com.khoshnaw.ui.R
 import com.khoshnaw.ui.adapter.MovieAdapter
 import com.khoshnaw.ui.databinding.FragmentMoviesBinding
 import com.khoshnaw.ui.extenstion.dataBindings
-import com.khoshnaw.ui.mapper.toDTO
 import com.khoshnaw.ui.standard.fragment.StandardFragment
 import com.khoshnaw.viewmodel.movies.MoviesIntent
 import com.khoshnaw.viewmodel.movies.MoviesState
@@ -37,7 +36,7 @@ class MoviesFragment : StandardFragment<FragmentMoviesBinding, MoviesViewModel>(
 
     private fun handleMovieList(moviesState: MoviesState.MovieList) {
         binding.swipeRefresh.isRefreshing = moviesState.isLoading
-        moviesAdapter.items = moviesState.movies.toDTO()
+        moviesAdapter.items = moviesState.movies
     }
 
 }

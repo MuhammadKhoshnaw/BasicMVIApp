@@ -1,6 +1,4 @@
-package com.khoshnaw.ui.dto
-
-import com.khoshnaw.ui.standard.adapter.StandardStateListItem
+package com.khoshnaw.viewmodel.dto
 
 data class MovieUIDTO(
     override val id: String,

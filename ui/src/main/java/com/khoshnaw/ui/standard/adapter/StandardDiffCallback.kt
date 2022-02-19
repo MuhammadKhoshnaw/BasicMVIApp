@@ -1,6 +1,7 @@
 package com.khoshnaw.ui.standard.adapter
 
 import androidx.recyclerview.widget.DiffUtil
+import com.khoshnaw.viewmodel.dto.StandardStateListItem
 
 class StandardDiffCallback(
     private val oldList: List<StandardStateListItem>,

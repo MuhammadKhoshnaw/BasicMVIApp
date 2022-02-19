@@ -2,6 +2,7 @@ package com.khoshnaw.ui.standard.adapter
 
 import androidx.recyclerview.widget.DiffUtil
 import com.khoshnaw.ui.mvi.MVIAdapter
+import com.khoshnaw.viewmodel.dto.StandardStateListItem
 
 abstract class StandardAdapter<I : StandardStateListItem> : MVIAdapter<StandardHolder<I>>() {
 

@@ -18,9 +18,7 @@ class MoviesViewModelTest {
     lateinit var viewModel: MoviesViewModel
 
     @Before
-    fun setup() {
-        MockKAnnotations.init(this, relaxUnitFun = true)
-    }
+    fun setup() = MockKAnnotations.init(this, relaxUnitFun = true)
 
     @Test
     fun `use movie controller to refresh movies`() = runBlocking {
