@@ -1,6 +1,7 @@
 package com.khoshnaw.viewmodel.movies
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.viewModelScope
 import com.khoshnaw.controller.movie.MovieController
 import com.khoshnaw.viewmodel.util.CoroutineTestRule
 import io.mockk.MockKAnnotations
@@ -33,6 +34,7 @@ class MoviesViewModelTest {
     @Before
     fun setup() {
         MockKAnnotations.init(this, relaxUnitFun = true)
+        viewModel.viewModelScope
     }
 
     @Test

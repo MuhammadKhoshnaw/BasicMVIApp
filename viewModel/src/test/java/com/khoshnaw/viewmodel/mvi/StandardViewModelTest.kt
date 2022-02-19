@@ -1,20 +1,31 @@
 package com.khoshnaw.viewmodel.mvi
 
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.khoshnaw.controller.base.Controller
 import com.khoshnaw.usecase.movie.base.InputPort
 import com.khoshnaw.usecase.movie.base.OutputPort
 import com.khoshnaw.viewmodel.standard.StandardViewModel
+import com.khoshnaw.viewmodel.util.CoroutineTestRule
 import io.mockk.MockKAnnotations
 import io.mockk.coVerify
 import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.MockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
+import org.junit.rules.TestRule
 
 @ExperimentalCoroutinesApi
 class StandardViewModelTest {
+
+    @get:Rule
+    val testInstantTaskExecutorRule: TestRule = InstantTaskExecutorRule()
+
+    @get:Rule
+    val coroutinesDispatcherRule = CoroutineTestRule()
 
     @MockK
     lateinit var controller1: DummyController1
@@ -40,7 +51,7 @@ class StandardViewModelTest {
     }
 
     @Test
-    fun `on init register output port to all controllers`() = runTest {
+    fun `on init register output port to all controllers`() = runTest(StandardTestDispatcher()) {
         coVerify(exactly = 1) {
             controller1.registerOutputPort(outputPort = viewModel)
             controller2.registerOutputPort(outputPort = viewModel)
@@ -51,7 +62,7 @@ class StandardViewModelTest {
     }
 
     @Test
-    fun `on init consume flow`() = runTest {
+    fun `on init consume flow`() = runTest(StandardTestDispatcher()) {
         viewModel.intents.send(DummyIntent.DummyAction)
 
         coVerify(exactly = 1) { controller1.doSomeThing() }
