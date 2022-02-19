@@ -927,6 +927,25 @@ fun List<Movie>.toLocalDTO() = map { it.toLocalDTO() }
 
 # APP
 
+Our App module is the actual application. it contains our Hilt/Dagger modules. so it has DI configuration. with additional to App class. notice that
+in our [app/build](app/build.gradle) that the app is depending on all our other modules. that is actually a limitation in hilt library. HiltAndroidApp
+need to have access to all our module in order to work.
+
+```
+dependencies {
+    //region setup
+    api project(path: ':ui')
+    api project(path: ':controller')
+    api project(path: ':db')
+    api project(path: ':remote')
+    
+    ... 
+    //endregion setup
+    
+    ...
+}
+```
+
 # What to improve
 
 ## Injecting Output Port
