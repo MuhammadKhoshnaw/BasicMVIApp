@@ -1,7 +1,7 @@
 package com.khoshnaw.remote.interseptor
 
 import com.google.common.truth.Truth
-import com.khoshnaw.remote.authentication.TMDBApiKey
+import com.khoshnaw.remote.module.TMDBApiKey
 import io.mockk.*
 import io.mockk.impl.annotations.MockK
 import okhttp3.Interceptor

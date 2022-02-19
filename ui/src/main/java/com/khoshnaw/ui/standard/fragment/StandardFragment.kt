@@ -43,7 +43,10 @@ abstract class StandardFragment<B : ViewDataBinding, V : StandardViewModel<*, *>
     }
 
     override fun showError(message: String) {
-        if (activity is StandardView<*, *>) (activity as StandardView<*, *>).showError(message)
+        if (activity is StandardView<*, *>) {
+            val standardActivity = (activity as StandardView<*, *>)
+            standardActivity.viewModel.sendError(message)
+        }
     }
 
     override fun onViewReady() = Unit

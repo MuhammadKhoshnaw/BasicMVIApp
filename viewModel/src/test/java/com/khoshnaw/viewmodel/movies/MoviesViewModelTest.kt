@@ -1,6 +1,6 @@
 package com.khoshnaw.viewmodel.movies
 
-import com.khoshnaw.controller.MovieController
+import com.khoshnaw.controller.movie.MovieController
 import io.mockk.MockKAnnotations
 import io.mockk.coVerify
 import io.mockk.impl.annotations.InjectMockKs

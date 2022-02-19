@@ -3,7 +3,7 @@ package com.khoshnaw.viewmodel.standard
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.khoshnaw.controller.Controller
+import com.khoshnaw.controller.base.Controller
 import com.khoshnaw.usecase.movie.base.OutputPort
 import com.khoshnaw.viewmodel.mvi.MVIIntent
 import com.khoshnaw.viewmodel.mvi.MVIState
@@ -26,8 +26,10 @@ abstract class StandardViewModel<S : MVIState, I : MVIIntent> : MVIViewModel<S, 
     val error = Channel<String>()
 
     protected fun <O : OutputPort> O.init() = viewModelScope.launch(Dispatchers.IO) {
-        injectOutputPorts()
-        consumeIntents()
+        tryTo {
+            injectOutputPorts()
+            consumeIntents()
+        }
     }
 
     private suspend fun <O : OutputPort> O.injectOutputPorts() = this::class.memberProperties.map {
@@ -38,7 +40,7 @@ abstract class StandardViewModel<S : MVIState, I : MVIIntent> : MVIViewModel<S, 
     }
 
     private suspend fun consumeIntents() = intents.consumeAsFlow().collect {
-        tryToHandleIntent(it)
+        viewModelScope.launch(Dispatchers.IO) { tryToHandleIntent(it) }
     }
 
     private suspend fun tryToHandleIntent(intent: I) = tryTo {
@@ -49,12 +51,14 @@ abstract class StandardViewModel<S : MVIState, I : MVIIntent> : MVIViewModel<S, 
         callback()
     } catch (e: Throwable) {
         Timber.e(e)
-        onError(e)
+        sendError(e)
     }
 
-    open fun onError(e: Throwable) {
+    open fun sendError(e: Throwable) = sendError("some thing went wrong")
+
+    open fun sendError(message: String) {
         viewModelScope.launch {
-            error.send("some thing went wrong")
+            error.send(message)
         }
     }
 

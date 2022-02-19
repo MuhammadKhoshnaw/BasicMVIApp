@@ -12,10 +12,10 @@ interface MovieDao {
     @Insert(onConflict = REPLACE)
     fun insertAll(list: List<MovieLocalDTO>)
 
-    @Query("SELECT * FROM MovieLocalDTO")
+    @Query("SELECT * FROM movie")
     fun observeMovies(): Flow<List<MovieLocalDTO>>
 
 
-    @Query("SELECT COUNT(*) FROM MovieLocalDTO")
+    @Query("SELECT COUNT(*) FROM movie")
     fun loadMovieSize(): Int
 }

@@ -2,7 +2,6 @@ package com.khoshnaw.ui.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import com.khoshnaw.ui.base.adapter.BaseHolder
 import com.khoshnaw.ui.databinding.MovieItemBinding
 import com.khoshnaw.ui.dto.MovieUIDTO
 import com.khoshnaw.ui.standard.adapter.StandardAdapter
@@ -22,9 +21,6 @@ class MovieAdapter(
         )
     )
 
-    override fun onBindViewHolder(holder: BaseHolder<MovieUIDTO>, position: Int) =
-        holder.bind(items[position])
-
     inner class MovieHolder(
         val binding: MovieItemBinding
     ) : StandardHolder<MovieUIDTO>(binding) {
@@ -32,7 +28,7 @@ class MovieAdapter(
         override fun bind(item: MovieUIDTO) {
             binding.movie = item
             binding.containerCV.setOnClickListener {
-                viewModel.runIntent(MoviesIntent.OnMovieClicked(items[adapterPosition].entity))
+                viewModel.runIntent(MoviesIntent.OnMovieClicked(adapterPosition, item.id))
             }
         }
     }

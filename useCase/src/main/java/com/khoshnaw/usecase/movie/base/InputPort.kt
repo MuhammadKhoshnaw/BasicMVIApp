@@ -1,5 +1,5 @@
 package com.khoshnaw.usecase.movie.base
 
-interface InputPort<O : OutputPort> {
+interface InputPort<in O : OutputPort> {
     suspend fun registerOutputPort(outputPort: O)
 }

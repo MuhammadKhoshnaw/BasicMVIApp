@@ -1,6 +1,6 @@
 package com.khoshnaw.viewmodel.mvi
 
-import com.khoshnaw.controller.Controller
+import com.khoshnaw.controller.base.Controller
 import com.khoshnaw.usecase.movie.base.InputPort
 import com.khoshnaw.usecase.movie.base.OutputPort
 import com.khoshnaw.viewmodel.standard.StandardViewModel

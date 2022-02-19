@@ -3,7 +3,7 @@ package com.khoshnaw.db.dto
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity
+@Entity(tableName = "movie")
 data class MovieLocalDTO(
     @PrimaryKey val id: String,
     val posterPath: String,

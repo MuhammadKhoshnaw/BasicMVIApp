@@ -1,6 +1,6 @@
 package com.khoshnaw.remote.dummy
 
-import com.khoshnaw.remote.movie.GetMoviesResponse
+import com.khoshnaw.remote.apiDataSource.movie.GetMoviesResponse
 
 object GetMoviesResponseDummies {
 

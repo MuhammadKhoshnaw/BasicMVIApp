@@ -1,5 +1,6 @@
 package com.khoshnaw.controller
 
+import com.khoshnaw.controller.movie.MovieController
 import com.khoshnaw.usecase.movie.loadMovieList.LoadMovieListInputPort
 import io.mockk.MockKAnnotations
 import io.mockk.coVerify

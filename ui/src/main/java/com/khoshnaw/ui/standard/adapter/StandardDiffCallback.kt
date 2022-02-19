@@ -3,8 +3,8 @@ package com.khoshnaw.ui.standard.adapter
 import androidx.recyclerview.widget.DiffUtil
 
 class StandardDiffCallback(
-    private val oldList: List<StandardListItem>,
-    private val newList: List<StandardListItem>
+    private val oldList: List<StandardStateListItem>,
+    private val newList: List<StandardStateListItem>
 ) : DiffUtil.Callback() {
 
     override fun getOldListSize(): Int = oldList.size
