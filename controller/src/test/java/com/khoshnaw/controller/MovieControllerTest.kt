@@ -12,7 +12,7 @@ import org.junit.Before
 import org.junit.Test
 
 @ExperimentalCoroutinesApi
-class MovieControllerTest() {
+class MovieControllerTest {
 
     @MockK
     lateinit var inputPort: LoadMovieListInputPort
