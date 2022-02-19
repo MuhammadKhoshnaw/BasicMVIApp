@@ -948,11 +948,7 @@ dependencies {
 
 # What to improve
 
-## Injecting Output Port
-
-## Controller
-
-## Moving mapper to view model
+check out [issues](https://github.com/MuhammadKhoshnaw/BasicMVIApp/issues)
 
 ```
 Copyright (c) <2021> <Muhammad Khoshnaw>
