@@ -1,7 +1,7 @@
 # BasicMVIApp
 
-This application is a basic study application that implements clean architecture, with MVI architecture pattern. In addition to the most commonly used
-tools in the android development community.
+This application is a basic study application that implements clean architecture, with the MVI architecture pattern. In addition to the most commonly
+used tools in the android development community.
 
 # Motivation
 
@@ -9,11 +9,11 @@ When starting a new project it is always difficult to build the setup environmen
 architecture pattern (MVI, MVVM or MVP) can be challenging. I always Liked to have a template that I can use whenever I need it. In addition, when
 using this template in a large application you discover the pros and cons of your template structure. And you can always come back to the template and
 improve it for the next project. This Repository Will be my first android application template. In this template clean architecture and MVI
-architecture pattern is my weapon of choice. m
+architecture pattern is my weapon of choice.
 
 # Application
 
-For this template we don't need to go crazy with features. We just need enough to understand the architecture and have some basic configurations that
+For this template, we don't need to go crazy with features. We just need enough to understand the architecture and have some basic configurations that
 we can reuse In future. The application is a basic movie app. That uses [TMDB API](https://www.themoviedb.org/documentation/api) to cash a list of
 popular movies. And then show it to the user. With the ability to refresh the cache when the user needed it.
 
@@ -55,7 +55,7 @@ For this template, nine different software components have been used as shown in
 3. For the third layer, we have three modules: controller and gateway are java modules. But ViewModel is an android module with a minimum dependency
    on the android platform as possible.
 4. And in the outermost layer, We have 4 heavily dependent on the android framework modules. The application is our actual application module. UI,
-   Remote and DB which are also android modules.
+   Remote and DB are also android modules.
 
 Of Course, you can have more layers but I don’t think having fewer layers will be a good idea. For this template, we are trying to have the most basic
 implementation possible so we go with 4 layers.
@@ -150,14 +150,14 @@ class FakeException : Exception()
 
 # UseCase
 
-In most clean architecture implementations you see that useCasees are just a class with a single method. I don’t know where that concept comes from.
+In most clean architecture implementations you see that use cases are just a class with a single method. I don’t know where that concept comes from.
 But I don’t think that this concept is related to clean architecture. UseCase is much more than a class with a single method. It is your user story.
 your business rules. You basically need to translate the user story that you have in your Jira ticket to a UseCase class in your Application Business
 Rules layer.
 
 ## Base Implementation
 
-Back to our template in the base package, you will see InputPort, OutputPort And UseCase base classes.
+Back to our template in the base package, you will see InputPort, OutputPort And UseCase, base classes.
 
 ![Architecture](.github/res/UseCaseClassDiagram.svg)
 
@@ -182,7 +182,7 @@ interface OutputPort
 ```
 
 Now coming to the main course, UseCase has a general type of OutputPort that we use for the outputPort variable. The onReady function will be called
-right after the outputPort is registered. So you can run your setup code. We also have the default implementation for registerOuputPort.
+right after the outputPort is registered. So you can run your setup code. We also have the default implementation for registerOutputPort.
 
 ```
 abstract class UseCase<O : OutputPort> : InputPort<O> {
@@ -388,8 +388,8 @@ class MovieController @Inject constructor(
 
 # ViewModel
 
-Our ViewModel module is an android module that have as minimum dependency on android frame work as possible. This module contains ViewModels in MVI
-architecture pattern.
+Our ViewModel module is an Android module that has as minimum dependency on the android framework as possible. This module contains ViewModels in the
+MVI architecture pattern.
 
 MVI is the abbreviation of Model - View - Intent. But In the MVI architecture pattern, we also have other components like ViewModel and State.
 
@@ -514,7 +514,7 @@ abstract class StandardViewModel<S : MVIState, I : MVIIntent> : MVIViewModel<S, 
 ## MovieViewModel
 
 Check out [MoviesIntent](viewModel/src/main/java/com/khoshnaw/viewmodel/movies/MoviesIntent.kt) as you can see we have two intents RefreshMovies which
-asks view model to refresh the movie list and OnMovieClicked which will be used to inform the view model that a movie has been clicked
+asks the view model to refresh the movie list and OnMovieClicked which will be used to inform the view model that a movie has been clicked
 
 ```
 sealed class MoviesIntent : MVIIntent {
@@ -526,7 +526,7 @@ sealed class MoviesIntent : MVIIntent {
 }
 ```
 
-For the [MoviesState](viewModel/src/main/java/com/khoshnaw/viewmodel/movies/MoviesState.kt) we have movie list state which has a list of movies to
+For the [MoviesState](viewModel/src/main/java/com/khoshnaw/viewmodel/movies/MoviesState.kt) we have a movie list state which has a list of movies to
 show and a boolean that indicates whether the loading is showing or not.
 
 ```
@@ -542,9 +542,9 @@ sealed class MoviesState(
 }
 ```
 
-The [MoviesViewModel](viewModel/src/main/java/com/khoshnaw/viewmodel/movies/MoviesViewModel.kt) has an init block that call init() method in the super
-class which is injecting MovieViewModel as an output port to the controller. then handleIntent(intent: MoviesIntent) method handling movie state using
-the movie controller. observeMovies(flow: Flow<List<Movie>>) method is overriding from LoadMovieListOutputPort interface which is giving a flow so the
+The [MoviesViewModel](viewModel/src/main/java/com/khoshnaw/viewmodel/movies/MoviesViewModel.kt) has an init block that call the init() method in the
+super class which is injecting MovieViewModel as an output port to the controller. then handleIntent(intent: MoviesIntent) method handling movie state
+using the movie controller. observeMovies(flow: Flow<List>) method is overriding from LoadMovieListOutputPort interface which is giving a flow so the
 view model can observe changes in the local movie list. and the showLoading(loading: Boolean) inform view model to show the loading or not.
 
 ```
@@ -585,15 +585,15 @@ The UI module contains any UI related code Activity, Fragment, Adapter, XML reso
 
 ### Activity
 
-At the top level we have [BaseActivity](ui/src/main/java/com/khoshnaw/ui/base/activity/BaseActivity.kt) which is not doing much. it is just a good
-practise to have this class.
+At the top level, we have [BaseActivity](ui/src/main/java/com/khoshnaw/ui/base/activity/BaseActivity.kt) which is not doing much. it is just a good
+practice to have this class.
 
 ```
 abstract class BaseActivity : AppCompatActivity()
 ```
 
 And then we have the [MVIActivity](ui/src/main/java/com/khoshnaw/ui/mvi/MVIActivity.kt) which
-implements [MVIView](ui/src/main/java/com/khoshnaw/ui/mvi/MVIView.kt) and has two generics for data binding and viewmodel.
+implements [MVIView](ui/src/main/java/com/khoshnaw/ui/mvi/MVIView.kt) and has two generics for data binding and ViewModel.
 
 ```
 abstract class MVIActivity<B : ViewDataBinding, V : StandardViewModel<*, *>> :
@@ -601,7 +601,7 @@ abstract class MVIActivity<B : ViewDataBinding, V : StandardViewModel<*, *>> :
     MVIView<B, V>
 ```
 
-[MVIView](ui/src/main/java/com/khoshnaw/ui/mvi/MVIView.kt) in the other hand has a binding and viewModel variable with addition to viewModelVariableId
+[MVIView](ui/src/main/java/com/khoshnaw/ui/mvi/MVIView.kt) on the other hand has a binding and viewModel variable with addition to viewModelVariableId
 this is the id of the ViewModel in the xml layouts.
 
 ```
@@ -614,15 +614,15 @@ interface MVIView<B : ViewDataBinding, V : StandardViewModel<*, *>> {
 }
 ```
 
-Then We have [StandardActivity](ui/src/main/java/com/khoshnaw/ui/standard/activity/StandardActivity.kt) which has some common behaviors for our
+Then We have [StandardActivity](ui/src/main/java/com/khoshnaw/ui/standard/activity/StandardActivity.kt) which has some common behaviours for our
 activity. for example we choose that the default value for viewModelVariableId in our activities are BR.viewModel. But you still can change that by
-overriding the variable. then in the onCreate method we use binding to set content view so you don't need to do that in every activity.
+overriding the variable. then in the onCreate method, we use binding to set content view so you don't need to do that in every activity.
 
-We also injecting the view model to the data binding object. and then we call observeState() method which is observing the view model states. and we
-also observe the errors from from view model. and we also have the onViewReady() method which will be called when the view is ready for extra change
+We also inject the view model into the data binding object. and then we call observeState() method which is observing the view model states. and we
+also observe the errors from the view model. and we also have the onViewReady() method which will be called when the view is ready for extra change
 that the child activity might need.
 
-We also have runIntent method which used by the sub activities to run an intent in the lifecycle scope of the activity.
+We also have run the intent method which is used by the sub-activities to run an intent in the lifecycle scope of the activity.
 
 ```
 abstract class StandardActivity<B : ViewDataBinding, V : StandardViewModel<*, *>> :
@@ -666,14 +666,14 @@ abstract class StandardActivity<B : ViewDataBinding, V : StandardViewModel<*, *>
 ### Fragment
 
 For the Fragments we have a similar structure as activity the [BaseFragment](ui/src/main/java/com/khoshnaw/ui/base/fragment/BaseFragment.kt) is an
-important empty class. Notice that the BaseFragment is getting it is layout from the constructor. this is making implementing data binding easier.
+important empty class. Notice that the BaseFragment is getting its layout from the constructor. this is making implementing data binding easier.
 
 ```
 abstract class BaseFragment(@LayoutRes contentLayoutId: Int) : Fragment(contentLayoutId)
 ```
 
-And then we have[MVIFragment](ui/src/main/java/com/khoshnaw/ui/mvi/MVIFragment.kt) which is very similar to MVIActivity. It is implementing MVIView
-with addition to data binding and view model generics.
+And then we have [MVIFragment](ui/src/main/java/com/khoshnaw/ui/mvi/MVIFragment.kt) which is very similar to MVIActivity. It is implementing MVIView
+in addition to data binding and view model generics.
 
 ```
 abstract class MVIFragment<B : ViewDataBinding, V : StandardViewModel<*, *>>(
@@ -683,7 +683,7 @@ abstract class MVIFragment<B : ViewDataBinding, V : StandardViewModel<*, *>>(
 ```
 
 And then [StandardFragment](ui/src/main/java/com/khoshnaw/ui/standard/fragment/StandardFragment.kt) is also similar to StandardActivity. but notice
-that standard fragment is using the main activity viewModel to send the error. this will give us a more stable error message implementation.
+that the standard fragment is using the main activity viewModel to send the error. this will give us a more stable error message implementation.
 
 ```
 abstract class StandardFragment<B : ViewDataBinding, V : StandardViewModel<*, *>>(
@@ -726,8 +726,8 @@ abstract class StandardFragment<B : ViewDataBinding, V : StandardViewModel<*, *>
 
 ## UI DTO
 
-UI DTO s are a data transfer objects between our business logic and our UI. The [MovieUIDTO](ui/src/main/java/com/khoshnaw/ui/dto/MovieUIDTO.kt) is an
-example. The MovieUIDTO is implementing StandardStateListItem so it can used in our StandardAdapters.
+UI DTO s are data transfer objects between our business logic and our UI. The MovieUIDTO is an example.
+The [MovieUIDTO](ui/src/main/java/com/khoshnaw/ui/dto/MovieUIDTO.kt) is implementing StandardStateListItem so it can be used in our StandardAdapters.
 
 ```
 data class MovieUIDTO(
@@ -740,9 +740,9 @@ data class MovieUIDTO(
 
 ## Mappers
 
-The UI mappers are mapping our entity objects to the UID TO objects. for example
-the [movie mapper](ui/src/main/java/com/khoshnaw/ui/mapper/MovieMappers.kt) is mapping our movie class to
-the [MovieUIDTO](ui/src/main/java/com/khoshnaw/ui/dto/MovieUIDTO.kt) notice that we are setting the base url for poster path and we also change vot
+The UI mappers are mapping our entity objects to the UID TO objects. for example,
+the [MovieMappers](ui/src/main/java/com/khoshnaw/ui/mapper/MovieMappers.kt) is mapping our movie class to
+the [MovieUIDTO](ui/src/main/java/com/khoshnaw/ui/dto/MovieUIDTO.kt) notice that we are setting the base URL for poster path and we also change not
 average to string so it can be used easier by our UI.
 
 ```
@@ -758,11 +758,11 @@ fun List<Movie>.toDTO() = map { it.toDTO() }
 
 ## Movie Fragment
 
-In the [MoviesFragment](ui/src/main/java/com/khoshnaw/ui/view/movies/MoviesFragment.kt) we are giving the implementation for binding and viewmodel
-using property delegation. And when the user swipe the list to refresh the movies we are running MoviesIntent.RefreshMovies intent this will inform
+In the [MoviesFragment](ui/src/main/java/com/khoshnaw/ui/view/movies/MoviesFragment.kt) we are giving the implementation for binding and ViewModel
+using property delegation. And when the user swipes the list to refresh the movies we are running MoviesIntent.RefreshMovies intent this will inform
 the view model to refresh the list.
 
-in handleState function we are handling the MovieList state by showing the list and the loading if the ui is in loading state
+in handleState function, we are handling the MovieList state by showing the list and the loading if the UI is in the loading state.
 
 ```
 @AndroidEntryPoint
@@ -805,13 +805,13 @@ OkHttp, Retrofit and Moshi. To perform a network HTTP requests to the Movie DB A
 The API data source is the actual implementation of the remote data sources. Those classes are using movie DB API to access the remote data in the
 system.
 
-The base implementation is an empty Class called [APIDataSource](remote/src/main/java/com/khoshnaw/remote/apiDataSource/base/APIDataSource.kt)
+The base implementation is an empty Class called [APIDataSource](remote/src/main/java/com/khoshnaw/remote/apiDataSource/base/APIDataSource.kt).
 
 ```
 abstract class APIDataSource
 ```
 
-The (MovieAPIDataSource)[remote/src/main/java/com/khoshnaw/remote/apiDataSource/movie/MovieAPIDataSource.kt] is using movieApi that is provided by
+The [MovieAPIDataSource](remote/src/main/java/com/khoshnaw/remote/apiDataSource/movie/MovieAPIDataSource.kt) is using movieApi that is provided by
 retrofit to perform movie-related remote operating. Like loading movie list using LoadMovieList function. Notice that the movieApi class is returning
 a MovieRemoteDTO movie object but we use a mapper to map the DTO to an entity.
 
@@ -841,7 +841,7 @@ data class MovieRemoteDTO(
 ## Mapper
 
 Our mappers are responsible to map entities to RemoteDTO or vice versa. For example, check
-out [MovieMapper.kt](remote/src/main/java/com/khoshnaw/remote/mapper/MovieMappers.kt) file
+out [MovieMapper.kt](remote/src/main/java/com/khoshnaw/remote/mapper/MovieMappers.kt) file.
 
 ```
 fun MovieRemoteDTO.toEntity() = Movie(
@@ -856,16 +856,16 @@ fun List<MovieRemoteDTO>.toEntity() = map { it.toEntity() }
 
 # DB
 
-The DB module is also an Android module that is heavenly depending on the android framework to cash data locally. This module is using Room library to
-perform it's actions.
+The DB module is also an Android module that is heavenly depending on the android framework to cash data locally. This module is using the Room
+library to perform its actions.
 
 ## DBDataSource
 
-DB data sources is the actual implementation of the Local data source introduced in gateway module. Those data sources are using room DB to cash data
-locally and perform operations on it.
+DB data sources is the actual implementation of the Local data source introduced in the gateway module. Those data sources are using room DB to cash
+data locally and perform operations on it.
 
-Our [MovieDBDataSource](db/src/main/java/com/khoshnaw/db/movie/MovieDBDataSource.kt) Implements MovieLocalDataSource interface and give concrete
-implementation for it. and notice that it takes a MovieDao object in its constructor and using it to perform it's operations. for example
+Our [MovieDBDataSource](db/src/main/java/com/khoshnaw/db/movie/MovieDBDataSource.kt) Implements MovieLocalDataSource interface and gives concrete
+implementation for it. and notice that it takes a MovieDao object in its constructor and uses it to perform its operations. for example,
 updateMovieList function is using insertAll function in MovieDao to insert the movies to the movie table. and notice that it is using toLocalDTO to
 map the movie entity to MovieLocalDTO which is needed by insertAll method.
 
@@ -887,7 +887,7 @@ class MovieDBDataSource @Inject constructor(
 ## Local DTO
 
 Our local DTO is used by our room library to cash data in our database. check
-out [MovieLocalDTO](db/src/main/java/com/khoshnaw/db/dto/MovieLocalDTO.kt) as example. notice that we can have @PrimaryKey to make our id a primary
+out [MovieLocalDTO](db/src/main/java/com/khoshnaw/db/dto/MovieLocalDTO.kt) as an example. notice that we can have @PrimaryKey to make our id a primary
 key to our movie table.
 
 ```
@@ -902,7 +902,7 @@ data class MovieLocalDTO(
 
 ## Mapper
 
-DB mapper are like other mappers in the project they are mapping entity objects to DBDTO objects and vise versa. check
+DB mappers are like other mappers in the project they are mapping entity objects to DBDTO objects and vice versa. check
 out [MovieMappers](db/src/main/java/com/khoshnaw/db/mapper/MovieMappers.kt) as an example.
 
 ```
@@ -927,9 +927,9 @@ fun List<Movie>.toLocalDTO() = map { it.toLocalDTO() }
 
 # APP
 
-Our App module is the actual application. it contains our Hilt/Dagger modules. so it has DI configuration. with additional to App class. notice that
-in our [app/build](app/build.gradle) that the app is depending on all our other modules. that is actually a limitation in hilt library. HiltAndroidApp
-need to have access to all our module in order to work.
+Our App module is the actual application. it contains our Hilt/Dagger modules. so it has the DI configuration. In addition to App class. notice that
+in our [app/build](app/build.gradle) that the app is depending on all our other modules. which is actually a limitation in the hilt library.
+HiltAndroidApp needs to have access to all our modules in order to work.
 
 ```
 dependencies {
