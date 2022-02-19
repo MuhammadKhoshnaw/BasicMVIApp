@@ -724,19 +724,76 @@ abstract class StandardFragment<B : ViewDataBinding, V : StandardViewModel<*, *>
 }
 ```
 
-### Adapters
-
-The Base Adapter is one more empty class that service polymorphism. So it doesn't really do much.
-
-```
-abstract class BaseAdapter<VH : RecyclerView.ViewHolder> : RecyclerView.Adapter<VH>()
-```
-
 ## UI DTO
+
+UI DTO s are a data transfer objects between our business logic and our UI. The [MovieUIDTO](ui/src/main/java/com/khoshnaw/ui/dto/MovieUIDTO.kt) is an
+example. The MovieUIDTO is implementing StandardStateListItem so it can used in our StandardAdapters.
+
+```
+data class MovieUIDTO(
+    override val id: String,
+    val posterPath: String,
+    val title: String,
+    val voteAverage: String,
+) : StandardStateListItem
+```
 
 ## Mappers
 
-## Movie View
+The UI mappers are mapping our entity objects to the UID TO objects. for example
+the [movie mapper](ui/src/main/java/com/khoshnaw/ui/mapper/MovieMappers.kt) is mapping our movie class to
+the [MovieUIDTO](ui/src/main/java/com/khoshnaw/ui/dto/MovieUIDTO.kt) notice that we are setting the base url for poster path and we also change vot
+average to string so it can be used easier by our UI.
+
+```
+fun Movie.toDTO() = MovieUIDTO(
+    id = id,
+    posterPath = BuildConfig.TMDB_API_BASE_IMG_URL + posterPath,
+    title = title,
+    voteAverage = voteAverage.toString(),
+)
+
+fun List<Movie>.toDTO() = map { it.toDTO() }
+```
+
+## Movie Fragment
+
+In the [MoviesFragment](ui/src/main/java/com/khoshnaw/ui/view/movies/MoviesFragment.kt) we are giving the implementation for binding and viewmodel
+using property delegation. And when the user swipe the list to refresh the movies we are running MoviesIntent.RefreshMovies intent this will inform
+the view model to refresh the list.
+
+in handleState function we are handling the MovieList state by showing the list and the loading if the ui is in loading state
+
+```
+@AndroidEntryPoint
+class MoviesFragment : StandardFragment<FragmentMoviesBinding, MoviesViewModel>(
+    R.layout.fragment_movies
+) {
+    override val binding by dataBindings(FragmentMoviesBinding::bind)
+    override val viewModel: MoviesViewModel by viewModels()
+    private val moviesAdapter by lazy { MovieAdapter(viewModel) }
+
+    override fun onViewReady() {
+        binding.movieRV.setHasFixedSize(true)
+        binding.movieRV.adapter = moviesAdapter
+        binding.swipeRefresh.setOnRefreshListener {
+            viewModel.runIntent(MoviesIntent.RefreshMovies)
+        }
+    }
+
+    override fun handleState(state: MVIState) {
+        when (state) {
+            is MoviesState.MovieList -> handleMovieList(state)
+        }
+    }
+
+    private fun handleMovieList(moviesState: MoviesState.MovieList) {
+        binding.swipeRefresh.isRefreshing = moviesState.isLoading
+        moviesAdapter.items = moviesState.movies.toDTO()
+    }
+
+}
+```
 
 # Remote
 
