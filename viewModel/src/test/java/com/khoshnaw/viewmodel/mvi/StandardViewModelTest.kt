@@ -111,10 +111,6 @@ class StandardViewModelTest {
         ) : StandardViewModel<DummyState, DummyIntent>(),
             DummyOutputPort {
 
-            init {
-                init()
-            }
-
             public override suspend fun handleIntent(intent: DummyIntent) = when (intent) {
                 DummyIntent.DummyAction -> controller1.doSomeThing()
             }
