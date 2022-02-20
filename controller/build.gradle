@@ -15,6 +15,10 @@ dependencies {
     implementation 'com.google.dagger:dagger:2.40.5'
     //endregion dagger
 
+    //region kotlin
+    implementation "org.jetbrains.kotlin:kotlin-reflect:1.6.10"
+    //endregion kotlin
+
     //region tests
     testImplementation "junit:junit:4.13.2"
     testImplementation "io.mockk:mockk:1.12.2"

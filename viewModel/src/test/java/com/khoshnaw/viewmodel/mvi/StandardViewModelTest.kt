@@ -1,7 +1,7 @@
 package com.khoshnaw.viewmodel.mvi
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.khoshnaw.controller.base.Controller
+import com.khoshnaw.controller.standard.StandardController
 import com.khoshnaw.usecase.movie.base.InputPort
 import com.khoshnaw.usecase.movie.base.OutputPort
 import com.khoshnaw.viewmodel.standard.StandardViewModel
@@ -74,26 +74,18 @@ class StandardViewModelTest {
         interface DummyInputPort : InputPort<DummyOutputPort>
         interface DummyOutputPort : OutputPort
         class DummyController1(
-            override val inputPort: DummyInputPort
-        ) : Controller<DummyInputPort, DummyOutputPort>() {
+            private val inputPort: DummyInputPort
+        ) : StandardController<DummyOutputPort>() {
             fun doSomeThing() = Unit
         }
 
-        class DummyController2(
-            override val inputPort: DummyInputPort
-        ) : Controller<DummyInputPort, DummyOutputPort>()
+        class DummyController2 : StandardController<DummyOutputPort>()
 
-        class DummyController3(
-            override val inputPort: DummyInputPort
-        ) : Controller<DummyInputPort, DummyOutputPort>()
+        class DummyController3 : StandardController<DummyOutputPort>()
 
-        class DummyController4(
-            override val inputPort: DummyInputPort
-        ) : Controller<DummyInputPort, DummyOutputPort>()
+        class DummyController4 : StandardController<DummyOutputPort>()
 
-        class DummyController5(
-            override val inputPort: DummyInputPort
-        ) : Controller<DummyInputPort, DummyOutputPort>()
+        class DummyController5 : StandardController<DummyOutputPort>()
 
         sealed class DummyIntent : MVIIntent {
             object DummyAction : DummyIntent()
