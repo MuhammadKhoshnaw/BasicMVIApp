@@ -71,11 +71,8 @@ class StandardViewModelTest {
 
     companion object {
 
-        interface DummyInputPort : InputPort<DummyOutputPort>
         interface DummyOutputPort : OutputPort
-        class DummyController1(
-            private val inputPort: DummyInputPort
-        ) : StandardController<DummyOutputPort>() {
+        class DummyController1 : StandardController<DummyOutputPort>() {
             fun doSomeThing() = Unit
         }
 
