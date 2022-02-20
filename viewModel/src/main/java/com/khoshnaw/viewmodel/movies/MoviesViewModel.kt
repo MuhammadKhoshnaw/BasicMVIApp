@@ -15,10 +15,6 @@ class MoviesViewModel @Inject constructor(
 ) : StandardViewModel<MoviesState, MoviesIntent>(),
     LoadMovieListOutputPort {
 
-    init {
-        init()
-    }
-
     override suspend fun handleIntent(intent: MoviesIntent) = when (intent) {
         is MoviesIntent.RefreshMovies -> handleRefreshMovies()
         is MoviesIntent.OnMovieClicked -> handleMovieClicked(intent)

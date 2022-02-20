@@ -22,13 +22,14 @@ abstract class StandardViewModel<S : MVIState, I : MVIIntent> : MVIViewModel<S, 
     override val intents: Channel<I> = Channel()
     private val _state = MutableLiveData<S>()
     override val state: LiveData<S> = _state
-
     val error = Channel<String>()
 
-    protected fun <O : OutputPort> O.init() = viewModelScope.launch(Dispatchers.IO) {
-        tryTo {
-            injectOutputPorts()
-            consumeIntents()
+    init {
+        viewModelScope.launch(Dispatchers.IO) {
+            tryTo {
+                injectOutputPorts()
+                consumeIntents()
+            }
         }
     }
 
