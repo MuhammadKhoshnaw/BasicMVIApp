@@ -35,7 +35,7 @@ abstract class StandardViewModel<S : MVIState, I : MVIIntent> : MVIViewModel<S, 
     private suspend fun <O : OutputPort> O.injectOutputPorts() = this::class.memberProperties.map {
         it.isAccessible = true
         it.getter.call(this)
-    }.filterIsInstance<Controller<*, O>>().forEach {
+    }.filterIsInstance<Controller<O>>().forEach {
         it.registerOutputPort(this)
     }
 
