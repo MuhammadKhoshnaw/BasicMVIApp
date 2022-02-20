@@ -71,11 +71,8 @@ class StandardViewModelTest {
 
     companion object {
 
-        interface DummyInputPort : InputPort<DummyOutputPort>
         interface DummyOutputPort : OutputPort
-        class DummyController1(
-            private val inputPort: DummyInputPort
-        ) : StandardController<DummyOutputPort>() {
+        class DummyController1 : StandardController<DummyOutputPort>() {
             fun doSomeThing() = Unit
         }
 
@@ -102,10 +99,6 @@ class StandardViewModelTest {
             private val controller5: DummyController5,
         ) : StandardViewModel<DummyState, DummyIntent>(),
             DummyOutputPort {
-
-            init {
-                init()
-            }
 
             public override suspend fun handleIntent(intent: DummyIntent) = when (intent) {
                 DummyIntent.DummyAction -> controller1.doSomeThing()
