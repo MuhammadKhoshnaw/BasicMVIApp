@@ -17,6 +17,9 @@ For this template, we don't need to go crazy with features. We just need enough 
 we can reuse In future. The application is a basic movie app. That uses [TMDB API](https://www.themoviedb.org/documentation/api) to cash a list of
 popular movies. And then show it to the user. With the ability to refresh the cache when the user needed it.
 
+- Add the key `tmdb_api_key={API_KEY}` in your locale.properties to run the project 😃
+- ⚠️🚧 Don't check out API keys to version control ⚠️🚧
+
 # Architecture
 
 ## Introduction
