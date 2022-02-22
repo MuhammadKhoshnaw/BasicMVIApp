@@ -1,7 +1,7 @@
 package com.khoshnaw.viewmodel.movies
 
-import com.khoshnaw.controller.movie.MovieController
 import com.khoshnaw.entity.Movie
+import com.khoshnaw.usecase.movie.loadMovieList.LoadMovieListInputPort
 import com.khoshnaw.usecase.movie.loadMovieList.LoadMovieListOutputPort
 import com.khoshnaw.viewmodel.mapper.toDTO
 import com.khoshnaw.viewmodel.standard.StandardViewModel
@@ -11,7 +11,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MoviesViewModel @Inject constructor(
-    private val movieController: MovieController
+    private val movieInputPort: LoadMovieListInputPort
 ) : StandardViewModel<MoviesState, MoviesIntent>(),
     LoadMovieListOutputPort {
 
@@ -21,12 +21,12 @@ class MoviesViewModel @Inject constructor(
     }
 
     private suspend fun handleRefreshMovies() {
-        movieController.loadMoviesList()
+        movieInputPort.startUpdatingMovieList()
     }
 
     private fun handleMovieClicked(intent: MoviesIntent.OnMovieClicked) {
         state.value?.movies?.getOrNull(intent.position)?.takeIf { it.id == intent.id }?.let {
-            movieController.showMovie(it.id)
+            println("showing movie : $it")
         }
     }
 

@@ -5,13 +5,11 @@ plugins {
 }
 
 android {
-    compileSdk 30
+    compileSdk 31
 
     defaultConfig {
         minSdk 24
-        targetSdk 30
-        versionCode 1
-        versionName "1.0"
+        targetSdk 31
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
@@ -33,8 +31,7 @@ android {
 }
 
 dependencies {
-    api project(path: ':entity')
-    api project(path: ':gateway')
+    implementation project(path: ':repository')
 
     //region tests
     testImplementation(testFixtures(project(path: ':entity')))
@@ -53,10 +50,10 @@ dependencies {
     //endregion dagger
 
     //region room
-    implementation "androidx.room:room-runtime:2.4.0"
-    annotationProcessor "androidx.room:room-compiler:2.4.0"
-    kapt("androidx.room:room-compiler:2.4.0")
-    implementation("androidx.room:room-ktx:2.4.0")
-    testImplementation("androidx.room:room-testing:2.4.0")
+    implementation "androidx.room:room-runtime:2.4.1"
+    annotationProcessor "androidx.room:room-compiler:2.4.1"
+    kapt("androidx.room:room-compiler:2.4.1")
+    implementation("androidx.room:room-ktx:2.4.1")
+    testImplementation("androidx.room:room-testing:2.4.1")
     //endregion room
 }

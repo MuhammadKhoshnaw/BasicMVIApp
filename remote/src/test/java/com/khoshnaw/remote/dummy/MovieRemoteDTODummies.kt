@@ -1,7 +1,7 @@
 package com.khoshnaw.remote.dummy
 
 import com.khoshnaw.entity.MovieDummies
-import com.khoshnaw.remote.dto.MovieRemoteDTO
+import com.khoshnaw.repository.remote.dto.MovieRemoteDTO
 
 @Suppress("MemberVisibilityCanBePrivate", "unused")
 object MovieRemoteDTODummies {

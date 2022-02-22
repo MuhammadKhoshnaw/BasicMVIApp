@@ -2,7 +2,7 @@ package com.khoshnaw.viewmodel.movies
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.viewModelScope
-import com.khoshnaw.controller.movie.MovieController
+import com.khoshnaw.usecase.movie.loadMovieList.LoadMovieListInputPort
 import com.khoshnaw.viewmodel.util.CoroutineTestRule
 import io.mockk.MockKAnnotations
 import io.mockk.coVerify
@@ -26,7 +26,7 @@ class MoviesViewModelTest {
     val coroutinesDispatcherRule = CoroutineTestRule()
 
     @MockK
-    lateinit var movieController: MovieController
+    lateinit var loadMovieListInputPort: LoadMovieListInputPort
 
     @InjectMockKs
     lateinit var viewModel: MoviesViewModel
@@ -41,6 +41,6 @@ class MoviesViewModelTest {
     fun `use movie controller to refresh movies`() = runTest(StandardTestDispatcher()) {
         viewModel.intents.send(MoviesIntent.RefreshMovies)
 
-        coVerify { movieController.loadMoviesList() }
+        coVerify { loadMovieListInputPort.startUpdatingMovieList() }
     }
 }
