@@ -1,12 +1,12 @@
 package com.khoshnaw.usecase.movie.loadMovieList
 
 import com.khoshnaw.usecase.movie.base.UseCase
-import com.khoshnaw.usecase.movie.gateway.MovieGateway
+import com.khoshnaw.usecase.movie.repository.MovieRepository
 import com.khoshnaw.usecase.utils.tryTo
 import javax.inject.Inject
 
 class LoadMovieList @Inject constructor(
-    private val movieGateway: MovieGateway,
+    private val movieRepository: MovieRepository,
 ) : UseCase<LoadMovieListOutputPort>(), LoadMovieListInputPort {
 
     override suspend fun onReady() {
@@ -22,15 +22,15 @@ class LoadMovieList @Inject constructor(
     }
 
     private suspend fun loadMoviesIfNeeded() {
-        if (movieGateway.loadMovieSize() <= 0) startUpdatingMovieList()
+        if (movieRepository.loadMovieSize() <= 0) startUpdatingMovieList()
     }
 
-    private suspend fun observeMovies() = outputPort.observeMovies(movieGateway.observeMovies())
+    private suspend fun observeMovies() = outputPort.observeMovies(movieRepository.observeMovies())
 
     private suspend fun showLoading() = outputPort.showLoading(true)
 
     private suspend fun hideLoading() = outputPort.showLoading(false)
 
-    private suspend fun updateMovies() = movieGateway.updateMovieList()
+    private suspend fun updateMovies() = movieRepository.updateMovieList()
 
 }

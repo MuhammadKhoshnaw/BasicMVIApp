@@ -1,7 +1,6 @@
 package com.khoshnaw.viewmodel.mvi
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.khoshnaw.controller.standard.StandardController
 import com.khoshnaw.usecase.movie.base.InputPort
 import com.khoshnaw.usecase.movie.base.OutputPort
 import com.khoshnaw.viewmodel.standard.StandardViewModel
@@ -28,19 +27,19 @@ class StandardViewModelTest {
     val coroutinesDispatcherRule = CoroutineTestRule()
 
     @MockK
-    lateinit var controller1: DummyController1
+    lateinit var controller1: DummyInputPort1
 
     @MockK
-    lateinit var controller2: DummyController2
+    lateinit var controller2: DummyInputPort2
 
     @MockK
-    lateinit var controller3: DummyController3
+    lateinit var controller3: DummyInputPort3
 
     @MockK
-    lateinit var controller4: DummyController4
+    lateinit var controller4: DummyInputPort4
 
     @MockK
-    lateinit var controller5: DummyController5
+    lateinit var controller5: DummyInputPort5
 
     @InjectMockKs
     lateinit var viewModel: DummyViewModel
@@ -72,17 +71,23 @@ class StandardViewModelTest {
     companion object {
 
         interface DummyOutputPort : OutputPort
-        class DummyController1 : StandardController<DummyOutputPort>() {
+
+        abstract class BaseDummyInputPort : InputPort<DummyOutputPort> {
+            override suspend fun registerOutputPort(outputPort: DummyOutputPort) = Unit
+
+        }
+
+        class DummyInputPort1 : BaseDummyInputPort() {
             fun doSomeThing() = Unit
         }
 
-        class DummyController2 : StandardController<DummyOutputPort>()
+        class DummyInputPort2 : BaseDummyInputPort()
 
-        class DummyController3 : StandardController<DummyOutputPort>()
+        class DummyInputPort3 : BaseDummyInputPort()
 
-        class DummyController4 : StandardController<DummyOutputPort>()
+        class DummyInputPort4 : BaseDummyInputPort()
 
-        class DummyController5 : StandardController<DummyOutputPort>()
+        class DummyInputPort5 : BaseDummyInputPort()
 
         sealed class DummyIntent : MVIIntent {
             object DummyAction : DummyIntent()
@@ -92,16 +97,16 @@ class StandardViewModelTest {
 
         @Suppress("unused")
         class DummyViewModel(
-            private val controller1: DummyController1,
-            private val controller2: DummyController2,
-            private val controller3: DummyController3,
-            private val controller4: DummyController4,
-            private val controller5: DummyController5,
+            private val inputPort1: DummyInputPort1,
+            private val inputPort2: DummyInputPort2,
+            private val inputPort3: DummyInputPort3,
+            private val inputPort4: DummyInputPort4,
+            private val inputPort5: DummyInputPort5,
         ) : StandardViewModel<DummyState, DummyIntent>(),
             DummyOutputPort {
 
             public override suspend fun handleIntent(intent: DummyIntent) = when (intent) {
-                DummyIntent.DummyAction -> controller1.doSomeThing()
+                DummyIntent.DummyAction -> inputPort1.doSomeThing()
             }
         }
     }

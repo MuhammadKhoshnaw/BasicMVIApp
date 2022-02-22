@@ -6,13 +6,11 @@ plugins {
 }
 
 android {
-    compileSdk 30
+    compileSdk 31
 
     defaultConfig {
         minSdk 24
-        targetSdk 30
-        versionCode 1
-        versionName "1.0"
+        targetSdk 31
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
@@ -41,7 +39,6 @@ android {
 dependencies {
     api project(path: ':entity')
     api project(path: ':useCase')
-    api project(path: ':controller')
 
     //region lifecycle
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.1"

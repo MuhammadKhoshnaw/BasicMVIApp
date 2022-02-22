@@ -3,7 +3,7 @@ package com.khoshnaw.viewmodel.standard
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.khoshnaw.controller.base.Controller
+import com.khoshnaw.usecase.movie.base.InputPort
 import com.khoshnaw.usecase.movie.base.OutputPort
 import com.khoshnaw.viewmodel.mvi.MVIIntent
 import com.khoshnaw.viewmodel.mvi.MVIState
@@ -51,11 +51,11 @@ abstract class StandardViewModel<S : MVIState, I : MVIIntent> : MVIViewModel<S, 
         launchInIO { tryTo { injectOutputPorts() } }
     }
 
-    private fun <O : OutputPort> O.injectOutputPorts() = this::class.memberProperties.map {
+    private suspend fun <O : OutputPort> O.injectOutputPorts() = this::class.memberProperties.map {
         it.isAccessible = true
         it.getter.call(this)
-    }.filterIsInstance<Controller<O>>().forEach {
-        launchInIO { it.registerOutputPort(this@injectOutputPorts) }
+    }.filterIsInstance<InputPort<O>>().forEach {
+        it.registerOutputPort(this@injectOutputPorts)
     }
     //endregion injection
 

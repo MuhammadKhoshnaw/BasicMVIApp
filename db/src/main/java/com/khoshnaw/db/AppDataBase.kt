@@ -2,7 +2,7 @@ package com.khoshnaw.db
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import com.khoshnaw.db.dto.MovieLocalDTO
+import com.khoshnaw.repository.local.dto.MovieLocalDTO
 import com.khoshnaw.db.movie.MovieDao
 
 @Database(entities = [MovieLocalDTO::class], version = 1)

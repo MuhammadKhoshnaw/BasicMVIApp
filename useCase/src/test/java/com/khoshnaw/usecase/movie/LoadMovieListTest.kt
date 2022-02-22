@@ -3,7 +3,7 @@ package com.khoshnaw.usecase.movie
 import com.google.common.truth.Truth
 import com.khoshnaw.entity.MovieDummies
 import com.khoshnaw.exception.ExceptionDummies
-import com.khoshnaw.usecase.movie.gateway.MovieGateway
+import com.khoshnaw.usecase.movie.repository.MovieRepository
 import com.khoshnaw.usecase.movie.loadMovieList.LoadMovieList
 import com.khoshnaw.usecase.movie.loadMovieList.LoadMovieListOutputPort
 import io.mockk.MockKAnnotations
@@ -25,7 +25,7 @@ class LoadMovieListTest {
     lateinit var outputPort: LoadMovieListOutputPort
 
     @RelaxedMockK
-    lateinit var movieGateway: MovieGateway
+    lateinit var movieRepository: MovieRepository
 
     @InjectMockKs
     lateinit var useCase: LoadMovieList
@@ -36,12 +36,12 @@ class LoadMovieListTest {
 
     @Test
     fun `when usecase is ready start observing movies`() = runTest {
-        coEvery { movieGateway.observeMovies() } returns DUMMY_MOVIE_LIST_FLOW
+        coEvery { movieRepository.observeMovies() } returns DUMMY_MOVIE_LIST_FLOW
 
         useCase.registerOutputPort(outputPort)
 
         coVerify(exactly = 1) {
-            movieGateway.observeMovies()
+            movieRepository.observeMovies()
             outputPort.observeMovies(DUMMY_MOVIE_LIST_FLOW)
         }
     }
@@ -54,14 +54,14 @@ class LoadMovieListTest {
             ordering = Ordering.SEQUENCE
         ) {
             outputPort.showLoading(true)
-            movieGateway.updateMovieList()
+            movieRepository.updateMovieList()
             outputPort.showLoading(false)
         }
     }
 
     @Test
     fun `if update failed hide loading and throw the exception`() = runTest {
-        coEvery { movieGateway.updateMovieList() } throws DUMMY_EXCEPTION
+        coEvery { movieRepository.updateMovieList() } throws DUMMY_EXCEPTION
 
         var result: Exception? = null
         try {
@@ -75,7 +75,7 @@ class LoadMovieListTest {
             ordering = Ordering.SEQUENCE
         ) {
             outputPort.showLoading(true)
-            movieGateway.updateMovieList()
+            movieRepository.updateMovieList()
             outputPort.showLoading(false)
         }
     }

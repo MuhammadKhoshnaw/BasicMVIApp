@@ -1,7 +1,7 @@
 package com.khoshnaw.basicmvi.di.db
 
 import com.khoshnaw.db.movie.MovieDBDataSource
-import com.khoshnaw.gateway.localDataSource.MovieLocalDataSource
+import com.khoshnaw.repository.local.dataSource.MovieLocalDataSource
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

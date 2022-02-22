@@ -1,6 +1,6 @@
 package com.khoshnaw.basicmvi.di.remote
 
-import com.khoshnaw.gateway.remoteDataSource.MovieRemoteDataSource
+import com.khoshnaw.repository.remote.dataSource.MovieRemoteDataSource
 import com.khoshnaw.remote.apiDataSource.movie.MovieAPIDataSource
 import dagger.Binds
 import dagger.Module
