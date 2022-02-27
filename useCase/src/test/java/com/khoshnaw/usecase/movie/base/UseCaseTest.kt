@@ -1,6 +1,7 @@
 package com.khoshnaw.usecase.movie.base
 
 import com.google.common.truth.Truth
+import com.google.common.truth.Truth.assertThat
 import io.mockk.MockKAnnotations
 import io.mockk.coVerify
 import io.mockk.impl.annotations.MockK
@@ -15,7 +16,7 @@ class UseCaseTest {
     lateinit var outputPort: DummyOutputPort
 
     @SpyK
-    var useCase: DummyUseCase = DummyUseCase()
+    var useCase = DummyUseCase()
 
     @Before
     fun setup() {
@@ -30,10 +31,10 @@ class UseCaseTest {
     }
 
     @Test
-    fun `when output port is registered outputPort is available`() = runBlocking {
+    fun `when output port is registered, outputPort is available`() = runBlocking {
         useCase.registerOutputPort(outputPort)
 
-        Truth.assertThat(useCase.registeredOutputPort).isEqualTo(outputPort)
+        assertThat(useCase.registeredOutputPort).isEqualTo(outputPort)
     }
 
     @Test
@@ -46,7 +47,7 @@ class UseCaseTest {
             exception = e
         }
 
-        Truth.assertThat(exception).isInstanceOf(UninitializedPropertyAccessException::class.java)
+        assertThat(exception).isInstanceOf(UninitializedPropertyAccessException::class.java)
     }
 
     companion object {

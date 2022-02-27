@@ -1,7 +1,6 @@
 package com.khoshnaw.remote.util
 
 import com.google.common.truth.Truth.assertThat
-import com.khoshnaw.remote.dummy.GetMoviesResponseDummies
 import com.khoshnaw.remote.exception.ApiExceptionApp
 import okhttp3.ResponseBody.Companion.toResponseBody
 import org.junit.Test
@@ -10,7 +9,7 @@ import retrofit2.Response
 class ResponseExtensionsKtTest {
 
     @Test
-    fun `when response is successful and body is not null return body`() {
+    fun `when response is successful, and body is not null, return body`() {
         val response = DUMMY_SUCCESSFUL_WITH_BODY_RESPONSE
 
         val result = response.bodyOrException()
@@ -19,7 +18,7 @@ class ResponseExtensionsKtTest {
     }
 
     @Test
-    fun `when response is successful but body is null throw exception`() {
+    fun `when response is successful, but body is null, throw exception`() {
         val response = DUMMY_SUCCESSFUL_WITH_NO_BODY_RESPONSE
         var exception: Exception? = null
 
@@ -34,7 +33,7 @@ class ResponseExtensionsKtTest {
 
 
     @Test
-    fun `when response is error throw exception`() {
+    fun `when response is error, throw exception`() {
         val response = DUMMY_ERROR_RESPONSE
         var exception: Exception? = null
 
@@ -49,15 +48,14 @@ class ResponseExtensionsKtTest {
 
 
     companion object {
-        private val DUMMY_GET_MOVIES_RESPONSE = GetMoviesResponseDummies.dummyGetMoviesResponse
-
+        private const val DUMMY_GET_MOVIES_RESPONSE = "Some Response"
         private val DUMMY_SUCCESSFUL_WITH_BODY_RESPONSE =
             Response.success(DUMMY_GET_MOVIES_RESPONSE)
 
         private val DUMMY_SUCCESSFUL_WITH_NO_BODY_RESPONSE =
-            Response.success<GetMoviesResponseDummies>(null)
+            Response.success<String>(null)
 
-        private val DUMMY_ERROR_RESPONSE = Response.error<GetMoviesResponseDummies>(
+        private val DUMMY_ERROR_RESPONSE = Response.error<String>(
             400,
             "error".toResponseBody()
         )

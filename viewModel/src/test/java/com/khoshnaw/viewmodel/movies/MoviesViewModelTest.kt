@@ -38,7 +38,7 @@ class MoviesViewModelTest {
     }
 
     @Test
-    fun `use movie controller to refresh movies`() = runTest(StandardTestDispatcher()) {
+    fun `use movie input port to refresh movies`() = runTest(StandardTestDispatcher()) {
         viewModel.intents.send(MoviesIntent.RefreshMovies)
 
         coVerify { loadMovieListInputPort.startUpdatingMovieList() }

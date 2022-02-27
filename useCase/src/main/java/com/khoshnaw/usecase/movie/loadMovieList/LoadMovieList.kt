@@ -25,7 +25,7 @@ class LoadMovieList @Inject constructor(
         if (movieRepository.loadMovieSize() <= 0) startUpdatingMovieList()
     }
 
-    private suspend fun observeMovies() = outputPort.observeMovies(movieRepository.observeMovies())
+    private suspend fun observeMovies() = outputPort.startObserveMovies(movieRepository.observeMovies())
 
     private suspend fun showLoading() = outputPort.showLoading(true)
 

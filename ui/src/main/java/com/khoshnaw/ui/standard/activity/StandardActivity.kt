@@ -4,7 +4,9 @@ import android.os.Bundle
 import androidx.databinding.ViewDataBinding
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.snackbar.Snackbar
+import com.khoshnaw.entity.ErrorMessage
 import com.khoshnaw.ui.BR
+import com.khoshnaw.ui.R
 import com.khoshnaw.ui.extenstion.runIntentInScope
 import com.khoshnaw.ui.mvi.MVIActivity
 import com.khoshnaw.ui.standard.view.StandardView
@@ -14,7 +16,6 @@ import com.khoshnaw.viewmodel.mvi.MVIViewModel
 import com.khoshnaw.viewmodel.standard.StandardViewModel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 abstract class StandardActivity<B : ViewDataBinding, V : StandardViewModel<*, *>> :
     MVIActivity<B, V>(), StandardView<B, V> {
@@ -43,10 +44,16 @@ abstract class StandardActivity<B : ViewDataBinding, V : StandardViewModel<*, *>
         }
     }
 
-    override fun showError(message: String) {
-        Timber.tag("delete_me").i(message)
-        Snackbar.make(binding.root, message, Snackbar.LENGTH_SHORT).show()
+    override fun showError(message: ErrorMessage) {
+        val messageStr = if (message == ErrorMessage.DEFAULT) getString(R.string.default_error)
+        else message.message
+
+        showError(messageStr)
     }
+
+    private fun showError(messageStr: String) = Snackbar
+        .make(binding.root, messageStr, Snackbar.LENGTH_SHORT)
+        .show()
 
     override fun onViewReady() = Unit
     override fun handleState(state: MVIState) = Unit
