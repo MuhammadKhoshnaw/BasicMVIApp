@@ -26,7 +26,7 @@ class AuthenticationInterceptorTest {
     }
 
     @Test
-    fun `add api key as query parameter`() {
+    fun `on intercept, add api key as query parameter`() {
         val resultRequestSlot = slot<Request>()
         every { chain.request() } returns DUMMY_REQUEST
         every { chain.proceed(capture(resultRequestSlot)) } returns DUMMY_RESPONSE

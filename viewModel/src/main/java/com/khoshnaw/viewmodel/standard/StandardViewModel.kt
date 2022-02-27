@@ -3,6 +3,7 @@ package com.khoshnaw.viewmodel.standard
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.khoshnaw.entity.ErrorMessage
 import com.khoshnaw.usecase.movie.base.InputPort
 import com.khoshnaw.usecase.movie.base.OutputPort
 import com.khoshnaw.viewmodel.mvi.MVIIntent
@@ -16,18 +17,21 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import kotlin.coroutines.CoroutineContext
 import kotlin.reflect.full.memberProperties
 import kotlin.reflect.jvm.isAccessible
 
 @Suppress("MemberVisibilityCanBePrivate")
-abstract class StandardViewModel<S : MVIState, I : MVIIntent> : MVIViewModel<S, I>() {
+abstract class StandardViewModel<S : MVIState, I : MVIIntent>(
+    private val backgroundDispatcher: CoroutineContext = Dispatchers.IO
+) : MVIViewModel<S, I>() {
 
     override val intents: Channel<I> by lazy {
         Channel<I>().tryToConsume()
     }
     private val _state = MutableLiveData<S>()
     override val state: LiveData<S> = _state
-    val error = Channel<String>()
+    val error = Channel<ErrorMessage>()
 
     init {
         tryToInjectOutputPorts()
@@ -60,10 +64,10 @@ abstract class StandardViewModel<S : MVIState, I : MVIIntent> : MVIViewModel<S, 
     //endregion injection
 
     //region error
-    open fun sendError(e: Throwable) = sendError("some thing went wrong")
+    open fun updateError(e: Throwable) = updateError(ErrorMessage.DEFAULT)
 
-    open fun sendError(message: String) {
-        viewModelScope.launch { error.send(message) }
+    open fun updateError(message: ErrorMessage) {
+        launchInIO { error.send(message) }
     }
     //endregion error
 
@@ -72,12 +76,12 @@ abstract class StandardViewModel<S : MVIState, I : MVIIntent> : MVIViewModel<S, 
         callback()
     } catch (e: Throwable) {
         Timber.e(e)
-        sendError(e)
+        updateError(e)
     }
 
     protected fun <T> Flow<T>.collectResult(
-        action: suspend (value: T) -> Unit
-    ) = launchInIO { tryTo { collect { action(it) } } }
+        action: (value: T) -> Unit
+    ) = launchInIO { tryTo { collect { tryTo { action(it) } } } }
 
     protected fun updateState(state: S) = _state.postValue(state)
 
@@ -85,7 +89,7 @@ abstract class StandardViewModel<S : MVIState, I : MVIIntent> : MVIViewModel<S, 
         start: CoroutineStart = CoroutineStart.DEFAULT,
         block: suspend CoroutineScope.() -> Unit
     ) = viewModelScope.launch(
-        context = Dispatchers.IO,
+        context = backgroundDispatcher,
         start = start,
         block = block,
     )

@@ -20,7 +20,8 @@ class MovieRepositoryImp @Inject constructor(
     )
 
     override suspend fun observeMovies() = movieLocalDataSource.observeMovies().map {
-        it.toEntity()
+        val a = it.toEntity()
+        a
     }
 
     override suspend fun loadMovieSize(): Int = movieLocalDataSource.loadMovieSize()

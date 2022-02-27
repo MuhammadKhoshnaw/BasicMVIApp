@@ -6,5 +6,5 @@ import kotlinx.coroutines.flow.Flow
 
 interface LoadMovieListOutputPort : OutputPort {
     suspend fun showLoading(loading: Boolean)
-    suspend fun observeMovies(flow: Flow<List<Movie>>)
+    suspend fun startObserveMovies(flow: Flow<List<Movie>>)
 }

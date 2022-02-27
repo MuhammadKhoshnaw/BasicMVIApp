@@ -5,6 +5,7 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.databinding.ViewDataBinding
 import androidx.lifecycle.lifecycleScope
+import com.khoshnaw.entity.ErrorMessage
 import com.khoshnaw.ui.BR
 import com.khoshnaw.ui.extenstion.runIntentInScope
 import com.khoshnaw.ui.mvi.MVIFragment
@@ -42,10 +43,10 @@ abstract class StandardFragment<B : ViewDataBinding, V : StandardViewModel<*, *>
         }
     }
 
-    override fun showError(message: String) {
+    override fun showError(message: ErrorMessage) {
         if (activity is StandardView<*, *>) {
             val standardActivity = (activity as StandardView<*, *>)
-            standardActivity.viewModel.sendError(message)
+            standardActivity.viewModel.updateError(message)
         }
     }
 

@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Basic MVI App</string>
+
+    <string name="default_error">some thing went wrong</string>
 </resources>

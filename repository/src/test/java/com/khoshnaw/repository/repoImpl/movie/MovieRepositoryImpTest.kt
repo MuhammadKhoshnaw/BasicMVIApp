@@ -1,7 +1,10 @@
 package com.khoshnaw.repository.repoImpl.movie
 
+import com.google.common.truth.Truth.assertThat
+import com.khoshnaw.entity.MovieDummies
 import com.khoshnaw.repository.local.dataSource.MovieLocalDataSource
 import com.khoshnaw.repository.local.dummy.MovieLocalDTODummies
+import com.khoshnaw.repository.local.mapper.toEntity
 import com.khoshnaw.repository.remote.dataSource.MovieRemoteDataSource
 import com.khoshnaw.repository.remote.dummy.MovieRemoteDTODummies
 import com.khoshnaw.repository.repositoryImp.MovieRepositoryImp
@@ -13,6 +16,7 @@ import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.MockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Test
@@ -63,18 +67,31 @@ class MovieRepositoryImpTest {
 
     @Test
     fun `use local data source to observe movies`() = runBlocking {
-        coEvery { movieLocalDataSource.observeMovies() } returns DUMMY_MOVIE_LIST_FLOW
+        val dummyMovieList = DUMMY_LOCAL_MOVIE_LIST_FLOW.toList().map { it.toEntity() }
+        coEvery { movieLocalDataSource.observeMovies() } returns DUMMY_LOCAL_MOVIE_LIST_FLOW
 
-        repository.observeMovies()
+        val result = repository.observeMovies().toList()
 
         coVerify(exactly = 1) { movieLocalDataSource.observeMovies() }
+        assertThat(result.toList()).isEqualTo(dummyMovieList)
+    }
+
+    @Test
+    fun `use local data source to load local movie list size`() = runBlocking {
+        coEvery { movieLocalDataSource.loadMovieSize() } returns DUMMY_MOVIE_LIST_SIZE
+
+        val result = repository.loadMovieSize()
+
+        coVerify(exactly = 1) { movieLocalDataSource.loadMovieSize() }
+        assertThat(result).isEqualTo(DUMMY_MOVIE_LIST_SIZE)
     }
 
     companion object {
         private val DUMMY_MOVIE_REMOTE_LIST = MovieRemoteDTODummies.dummyMovieRemoteDTOList
         private val DUMMY_MOVIE_LOCAL_LIST = MovieLocalDTODummies.dummyMovieLocalDTOList
-        private val DUMMY_MOVIE_LIST_FLOW = flow {
+        private val DUMMY_LOCAL_MOVIE_LIST_FLOW = flow {
             emit(DUMMY_MOVIE_LOCAL_LIST)
         }
+        private const val DUMMY_MOVIE_LIST_SIZE = 10
     }
 }
