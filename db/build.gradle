@@ -36,17 +36,17 @@ dependencies {
     //region tests
     testImplementation(testFixtures(project(path: ':entity')))
 
-    testImplementation 'junit:junit:4.13.2'
-    testImplementation "io.mockk:mockk:1.12.2"
-    testImplementation "com.google.truth:truth:1.1.3"
-    testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.0'
+    testImplementation "junit:junit:$junitVersion"
+    testImplementation "io.mockk:mockk:$mockkVersion"
+    testImplementation "com.google.truth:truth:$truthVersion"
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$kotlinxCoroutinesTestVersion"
 
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
     //endregion tests
 
     //region dagger
-    implementation 'com.google.dagger:dagger:2.40.5'
+    implementation "com.google.dagger:dagger:$daggerVersion"
     //endregion dagger
 
     //region room

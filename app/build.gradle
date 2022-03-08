@@ -98,9 +98,9 @@ dependencies {
     //endregion timber
 
     //region tests
-    testImplementation "junit:junit:4.13.2"
-    testImplementation "io.mockk:mockk:1.12.2"
-    testImplementation "com.google.truth:truth:1.1.3"
+    testImplementation "junit:junit:$junitVersion"
+    testImplementation "io.mockk:mockk:$mockkVersion"
+    testImplementation "com.google.truth:truth:$truthVersion"
     //endregion tests
 
     //region android Test
