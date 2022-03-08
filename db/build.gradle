@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    compileSdk 31
+    compileSdk CompileSdkVersion
 
     defaultConfig {
-        minSdk 24
-        targetSdk 31
+        minSdk MinSdkVersion
+        targetSdk TargetSdkVersion
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
@@ -21,39 +21,40 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_11
         targetCompatibility JavaVersion.VERSION_11
     }
+
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_11
     }
 }
 
 dependencies {
-    implementation project(path: ':repository')
+    api project(path: ':repository')
+
+    //region basic tools
+    implementation "com.google.dagger:dagger:$daggerVersion"
+    //endregion basic tools
+
+    //region room
+    implementation "androidx.room:room-runtime:$roomRuntimeVersion"
+    kapt "androidx.room:room-compiler:$roomCompilerVersion1"
+    implementation "androidx.room:room-ktx:$roomKtxVersion"
+    testImplementation "androidx.room:room-testing:$roomTestingVersion"
+    //endregion room
 
     //region tests
     testImplementation(testFixtures(project(path: ':entity')))
-
-    testImplementation 'junit:junit:4.13.2'
-    testImplementation "io.mockk:mockk:1.12.2"
-    testImplementation "com.google.truth:truth:1.1.3"
-    testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.0'
-
-    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+    testImplementation "junit:junit:$junitVersion"
+    testImplementation "io.mockk:mockk:$mockkVersion"
+    testImplementation "com.google.truth:truth:$truthVersion"
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$kotlinxCoroutinesTestVersion"
     //endregion tests
 
-    //region dagger
-    implementation 'com.google.dagger:dagger:2.40.5'
-    //endregion dagger
-
-    //region room
-    implementation "androidx.room:room-runtime:2.4.1"
-    annotationProcessor "androidx.room:room-compiler:2.4.1"
-    kapt("androidx.room:room-compiler:2.4.1")
-    implementation("androidx.room:room-ktx:2.4.1")
-    testImplementation("androidx.room:room-testing:2.4.1")
-    //endregion room
+    //region android tests
+    androidTestImplementation "androidx.test.ext:junit:$androidJunitVersion"
+    //endregion android tests
 }

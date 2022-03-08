@@ -1,0 +1,78 @@
+ext {
+    //region sdk
+    MinSdkVersion = 24
+    TargetSdkVersion = 31
+    CompileSdkVersion = 31
+    //endregion sdk
+
+    //region classpath
+    kotlinVersion = '1.5.30'
+    hiltVersion = '2.40.5'
+    kotlinGradlePluginVersion = '1.6.10'
+    gradleVersion = '7.1.2'
+    //endregion classpath
+
+    //region DI
+    daggerVersion = '2.41'
+    hiltAndroidVersion = '2.41'
+    hiltCompilerVersion = "2.41"
+    hiltAndroidCompilerVersion = "2.41"
+    androidxHiltCompilerVersion = "1.0.0"
+    hiltLifecycleViewmodelVersion = "1.0.0-alpha03"
+    //endregion DI
+
+
+    //region DB
+    roomRuntimeVersion = '2.4.2'
+    roomCompilerVersion = '2.4.2'
+    roomCompilerVersion1 = '2.4.2'
+    roomKtxVersion = '2.4.2'
+    roomTestingVersion = '2.4.2'
+    //region DB
+
+    //region UI
+    coreKtxVersion = '1.7.0'
+    fragmentKtxVersion = '1.4.1'
+    appcompatVersion = '1.4.1'
+    constraintlayoutVersion = '2.1.3'
+    swiperefreshlayoutVersion = '1.1.0'
+    materialVersion = '1.5.0'
+    glideVersion = '4.13.1'
+    glideCompilerVersion = '4.13.1'
+    lifecycleCommonJava8Version = '2.4.1'
+    lifecycleLivedataKtxVersion = '2.4.1'
+    lifecycleViewmodelKtxVersion = '2.4.1'
+    lifecycleViewmodelSavedstateVersion = '2.4.1'
+    navigationFragmentKtxVersion = '2.4.1'
+    navigationUiKtxVersion = '2.4.1'
+    //region UI
+
+    //region test
+    junitVersion = '4.13.2'
+    truthVersion = '1.1.3'
+    mockkVersion = '1.12.3'
+    kotlinxCoroutinesTestVersion = '1.6.0'
+    coreTestingVersion = '1.1.1'
+    mockwebserverVersion = '5.0.0-alpha.5'
+    //region test
+
+    //region android test
+    androidJunitVersion = '1.1.3'
+    navigationTestingVersion = '2.4.1'
+    espressoCoreVersion = '3.4.0'
+    //endregion android test
+
+    //endregion common tools
+    moshiKotlinVersion = '1.13.0'
+    timberVersion = '5.0.1'
+    kotlinReflectVersion = '1.6.10'
+    okhttpVersion = '5.0.0-alpha.5'
+    retrofitVersion = '2.9.0'
+    loggingInterceptorVersion = '5.0.0-alpha.5'
+    kotlinxCoroutinesCoreVersion = '1.6.0'
+    moshiVersion = '1.13.0'
+    converterMoshiVersion = '2.9.0'
+    multidexVersion = '1.0.3'
+    //endregion common tools
+
+}
