@@ -6,11 +6,11 @@ plugins {
 }
 
 android {
-    compileSdk 31
+    compileSdk CompileSdkVersion
 
     defaultConfig {
-        minSdk 24
-        targetSdk 31
+        minSdk MinSdkVersion
+        targetSdk TargetSdkVersion
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
@@ -37,41 +37,36 @@ android {
 }
 
 dependencies {
-    api project(path: ':entity')
     api project(path: ':useCase')
 
+    //region basic tools
+    implementation "com.jakewharton.timber:timber:$timberVersion"
+    implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlinReflectVersion"
+
+    //endregion basic tools
+
     //region lifecycle
-    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.1"
-    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.4.1"
-    implementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:2.4.1"
-    implementation "androidx.lifecycle:lifecycle-common-java8:2.4.1"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleViewmodelKtxVersion"
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycleLivedataKtxVersion"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:$lifecycleViewmodelSavedstateVersion"
+    implementation "androidx.lifecycle:lifecycle-common-java8:$lifecycleCommonJava8Version"
     //endregion lifecycle
 
     //region hilt
-    implementation "com.google.dagger:hilt-android:$hiltVersion"
-    kapt "com.google.dagger:hilt-compiler:$hiltVersion"
+    implementation "com.google.dagger:hilt-android:$hiltAndroidVersion"
+    kapt "com.google.dagger:hilt-compiler:$hiltCompilerVersion"
     //endregion hilt
-
-    //region timber
-    implementation "com.jakewharton.timber:timber:$timberVersion"
-    //endregion timber
-
-    //region kotlin
-    implementation "org.jetbrains.kotlin:kotlin-reflect:1.6.10"
-    //endregion kotlin
 
     //region tests
     testImplementation(testFixtures(project(path: ':entity')))
-
     testImplementation "junit:junit:$junitVersion"
     testImplementation "io.mockk:mockk:$mockkVersion"
     testImplementation "com.google.truth:truth:$truthVersion"
     testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$kotlinxCoroutinesTestVersion"
-    testImplementation "android.arch.core:core-testing:1.1.1"
+    testImplementation "android.arch.core:core-testing:$coreTestingVersion"
     //endregion tests
 
     //region android tests
-    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+    androidTestImplementation "androidx.test.ext:junit:$androidJunitVersion"
     //endregion android tests
 }
