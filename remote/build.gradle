@@ -2,15 +2,14 @@ plugins {
     id 'com.android.library'
     id 'kotlin-android'
     id 'kotlin-kapt'
-    id 'dagger.hilt.android.plugin'
 }
 
 android {
-    compileSdk 31
+    compileSdk CompileSdkVersion
 
     defaultConfig {
-        minSdk 24
-        targetSdk 31
+        minSdk MinSdkVersion
+        targetSdk TargetSdkVersion
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
@@ -22,10 +21,12 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_11
         targetCompatibility JavaVersion.VERSION_11
     }
+
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_11
     }
@@ -34,37 +35,29 @@ android {
 dependencies {
     implementation project(path: ':repository')
 
-    //region hilt
-    implementation "com.google.dagger:hilt-android:$hiltVersion"
-    kapt "com.google.dagger:hilt-compiler:$hiltVersion"
-    kapt "com.google.dagger:hilt-android-compiler:$hiltVersion"
-    kapt "androidx.hilt:hilt-compiler:1.0.0"
-    implementation "androidx.hilt:hilt-lifecycle-viewmodel:$androidx_hilt"
-    //endregion hilt
+    //region basic tools
+    implementation "com.google.dagger:dagger:$daggerVersion"
+    implementation "com.jakewharton.timber:timber:$timberVersion"
+    //endregion basic tools
 
     //region moshi
     implementation "com.squareup.moshi:moshi:$moshiVersion"
-    implementation "com.squareup.moshi:moshi-kotlin:1.13.0"
-    implementation "com.squareup.retrofit2:converter-moshi:2.9.0"
+    implementation "com.squareup.moshi:moshi-kotlin:$moshiKotlinVersion"
+    implementation "com.squareup.retrofit2:converter-moshi:$converterMoshiVersion"
     //endregion moshi
 
     //region okhttp
-    implementation "com.squareup.okhttp3:okhttp:5.0.0-alpha.3"
-    implementation 'com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.3'
-    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    implementation "com.squareup.okhttp3:okhttp:$okhttpVersion"
+    implementation "com.squareup.okhttp3:logging-interceptor:$loggingInterceptorVersion"
+    implementation "com.squareup.retrofit2:retrofit:$retrofitVersion"
     //endregion okhttp
-
-    //region timber
-    implementation "com.jakewharton.timber:timber:5.0.1"
-    //endregion timber
 
     //region tests
     testImplementation(testFixtures(project(path: ':entity')))
-
     testImplementation "junit:junit:$junitVersion"
     testImplementation "io.mockk:mockk:$mockkVersion"
     testImplementation "com.google.truth:truth:$truthVersion"
-    testImplementation "com.squareup.okhttp3:mockwebserver:4.9.3"
+    testImplementation "com.squareup.okhttp3:mockwebserver:$mockwebserverVersion"
     testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$kotlinxCoroutinesTestVersion"
     //endregion tests
 }
