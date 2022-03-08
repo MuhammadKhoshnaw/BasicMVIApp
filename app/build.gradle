@@ -57,11 +57,11 @@ dependencies {
     //endregion basic tools
 
     //region hilt
-    implementation "com.google.dagger:hilt-android:$hiltVersion"
-    kapt "com.google.dagger:hilt-compiler:$hiltVersion"
-    kapt "com.google.dagger:hilt-android-compiler:$hiltVersion"
-    kapt "androidx.hilt:hilt-compiler:1.0.0"
-    implementation "androidx.hilt:hilt-lifecycle-viewmodel:$androidx_hilt"
+    implementation "com.google.dagger:hilt-android:$hiltAndroidVersion"
+    kapt "com.google.dagger:hilt-compiler:$hiltCompilerVersion"
+    kapt "com.google.dagger:hilt-android-compiler:$hiltAndroidCompilerVersion"
+    kapt "androidx.hilt:hilt-compiler:$androidxHiltCompilerVersion"
+    implementation "androidx.hilt:hilt-lifecycle-viewmodel:$hiltLifecycleViewmodelVersion"
     //endregion hilt
 
     //region okhttp
@@ -91,6 +91,6 @@ dependencies {
 
     //region android Test
     androidTestImplementation "androidx.test.ext:junit:$androidJunitVersion"
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+    androidTestImplementation "androidx.test.espresso:espresso-core:$espressoCoreVersion"
     //endregion android Test
 }

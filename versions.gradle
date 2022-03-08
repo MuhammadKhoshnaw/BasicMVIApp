@@ -32,6 +32,10 @@ ext {
 
     hiltAndroidVersion = '2.41'
     hiltCompilerVersion = "2.41"
+    hiltAndroidCompilerVersion = "2.41"
+    androidxHiltCompilerVersion = "1.0.0"
+    hiltLifecycleViewmodelVersion = "1.0.0-alpha03"
+
     androidJunitVersion = '1.1.3'
 
     coreTestingVersion = '1.1.1'
