@@ -42,7 +42,6 @@ dependencies {
     //region basic tools
     implementation "com.jakewharton.timber:timber:$timberVersion"
     implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlinReflectVersion"
-
     //endregion basic tools
 
     //region lifecycle

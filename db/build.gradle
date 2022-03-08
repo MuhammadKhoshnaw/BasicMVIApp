@@ -33,7 +33,7 @@ android {
 }
 
 dependencies {
-    implementation project(path: ':repository')
+    api project(path: ':repository')
 
     //region basic tools
     implementation "com.google.dagger:dagger:$daggerVersion"

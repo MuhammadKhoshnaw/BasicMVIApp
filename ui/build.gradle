@@ -6,11 +6,11 @@ plugins {
 }
 
 android {
-    compileSdk 31
+    compileSdk CompileSdkVersion
 
     defaultConfig {
-        minSdk 24
-        targetSdk 31
+        minSdk MinSdkVersion
+        targetSdk TargetSdkVersion
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
@@ -31,6 +31,7 @@ android {
         sourceCompatibility JavaVersion.VERSION_11
         targetCompatibility JavaVersion.VERSION_11
     }
+
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_11
     }
@@ -38,18 +39,21 @@ android {
 
 dependencies {
     //region setup
-    api project(path: ':entity')
     api project(path: ':viewModel')
-
-    implementation "androidx.core:core-ktx:1.7.0"
-    implementation 'androidx.fragment:fragment-ktx:1.4.1'
-//    implementation "androidx.fragment:activity-ktx:1.3.6"
-    implementation "androidx.appcompat:appcompat:1.4.1"
-    implementation "com.google.android.material:material:1.5.0"
-    implementation "androidx.constraintlayout:constraintlayout:2.1.3"
-    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
-    implementation 'com.android.support:multidex:1.0.3'
     //endregion setup
+
+    //region basic tools
+    implementation "com.google.android.material:material:$materialVersion"
+    implementation "com.jakewharton.timber:timber:$timberVersion"
+    //endregion basic tools
+
+    //region UI tools
+    implementation "androidx.core:core-ktx:$coreKtxVersion"
+    implementation "androidx.fragment:fragment-ktx:$fragmentKtxVersion"
+    implementation "androidx.appcompat:appcompat:$appcompatVersion"
+    implementation "androidx.constraintlayout:constraintlayout:$constraintlayoutVersion"
+    implementation "androidx.swiperefreshlayout:swiperefreshlayout:$swiperefreshlayoutVersion"
+    //region UI tools
 
     //region lifecycle
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycleLivedataKtxVersion"
@@ -57,29 +61,28 @@ dependencies {
     //endregion lifecycle
 
     //region navigation
-    implementation("androidx.navigation:navigation-fragment-ktx:2.4.1")
-    implementation("androidx.navigation:navigation-ui-ktx:2.4.1")
-//    androidTestImplementation("androidx.navigation:navigation-testing:$nav_version")
+    implementation("androidx.navigation:navigation-fragment-ktx:$navigationFragmentKtxVersion")
+    implementation("androidx.navigation:navigation-ui-ktx:$navigationUiKtxVersion")
     //endregion navigation
 
     //region hilt
-    implementation "com.google.dagger:hilt-android:$hiltVersion"
-    kapt "com.google.dagger:hilt-compiler:$hiltVersion"
+    implementation "com.google.dagger:hilt-android:$hiltAndroidVersion"
+    kapt "com.google.dagger:hilt-compiler:$hiltCompilerVersion"
     //endregion hilt
 
-    //region timber
-    implementation "com.jakewharton.timber:timber:$timberVersion"
-    //endregion timber
-
     //region glide
-    implementation 'com.github.bumptech.glide:glide:4.12.0'
-    annotationProcessor 'com.github.bumptech.glide:compiler:4.12.0'
+    implementation "com.github.bumptech.glide:glide:$glideVersion"
+    annotationProcessor "com.github.bumptech.glide:compiler:$compilerVersion"
+    implementation 'com.github.bumptech.glide:okhttp3-integration:4.13.1'
     //endregion glide
 
     //region tests
-    testImplementation(testFixtures(project(path: ':entity')))
-
+    testImplementation testFixtures(project(path: ':entity'))
     testImplementation "junit:junit:$junitVersion"
-    androidTestImplementation "androidx.test.ext:junit:$androidJunitVersion"
     //endregion tests
+
+    //region android tests
+    androidTestImplementation "androidx.test.ext:junit:$androidJunitVersion"
+    androidTestImplementation "androidx.navigation:navigation-testing:$nav_version"
+    //endregion android tests
 }
