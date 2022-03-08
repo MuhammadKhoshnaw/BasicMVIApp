@@ -1,7 +1,7 @@
 ext {
-    min_sdk_version = 24
-    target_sdk_version = 31
-    compile_sdk_version = 31
+    MinSdkVersion = 24
+    TargetSdkVersion = 31
+    CompileSdkVersion = 31
 
     kotlinVersion = '1.5.30'
     hiltVersion = '2.40.5'
@@ -17,6 +17,8 @@ ext {
     mockkVersion = '1.12.3'
     truthVersion = '1.1.3'
 
+    moshiVersion = '1.13.0'
+    roomRuntimeVersion = '2.4.2'
 
 
     lifecycle_version = "2.4.0"

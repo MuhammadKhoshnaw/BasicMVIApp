@@ -6,12 +6,12 @@ plugins {
 }
 
 android {
-    compileSdk rootProject.ext.compile_sdk_version
+    compileSdk CompileSdkVersion
 
     defaultConfig {
         applicationId "com.khoshnaw.basicmvi"
-        minSdkVersion rootProject.ext.min_sdk_version
-        targetSdkVersion rootProject.ext.target_sdk_version
+        minSdkVersion MinSdkVersion
+        targetSdkVersion TargetSdkVersion
         versionCode 1
         versionName "1.0.0"
 
@@ -80,7 +80,7 @@ dependencies {
     //endregion okhttp
 
     //region room
-    implementation "androidx.room:room-runtime:2.4.1"
+    implementation "androidx.room:room-runtime:$roomRuntimeVersion"
     annotationProcessor "androidx.room:room-compiler:2.4.1"
     kapt("androidx.room:room-compiler:2.4.1")
     implementation("androidx.room:room-ktx:2.4.1")
@@ -88,7 +88,7 @@ dependencies {
     //endregion room
 
     //region moshi
-    implementation "com.squareup.moshi:moshi:1.13.0"
+    implementation "com.squareup.moshi:moshi:$moshiVersion"
     implementation "com.squareup.moshi:moshi-kotlin:1.13.0"
     implementation "com.squareup.retrofit2:converter-moshi:2.9.0"
     //endregion moshi

@@ -14,7 +14,7 @@ dependencies {
     //region basic tools
     implementation "com.google.dagger:dagger:$daggerVersion"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinxCoroutinesCoreVersion"
-    //endregion dagger
+    //endregion basic tools
 
     //region tests
     testImplementation(testFixtures(project(path: ':entity')))
