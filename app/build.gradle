@@ -81,10 +81,9 @@ dependencies {
 
     //region room
     implementation "androidx.room:room-runtime:$roomRuntimeVersion"
-    annotationProcessor "androidx.room:room-compiler:2.4.1"
-    kapt("androidx.room:room-compiler:2.4.1")
-    implementation("androidx.room:room-ktx:2.4.1")
-    testImplementation("androidx.room:room-testing:2.4.1")
+    kapt "androidx.room:room-compiler:$roomCompilerVersion1"
+    implementation "androidx.room:room-ktx:$roomKtxVersion"
+    testImplementation "androidx.room:room-testing:$roomTestingVersion"
     //endregion room
 
     //region moshi
