@@ -48,8 +48,8 @@ dependencies {
     //endregion lifecycle
 
     //region hilt
-    implementation "com.google.dagger:hilt-android:$hilt_version"
-    kapt "com.google.dagger:hilt-compiler:$hilt_version"
+    implementation "com.google.dagger:hilt-android:$hiltVersion"
+    kapt "com.google.dagger:hilt-compiler:$hiltVersion"
     //endregion hilt
 
     //region timber
