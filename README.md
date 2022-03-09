@@ -83,7 +83,7 @@ data class Movie(
 
 ### TestFixtures
 
-In this module, we also have some test fixtures. [MovieDummies](entity/src/testFixtures/java/com/khoshnaw/entity/MovieDummies.kt) has some dummy movie objects that we will need it in our tests.
+In this module, we also have some test fixtures. [MovieDummies](entity/src/testFixtures/java/com/khoshnaw/entity/MovieDummies.kt) has some dummy movie objects that we will be needed in our tests.
 
 ```
 @Suppress("unused", "MemberVisibilityCanBePrivate")
@@ -154,21 +154,25 @@ object ExceptionDummies {
 ```
 class FakeException : Exception()
 ```
+For more information about test fixtures check out [Using test fixtures
+](https://docs.gradle.org/current/userguide/java_testing.html#sec:java_test_fixtures)
 
-# UseCase
+# Application Business Rules Layer
+
+## UseCase
 
 In most clean architecture implementations you see that use cases are just a class with a single method. I don’t know where that concept comes from.
 But I don’t think that this concept is related to clean architecture. UseCase is much more than a class with a single method. It is your user story.
 your business rules. You basically need to translate the user story that you have in your Jira ticket to a UseCase class in your Application Business
 Rules layer.
 
-## Base Implementation
+### Base Implementation
 
 Back to our template in the base package, you will see InputPort, OutputPort And UseCase, base classes.
 
 ![Architecture](.github/res/UseCaseClassDiagram.svg)
 
-As you can see the controller has an object of the UseCase that has an InputPort type. And then the UseCase has an Object of ViewModel with the type
+As you can see the ViewModel has an object of the UseCase that has an InputPort type. And then the UseCase also has an Object of ViewModel with the type
 OutputPort. This will reverse the dependency between UseCase and ViewModel. Let’s look at the actual code.
 
 ```
