@@ -63,9 +63,14 @@ For this template, eight different software components have been used as shown i
 Of Course, you can have more layers but I don’t think having fewer layers will be a good idea. For this template, we are trying to have the most basic
 implementation possible so we go with 4 layers.
 
-# Entity
+# Enterprise Business Rules Layer
 
-In our entity, we have our [Movie](entity/src/main/java/com/khoshnaw/entity/Movie.kt) Class which have some movie properties.
+## Entity
+
+Entities are business objects of the application. They encapsulate the most abstract information about our business rules that are less likely to change when something external changes. 
+It is prefered to make our entities a simple data class that just encapsulates data and not behaviours. I.e it is prefered to not have functions in our entity class.
+
+For example in our entity, we have our [Movie](entity/src/main/java/com/khoshnaw/entity/Movie.kt) Class which have some movie properties. Those properties will not be changed if we change the navigation of our application. or added a filter for example.
 
 ```
 data class Movie(
@@ -76,10 +81,9 @@ data class Movie(
 )
 ```
 
-## TestFixtures
+### TestFixtures
 
-In this module, we also have some test fixtures. [MovieDummies](entity/src/testFixtures/java/com/khoshnaw/entity/MovieDummies.kt) have some dummy
-movie objects that we will need in our tests.
+In this module, we also have some test fixtures. [MovieDummies](entity/src/testFixtures/java/com/khoshnaw/entity/MovieDummies.kt) has some dummy movie objects that we will need it in our tests.
 
 ```
 @Suppress("unused", "MemberVisibilityCanBePrivate")
