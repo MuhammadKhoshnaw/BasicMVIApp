@@ -17,7 +17,7 @@ For this template, we don't need to go crazy with features. We just need enough 
 we can reuse In future. The application is a basic movie app. That uses [TMDB API](https://www.themoviedb.org/documentation/api) to cash a list of
 popular movies. And then show it to the user. With the ability to refresh the cache when the user needed it.
 
-- Add the key `tmdb_api_key={API_KEY}` in your `local.properties` file to run the project 😃
+- Add the key `tmdb_api_key={API_KEY}` in your `local.properties` file to run the project
 - ⚠️🚧 Don't check out API keys to version control ⚠️🚧
 
 # Architecture
@@ -51,12 +51,12 @@ different modules or even more. The same thing applies to use cases and other la
 
 ![ComponentDiagram](.github/res/ComponentDiagram.svg)
 
-For this template, nine different software components have been used as shown in the diagram.
+For this template, eight different software components have been used as shown in the diagram.
 
 1. In the innermost layer, we have an entity which is a java module.
 2. Then In the second layer, we have useCase another java module.
-3. For the third layer, we have three modules: controller and gateway are java modules. But ViewModel is an android module with a minimum dependency
-   on the android platform as possible.
+3. For the third layer, we have two modules: repository and ViewModel both of them are android module with as minimum dependency as possible on the
+   android platform.
 4. And in the outermost layer, We have 4 heavily dependent on the android framework modules. The application is our actual application module. UI,
    Remote and DB are also android modules.
 
