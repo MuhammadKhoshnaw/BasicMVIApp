@@ -67,10 +67,12 @@ implementation possible so we go with 4 layers.
 
 ## Entity
 
-Entities are business objects of the application. They encapsulate the most abstract information about our business rules that are less likely to change when something external changes. 
-It is prefered to make our entities a simple data class that just encapsulates data and not behaviours. I.e it is prefered to not have functions in our entity class.
+Entities are business objects of the application. They encapsulate the most abstract information about our business rules that are less likely to
+change when something external changes. It is prefered to make our entities a simple data class that just encapsulates data and not behaviours. I.e it
+is prefered to not have functions in our entity class.
 
-For example in our entity, we have our [Movie](entity/src/main/java/com/khoshnaw/entity/Movie.kt) Class which have some movie properties. Those properties will not be changed if we change the navigation of our application. or added a filter for example.
+For example in our entity, we have our [Movie](entity/src/main/java/com/khoshnaw/entity/Movie.kt) Class which have some movie properties. Those
+properties will not be changed if we change the navigation of our application. or added a filter for example.
 
 ```
 data class Movie(
@@ -83,7 +85,8 @@ data class Movie(
 
 ### TestFixtures
 
-In this module, we also have some test fixtures. [MovieDummies](entity/src/testFixtures/java/com/khoshnaw/entity/MovieDummies.kt) has some dummy movie objects that we will be needed in our tests.
+In this module, we also have some test fixtures. [MovieDummies](entity/src/testFixtures/java/com/khoshnaw/entity/MovieDummies.kt) has some dummy movie
+objects that we will be needed in our tests.
 
 ```
 @Suppress("unused", "MemberVisibilityCanBePrivate")
@@ -154,6 +157,7 @@ object ExceptionDummies {
 ```
 class FakeException : Exception()
 ```
+
 For more information about test fixtures check out [Using test fixtures
 ](https://docs.gradle.org/current/userguide/java_testing.html#sec:java_test_fixtures)
 
@@ -172,12 +176,12 @@ Back to our template in the base package, you will see InputPort, OutputPort And
 
 ![Architecture](.github/res/UseCaseClassDiagram.svg)
 
-As you can see the ViewModel has an object of the UseCase that has an InputPort type. And then the UseCase also has an Object of ViewModel with the type
-OutputPort. This will reverse the dependency between UseCase and ViewModel. Let’s look at the actual code.
+As you can see the ViewModel has an object of the UseCase that has an InputPort type. And then the UseCase also has an Object of ViewModel with the
+type OutputPort. This will reverse the dependency between UseCase and ViewModel. Let’s look at the actual code.
 
 ```
 interface InputPort<in O : OutputPort> {
-suspend fun registerOutputPort(outputPort: O)
+    suspend fun registerOutputPort(outputPort: O)
 }
 ```
 
@@ -208,29 +212,30 @@ abstract class UseCase<O : OutputPort> : InputPort<O> {
 }
 ```
 
-Then last but not least we have the base Gateway interface. Which is an empty interface that might be useful in future for some polymorphism
-implementation. We will discuss Gateways in more detail later on. But for now, you just need to know that Usecases will use a gateway to access data
-in our android framework. Like data in remote API or local DB.
+Then last but not least we have the base Repository interface. Which is an empty interface that might be useful in future for some polymorphism
+implementation. We will discuss Repository in more detail later on. But for now, you just need to know that Usecases will use a Repository to access
+data in our android framework. Like data in remote API or local DB.
 
 ```
-interface Gateway
+interface Repository
 ```
 
-# Gateways
+### Repository
 
-For this template, we only have one gateway called [MovieGateway](useCase/src/main/java/com/khoshnaw/usecase/movie/gateway/MovieGateway.kt)
+For this template, we only have one repository
+called [MovieRepository](useCase/src/main/java/com/khoshnaw/usecase/movie/repository/MovieRepository.kt)
 
 ```
-interface MovieGateway : Gateway {
+interface MovieRepository : Repository {
     suspend fun updateMovieList()
     suspend fun observeMovies(): Flow<List<Movie>>
     suspend fun loadMovieSize(): Int
 }
 ```
 
-## LoadMovieList
+### LoadMovieList
 
-Let's look at [LoadMovieListInputPort](useCase/src/main/java/com/khoshnaw/usecase/movie/loadMovieList/LoadMovieListInputPort.kt). Your input port has
+Let's look at [LoadMovieListInputPort](useCase/src/main/java/com/khoshnaw/usecase/movie/loadMovieList/LoadMovieListInputPort.kt). Our input port has
 one command that starts updating a movie list in the system cash.
 
 ```
@@ -260,7 +265,7 @@ throwing the exception after we hide the loading.
 
 ```
 class LoadMovieList @Inject constructor(
-    private val movieGateway: MovieGateway,
+    private val movieRepository: MovieRepository,
 ) : UseCase<LoadMovieListOutputPort>(), LoadMovieListInputPort {
 
     override suspend fun onReady() {
@@ -276,16 +281,16 @@ class LoadMovieList @Inject constructor(
     }
 
     private suspend fun loadMoviesIfNeeded() {
-        if (movieGateway.loadMovieSize() <= 0) startUpdatingMovieList()
+        if (movieRepository.loadMovieSize() <= 0) startUpdatingMovieList()
     }
 
-    private suspend fun observeMovies() = outputPort.observeMovies(movieGateway.observeMovies())
+    private suspend fun observeMovies() = outputPort.startObserveMovies(movieRepository.observeMovies())
 
     private suspend fun showLoading() = outputPort.showLoading(true)
 
     private suspend fun hideLoading() = outputPort.showLoading(false)
 
-    private suspend fun updateMovies() = movieGateway.updateMovieList()
+    private suspend fun updateMovies() = movieRepository.updateMovieList()
 
 }
 ```
@@ -294,7 +299,7 @@ class LoadMovieList @Inject constructor(
 
 The gateway module is a pure java module. This module contains our gateway implementation with it is data sources.
 
-![GatewayClassDiagram](.github/res/GatewayClassDiagram.svg)
+![GatewayClassDiagram](.github/res/RepositoryClassDiagram.svg)
 
 As shown in the UML diagram, our usecase has a weak reference to the gatewayImp class which is the gateway implementation in the third layer of our
 architecture. Then our gateway implementation has multiple local or remote data sources. Those interfaces are in the third layer as well. But the
