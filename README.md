@@ -991,6 +991,7 @@ dependencies {
     ...
 }
 ```
+---
 
 ```
 Copyright (c) <2021> <Muhammad Khoshnaw>
