@@ -519,6 +519,8 @@ We also need another class called [StandardViewModel](viewModel/src/main/java/co
 some default configuration that is needed in most of our ViewModels. This class have some default behaviour for injecting output ports, consuming
 intents that come from the view. and also showing a default error message when something goes wrong.
 
+notice
+
 ```
 @Suppress("MemberVisibilityCanBePrivate")
 abstract class StandardViewModel<S : MVIState, I : MVIIntent>(
@@ -614,19 +616,18 @@ data class MovieUIDTO(
 ### UI DTO Mappers
 
 The UI mappers are mapping our entity objects to the UID TO objects. for example,
-the [MovieMappers](viewModel/src/main/java/com/khoshnaw/viewmodel/mapper/MovieMappers.kt) is mapping our movie class to
-the [MovieUIDTO](viewModel/src/main/java/com/khoshnaw/viewmodel/dto/MovieUIDTO.kt) notice that we are setting the base URL for poster path and we also
-change average to string so it can be used easier by our UI.
+the [MovieMappers](viewModel/src/main/java/com/khoshnaw/viewmodel/mapper/MovieMappers.kt) is mapping our `movie` class to the `MovieUIDTO` notice that
+we are setting the base URL for poster path and we also change average to string so it can be used easier by our UI.
 
 ```
-fun Movie.toDTO() = MovieUIDTO(
+internal fun Movie.toUIDTO() = MovieUIDTO(
     id = id,
     posterPath = BuildConfig.TMDB_API_BASE_IMG_URL + posterPath,
     title = title,
     voteAverage = voteAverage.toString(),
 )
 
-fun List<Movie>.toDTO() = map { it.toDTO() }
+internal fun List<Movie>.toUIDTO() = map { it.toUIDTO() }
 ```
 
 ### MovieViewModel
@@ -639,21 +640,24 @@ sealed class MoviesIntent : MVIIntent {
 
     object RefreshMovies : MoviesIntent()
 
-    class OnMovieClicked(val movie: Movie) : MoviesIntent()
+    class OnMovieClicked(
+        val position: Int,
+        val id: String,
+    ) : MoviesIntent()
 
 }
 ```
 
-For the [MoviesState](viewModel/src/main/java/com/khoshnaw/viewmodel/movies/MoviesState.kt) we have a movie list state which has a list of movies to
-show and a boolean that indicates whether the loading is showing or not.
+For the [MoviesState](viewModel/src/main/java/com/khoshnaw/viewmodel/movies/MoviesState.kt) we have a `MovieList` state which has a list
+of `MovieUIDTO` to show and a boolean that indicates whether the loading is showing or not.
 
 ```
 sealed class MoviesState(
-    open val movies: List<Movie> = listOf(),
+    open val movies: List<MovieUIDTO> = listOf(),
 ) : MVIState {
 
     class MovieList(
-        override val movies: List<Movie>,
+        override val movies: List<MovieUIDTO>,
         val isLoading: Boolean = false
     ) : MoviesState(movies)
 
@@ -661,9 +665,9 @@ sealed class MoviesState(
 ```
 
 The [MoviesViewModel](viewModel/src/main/java/com/khoshnaw/viewmodel/movies/MoviesViewModel.kt) then `handleIntent(intent: MoviesIntent)` method
-handling movie state using the movie movieInputPort. `observeMovies(flow: Flow<List>)` method is overriding from LoadMovieListOutputPort interface which
-is giving a flow so the view model can observe changes in the local movie list. and the `showLoading(loading: Boolean)` inform view model to show the
-loading or not.
+handling movie state using the movie movieInputPort. `observeMovies(flow: Flow<List>)` method is overriding from LoadMovieListOutputPort interface
+which is giving a flow so the view model can observe changes in the local movie list. and the `showLoading(loading: Boolean)` inform view model to
+show the loading or not.
 
 ```
 @HiltViewModel
@@ -705,7 +709,9 @@ class MoviesViewModel @Inject constructor(
 
 ## UI
 
-The UI module contains any UI related code Activity, Fragment, Adapter, XML resources etc...,
+The UI module contains any UI related code Activity, Fragment, Adapter, XML resources etc..., Notice that our architecture make sure that our UI model
+is as dumb as possible. Since our entities and use-cases are responsible for the business logic. And then our ViewModel is translating between our UI
+and our use-cases. This will make sure that our UI doesn't have any important code. It is just showing what the view model tell it to show.
 
 ### Base Implementation
 
