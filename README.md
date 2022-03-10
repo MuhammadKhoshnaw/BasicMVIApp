@@ -522,56 +522,79 @@ some default configuration that is needed in most of our ViewModels. This class 
 intents that come from the view. and also showing a default error message when something goes wrong.
 
 ```
-abstract class StandardViewModel<S : MVIState, I : MVIIntent> : MVIViewModel<S, I>() {
+@Suppress("MemberVisibilityCanBePrivate")
+abstract class StandardViewModel<S : MVIState, I : MVIIntent>(
+    private val backgroundDispatcher: CoroutineContext = Dispatchers.IO
+) : MVIViewModel<S, I>() {
 
-    override val intents: Channel<I> = Channel()
+    override val intents: Channel<I> by lazy {
+        Channel<I>().tryToConsume()
+    }
     private val _state = MutableLiveData<S>()
     override val state: LiveData<S> = _state
+    val error = Channel<ErrorMessage>()
 
-    val error = Channel<String>()
-
-    protected fun <O : OutputPort> O.init() = viewModelScope.launch(Dispatchers.IO) {
-        injectOutputPorts()
-        consumeIntents()
+    init {
+        tryToInjectOutputPorts()
     }
 
-    private suspend fun <O : OutputPort> O.injectOutputPorts() = this::class.memberProperties.map {
-        it.isAccessible = true
-        it.getter.call(this)
-    }.filterIsInstance<Controller<*, O>>().forEach {
-        it.registerOutputPort(this)
-    }
-
-    private suspend fun consumeIntents() = intents.consumeAsFlow().collect {
-        tryToHandleIntent(it)
+    //region intent
+    private fun Channel<I>.tryToConsume(): Channel<I> {
+        launchInIO { tryTo { consumeAsFlow().collect { tryToHandleIntent(it) } } }
+        return this@tryToConsume
     }
 
     private suspend fun tryToHandleIntent(intent: I) = tryTo {
         handleIntent(intent)
     }
 
-    private suspend fun tryTo(callback: suspend () -> Unit) = try {
+    protected open suspend fun handleIntent(intent: I): Any = Unit
+    //endregion intent
+
+    //region injection
+    private fun <O : OutputPort> O.tryToInjectOutputPorts() {
+        launchInIO { tryTo { injectOutputPorts() } }
+    }
+
+    private suspend fun <O : OutputPort> O.injectOutputPorts() = this::class.memberProperties.map {
+        it.isAccessible = true
+        it.getter.call(this)
+    }.filterIsInstance<InputPort<O>>().forEach {
+        it.registerOutputPort(this@injectOutputPorts)
+    }
+    //endregion injection
+
+    //region error
+    open fun updateError(e: Throwable) = updateError(ErrorMessage.DEFAULT)
+
+    open fun updateError(message: ErrorMessage) {
+        launchInIO { error.send(message) }
+    }
+    //endregion error
+
+    //region utils
+    protected suspend fun tryTo(callback: suspend () -> Unit) = try {
         callback()
     } catch (e: Throwable) {
         Timber.e(e)
-        onError(e)
+        updateError(e)
     }
-
-    open fun onError(e: Throwable) {
-        viewModelScope.launch {
-            error.send("some thing went wrong")
-        }
-    }
-
-    protected open suspend fun handleIntent(intent: I): Any = Unit
 
     protected fun <T> Flow<T>.collectResult(
-        action: suspend (value: T) -> Unit
-    ) = viewModelScope.launch(Dispatchers.Main) { tryTo { collect { action(it) } } }
+        action: (value: T) -> Unit
+    ) = launchInIO { tryTo { collect { tryTo { action(it) } } } }
 
-    protected fun updateState(state: S) {
-        _state.postValue(state)
-    }
+    protected fun updateState(state: S) = _state.postValue(state)
+
+    protected fun launchInIO(
+        start: CoroutineStart = CoroutineStart.DEFAULT,
+        block: suspend CoroutineScope.() -> Unit
+    ) = viewModelScope.launch(
+        context = backgroundDispatcher,
+        start = start,
+        block = block,
+    )
+    //endregion utils
 }
 ```
 
@@ -639,30 +662,36 @@ sealed class MoviesState(
 }
 ```
 
-The [MoviesViewModel](viewModel/src/main/java/com/khoshnaw/viewmodel/movies/MoviesViewModel.kt) has an init block that call the init() method in the
-super class which is injecting MovieViewModel as an output port to the controller. then handleIntent(intent: MoviesIntent) method handling movie state
-using the movie controller. observeMovies(flow: Flow<List>) method is overriding from LoadMovieListOutputPort interface which is giving a flow so the
-view model can observe changes in the local movie list. and the showLoading(loading: Boolean) inform view model to show the loading or not.
+The [MoviesViewModel](viewModel/src/main/java/com/khoshnaw/viewmodel/movies/MoviesViewModel.kt) then handleIntent(intent: MoviesIntent) method
+handling movie state using the movie movieInputPort. observeMovies(flow: Flow<List>) method is overriding from LoadMovieListOutputPort interface which
+is giving a flow so the view model can observe changes in the local movie list. and the showLoading(loading: Boolean) inform view model to show the
+loading or not.
 
 ```
 @HiltViewModel
 class MoviesViewModel @Inject constructor(
-    private val movieController: MovieController
+    private val movieInputPort: LoadMovieListInputPort
 ) : StandardViewModel<MoviesState, MoviesIntent>(),
     LoadMovieListOutputPort {
 
-    init {
-        init()
-    }
-
     override suspend fun handleIntent(intent: MoviesIntent) = when (intent) {
-        MoviesIntent.RefreshMovies -> movieController.loadMoviesList()
-        is MoviesIntent.OnMovieClicked -> movieController.showMovie(intent.movie)
+        is MoviesIntent.RefreshMovies -> handleRefreshMovies()
+        is MoviesIntent.OnMovieClicked -> handleMovieClicked(intent)
     }
 
-    override suspend fun observeMovies(flow: Flow<List<Movie>>) {
+    private suspend fun handleRefreshMovies() {
+        movieInputPort.startUpdatingMovieList()
+    }
+
+    private fun handleMovieClicked(intent: MoviesIntent.OnMovieClicked) {
+        state.value?.movies?.getOrNull(intent.position)?.takeIf { it.id == intent.id }?.let {
+            println("showing movie : $it")
+        }
+    }
+
+    override suspend fun startObserveMovies(flow: Flow<List<Movie>>) {
         flow.collectResult {
-            updateState(MoviesState.MovieList(it))
+            updateState(MoviesState.MovieList(it.toUIDTO()))
         }
     }
 
@@ -931,11 +960,8 @@ HiltAndroidApp needs to have access to all our modules in order to work.
 dependencies {
     //region setup
     api project(path: ':ui')
-    api project(path: ':controller')
     api project(path: ':db')
     api project(path: ':remote')
-    
-    ... 
     //endregion setup
     
     ...
