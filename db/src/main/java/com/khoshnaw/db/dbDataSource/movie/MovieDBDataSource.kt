@@ -1,5 +1,6 @@
-package com.khoshnaw.db.movie
+package com.khoshnaw.db.dbDataSource.movie
 
+import com.khoshnaw.db.dao.MovieDao
 import com.khoshnaw.repository.local.dataSource.MovieLocalDataSource
 import com.khoshnaw.repository.local.dto.MovieLocalDTO
 import kotlinx.coroutines.flow.Flow

@@ -903,19 +903,24 @@ class MoviesFragment : StandardFragment<FragmentMoviesBinding, MoviesViewModel>(
 
 ## Remote
 
-The Remote module is an Android module that is heavenly depending on the android framework to do any remote operation. This module is using tools like
-OkHttp, Retrofit and Moshi. To perform a network HTTP requests to the Movie DB API then parse and map the result to an entity represented object.
+The Remote module is an Android module that is heavenly depending on the android framework to do the system remote operation. This module is using
+tools like OkHttp, Retrofit and Moshi. To perform a network HTTP requests to the Movie DB API then parse and map the result to an entity represented
+object. Again there isn't any important code in this module it is rather just performing what the repository is asking in the third layer.
 
 ## APIDataSource
 
 The API data source is the actual implementation of the remote data sources. Those classes are using movie DB API to access the remote data in the
 system.
 
+### Base Implementation
+
 The base implementation is an empty Class called [APIDataSource](remote/src/main/java/com/khoshnaw/remote/apiDataSource/base/APIDataSource.kt).
 
 ```
 abstract class APIDataSource
 ```
+
+### Movie API DataSource
 
 The [MovieAPIDataSource](remote/src/main/java/com/khoshnaw/remote/apiDataSource/movie/MovieAPIDataSource.kt) is using movieApi that is provided by
 retrofit to perform movie-related remote operating. Like loading movie list using LoadMovieList function. Notice that the movieApi class is returning
@@ -925,15 +930,18 @@ a MovieRemoteDTO movie object but we use a mapper to map the DTO to an entity.
 class MovieAPIDataSource @Inject constructor(
     private val movieApi: MovieApi
 ) : APIDataSource(), MovieRemoteDataSource {
-    override suspend fun loadMovieList(): List<Movie> =
-        movieApi.loadMovieList().bodyOrException().movieList.toEntity()
+
+    override suspend fun loadMovieList(
+    ): List<MovieRemoteDTO> = movieApi.loadMovieList().bodyOrException().movieList
+
 }
 ```
 
 ## DB
 
 The DB module is also an Android module that is heavenly depending on the android framework to cash data locally. This module is using the Room
-library to perform its actions.
+library to perform its actions. and also we need to make this module as dumb as possible. It just needs to do what is the repository is asking it to
+do.
 
 ## DBDataSource
 
@@ -950,11 +958,11 @@ class MovieDBDataSource @Inject constructor(
     private val movieDao: MovieDao
 ) : MovieLocalDataSource {
 
-    override suspend fun updateMovieList(movieList: List<Movie>): Unit =
-        movieDao.insertAll(movieList.toLocalDTO())
+    override suspend fun updateMovieList(movieList: List<MovieLocalDTO>): Unit =
+        movieDao.insertAll(movieList)
 
-    override suspend fun observeMovies(): Flow<List<Movie>> =
-        movieDao.observeMovies().map { it.toEntity() }
+    override suspend fun observeMovies(): Flow<List<MovieLocalDTO>> =
+        movieDao.observeMovies()
 
     override suspend fun loadMovieSize(): Int = movieDao.loadMovieSize()
 }

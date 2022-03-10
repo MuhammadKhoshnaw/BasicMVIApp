@@ -1,4 +1,4 @@
-package com.khoshnaw.db.movie
+package com.khoshnaw.db.dao
 
 import androidx.room.Dao
 import androidx.room.Insert

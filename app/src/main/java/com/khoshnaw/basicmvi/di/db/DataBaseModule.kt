@@ -2,8 +2,8 @@ package com.khoshnaw.basicmvi.di.db
 
 import android.content.Context
 import androidx.room.Room
-import com.khoshnaw.db.AppDatabase
-import com.khoshnaw.db.movie.MovieDao
+import com.khoshnaw.db.roomDB.AppDatabase
+import com.khoshnaw.db.dao.MovieDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
