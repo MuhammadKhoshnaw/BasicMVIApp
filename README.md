@@ -711,7 +711,8 @@ class MoviesViewModel @Inject constructor(
 
 The UI module contains any UI related code Activity, Fragment, Adapter, XML resources etc..., Notice that our architecture make sure that our UI model
 is as dumb as possible. Since our entities and use-cases are responsible for the business logic. And then our ViewModel is translating between our UI
-and our use-cases. This will make sure that our UI doesn't have any important code. It is just showing what the view model tell it to show.
+and our use-cases. This will make sure that our UI doesn't have any important code. It is just showing what the view model telling it to show. And
+Then tells the ViewModel what the user is doing.
 
 ### Base Implementation
 
@@ -724,8 +725,8 @@ practice to have this class.
 abstract class BaseActivity : AppCompatActivity()
 ```
 
-And then we have the [MVIActivity](ui/src/main/java/com/khoshnaw/ui/mvi/MVIActivity.kt) which
-implements [MVIView](ui/src/main/java/com/khoshnaw/ui/mvi/MVIView.kt) and has two generics for data binding and ViewModel.
+And then we have the [MVIActivity](ui/src/main/java/com/khoshnaw/ui/mvi/MVIActivity.kt) which implements `MVIView` and has two generics for data
+binding and ViewModel.
 
 ```
 abstract class MVIActivity<B : ViewDataBinding, V : StandardViewModel<*, *>> :
@@ -737,7 +738,7 @@ abstract class MVIActivity<B : ViewDataBinding, V : StandardViewModel<*, *>> :
 this is the id of the ViewModel in the xml layouts.
 
 ```
-interface MVIView<B : ViewDataBinding, V : StandardViewModel<*, *>> {
+interface MVIView<B : ViewDataBinding, V : MVIViewModel<*, *>> {
     val binding: B
     val viewModel: V
     val viewModelVariableId: Int
@@ -747,14 +748,12 @@ interface MVIView<B : ViewDataBinding, V : StandardViewModel<*, *>> {
 ```
 
 Then We have [StandardActivity](ui/src/main/java/com/khoshnaw/ui/standard/activity/StandardActivity.kt) which has some common behaviours for our
-activity. for example we choose that the default value for viewModelVariableId in our activities are BR.viewModel. But you still can change that by
-overriding the variable. then in the onCreate method, we use binding to set content view so you don't need to do that in every activity.
+activity. for example we choose that the default value for `viewModelVariableId` in our activities are `BR.viewModel`. But you still can change that
+by overriding the variable. then in the `onCreate` method, we use binding to set content view so you don't need to do that in every activity.
 
-We also inject the view model into the data binding object. and then we call observeState() method which is observing the view model states. and we
-also observe the errors from the view model. and we also have the onViewReady() method which will be called when the view is ready for extra change
-that the child activity might need.
-
-We also have run the intent method which is used by the sub-activities to run an intent in the lifecycle scope of the activity.
+We also inject the view model into the data binding object. and then we call `observeState()` method which is observing the view model states. and we
+observe the errors from the view model. and we also have the `onViewReady()` method which will be called when the view is ready for extra change that
+the child activity might need.
 
 ```
 abstract class StandardActivity<B : ViewDataBinding, V : StandardViewModel<*, *>> :
@@ -784,10 +783,16 @@ abstract class StandardActivity<B : ViewDataBinding, V : StandardViewModel<*, *>
         }
     }
 
-    override fun showError(message: String) {
-        Timber.tag("delete_me").i(message)
-        Snackbar.make(binding.root, message, Snackbar.LENGTH_SHORT).show()
+    override fun showError(message: ErrorMessage) {
+        val messageStr = if (message == ErrorMessage.DEFAULT) getString(R.string.default_error)
+        else message.message
+
+        showError(messageStr)
     }
+
+    private fun showError(messageStr: String) = Snackbar
+        .make(binding.root, messageStr, Snackbar.LENGTH_SHORT)
+        .show()
 
     override fun onViewReady() = Unit
     override fun handleState(state: MVIState) = Unit
@@ -804,7 +809,8 @@ important empty class. Notice that the BaseFragment is getting its layout from t
 abstract class BaseFragment(@LayoutRes contentLayoutId: Int) : Fragment(contentLayoutId)
 ```
 
-And then we have [MVIFragment](ui/src/main/java/com/khoshnaw/ui/mvi/MVIFragment.kt) which is very similar to MVIActivity. It is implementing MVIView
+And then we have [MVIFragment](ui/src/main/java/com/khoshnaw/ui/mvi/MVIFragment.kt) which is very similar to `MVIActivity`. It is
+implementing `MVIView`
 in addition to data binding and view model generics.
 
 ```
@@ -814,7 +820,7 @@ abstract class MVIFragment<B : ViewDataBinding, V : StandardViewModel<*, *>>(
     MVIView<B, V>
 ```
 
-And then [StandardFragment](ui/src/main/java/com/khoshnaw/ui/standard/fragment/StandardFragment.kt) is also similar to StandardActivity. but notice
+And then [StandardFragment](ui/src/main/java/com/khoshnaw/ui/standard/fragment/StandardFragment.kt) is also similar to `StandardActivity`. but notice
 that the standard fragment is using the main activity viewModel to send the error. this will give us a more stable error message implementation.
 
 ```
@@ -844,10 +850,10 @@ abstract class StandardFragment<B : ViewDataBinding, V : StandardViewModel<*, *>
         }
     }
 
-    override fun showError(message: String) {
+    override fun showError(message: ErrorMessage) {
         if (activity is StandardView<*, *>) {
             val standardActivity = (activity as StandardView<*, *>)
-            standardActivity.viewModel.sendError(message)
+            standardActivity.viewModel.updateError(message)
         }
     }
 
@@ -859,10 +865,10 @@ abstract class StandardFragment<B : ViewDataBinding, V : StandardViewModel<*, *>
 ### Movie Fragment
 
 In the [MoviesFragment](ui/src/main/java/com/khoshnaw/ui/view/movies/MoviesFragment.kt) we are giving the implementation for binding and ViewModel
-using property delegation. And when the user swipes the list to refresh the movies we are running MoviesIntent.RefreshMovies intent this will inform
+using property delegation. And when the user swipes the list to refresh the movies we are running `MoviesIntent.RefreshMovies` intent this will inform
 the view model to refresh the list.
 
-in handleState function, we are handling the MovieList state by showing the list and the loading if the UI is in the loading state.
+In `handleState` function, we are handling the `MovieList` state by showing the list and the loading if the UI is in the loading state.
 
 ```
 @AndroidEntryPoint
@@ -889,7 +895,7 @@ class MoviesFragment : StandardFragment<FragmentMoviesBinding, MoviesViewModel>(
 
     private fun handleMovieList(moviesState: MoviesState.MovieList) {
         binding.swipeRefresh.isRefreshing = moviesState.isLoading
-        moviesAdapter.items = moviesState.movies.toDTO()
+        moviesAdapter.items = moviesState.movies
     }
 
 }
