@@ -923,8 +923,7 @@ abstract class APIDataSource
 ### Movie API DataSource
 
 The [MovieAPIDataSource](remote/src/main/java/com/khoshnaw/remote/apiDataSource/movie/MovieAPIDataSource.kt) is using movieApi that is provided by
-retrofit to perform movie-related remote operating. Like loading movie list using LoadMovieList function. Notice that the movieApi class is returning
-a MovieRemoteDTO movie object but we use a mapper to map the DTO to an entity.
+retrofit to perform movie-related remote operating. Like loading movie list using LoadMovieList function.
 
 ```
 class MovieAPIDataSource @Inject constructor(
@@ -943,20 +942,27 @@ The DB module is also an Android module that is heavenly depending on the androi
 library to perform its actions. and also we need to make this module as dumb as possible. It just needs to do what is the repository is asking it to
 do.
 
-## DBDataSource
+### Base Implementation
+
+The base implementation is an empty Class called [DBDataSource](db/src/main/java/com/khoshnaw/db/dbDataSource/base/DBDataSource.kt).
+
+```
+abstract class DBDataSource
+```
+
+## Movie DB DataSource
 
 DB data sources is the actual implementation of the Local data source introduced in the repository module. Those data sources are using room DB to
 cash data locally and perform operations on it.
 
-Our [MovieDBDataSource](db/src/main/java/com/khoshnaw/db/movie/MovieDBDataSource.kt) Implements MovieLocalDataSource interface and gives concrete
-implementation for it. and notice that it takes a MovieDao object in its constructor and uses it to perform its operations. for example,
-updateMovieList function is using insertAll function in MovieDao to insert the movies to the movie table. and notice that it is using toLocalDTO to
-map the movie entity to MovieLocalDTO which is needed by insertAll method.
+Our [MovieDBDataSource](db/src/main/java/com/khoshnaw/db/dbDataSource/movie/MovieDBDataSource.kt) Implements `MovieLocalDataSource` interface and
+gives concrete implementation for it. and notice that it takes a MovieDao object in its constructor and uses it to perform its operations. for
+example, `updateMovieList` function is using insertAll function in `MovieDao` to insert the movies to the movie table.
 
 ```
 class MovieDBDataSource @Inject constructor(
     private val movieDao: MovieDao
-) : MovieLocalDataSource {
+) : DBDataSource(), MovieLocalDataSource {
 
     override suspend fun updateMovieList(movieList: List<MovieLocalDTO>): Unit =
         movieDao.insertAll(movieList)
@@ -970,7 +976,7 @@ class MovieDBDataSource @Inject constructor(
 
 ## APP
 
-Our App module is the actual application. it contains our Hilt/Dagger modules. so it has the DI configuration. In addition to App class. notice that
+Our App module is the actual application. it contains our Hilt/Dagger modules. So it has the DI configuration. In addition to App class. notice that
 in our [app/build](app/build.gradle) that the app is depending on all our other modules. which is actually a limitation in the hilt library.
 HiltAndroidApp needs to have access to all our modules in order to work.
 
