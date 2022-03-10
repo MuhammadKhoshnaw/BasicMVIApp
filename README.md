@@ -299,7 +299,7 @@ class LoadMovieList @Inject constructor(
 
 ## Repository
 
-The repository module is an android module but it dependency on android frame work is as minimum as possible. This module contains our repository
+The repository module is an android module but it's dependency on android frame work is as minimum as possible. This module contains our repository
 implementation with it is data source interfaces.
 
 ![RepositoryClassDiagram](.github/res/RepositoryClassDiagram.svg)
@@ -336,7 +336,7 @@ interface MovieLocalDataSource {
 
 #### Local DTO
 
-Our local DTO is used by our room library to cash data in our database. check
+Our local DTO is a data transfer object used by our room library to cash data in our database. check
 out [MovieLocalDTO](repository/src/main/java/com/khoshnaw/repository/local/dto/MovieLocalDTO.kt) as an example. notice that we can have @PrimaryKey to
 make our id a primary key to our movie table.
 
@@ -390,8 +390,8 @@ interface MovieRemoteDataSource {
 
 #### RemoteDTO
 
-The package DTO has our remoteDTO s like [MovieRemoteDTO](remote/src/main/java/com/khoshnaw/remote/dto/MovieRemoteDTO.kt) those DTO are data transfer
-objects that can be used to pars API JSON or encode data to JSON.
+The package DTO has our remoteDTO s like [MovieRemoteDTO](repository/src/main/java/com/khoshnaw/repository/remote/dto/MovieRemoteDTO.kt) those DTO are
+data transfer objects that can be used to pars API JSON or encode data to JSON.
 
 ```
 data class MovieRemoteDTO(
@@ -405,17 +405,17 @@ data class MovieRemoteDTO(
 #### RemoteDTO Mappers
 
 Our mappers are responsible to map entities to RemoteDTO or vice versa. For example, check
-out [MovieMapper.kt](remote/src/main/java/com/khoshnaw/remote/mapper/MovieMappers.kt) file.
+out [MovieMapper.kt](repository/src/main/java/com/khoshnaw/repository/remote/mapper/MovieMappers.kt) file.
 
 ```
-fun MovieRemoteDTO.toEntity() = Movie(
+internal fun MovieRemoteDTO.toEntity() = Movie(
     id = id,
     posterPath = posterPath,
     title = title,
     voteAverage = voteAverage,
 )
 
-fun List<MovieRemoteDTO>.toEntity() = map { it.toEntity() }
+internal fun List<MovieRemoteDTO>.toEntity() = map { it.toEntity() }
 ```
 
 ### RepositoryImp
@@ -424,11 +424,8 @@ Our only RepositoryImp is MovieRepositoryImp this is repository is responsible t
 remote data source and one local data source. It is also implementing our MovieRepository interface in the second layer.
 
 Then the updateMovieList function is using a remote data source to load new remote movies and then uses the local data source to update the locally
-cashed movie list.
-
-The function observeMovies is returning a flow of movies that can be used to observe the locally cashed movies.
-
-And loadMovieSize is just returning the size of locally cached movies.
+cashed movie list. The function observeMovies is returning a flow of movies that can be used to observe the locally cashed movies. And loadMovieSize
+is just returning the size of locally cached movies.
 
 ```
 class MovieRepositoryImp @Inject constructor(
