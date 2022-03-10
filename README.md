@@ -17,7 +17,7 @@ For this template, we don't need to go crazy with features. We just need enough 
 we can reuse In future. The application is a basic movie app. That uses [TMDB API](https://www.themoviedb.org/documentation/api) to cash a list of
 popular movies. And then show it to the user. With the ability to refresh the cache when the user needed it.
 
-- Add the key `tmdb_api_key={API_KEY}` in your `local.properties` file to run the project 😃
+- Add the key `tmdb_api_key={API_KEY}` in your `local.properties` file to run the project
 - ⚠️🚧 Don't check out API keys to version control ⚠️🚧
 
 # Architecture
@@ -51,21 +51,28 @@ different modules or even more. The same thing applies to use cases and other la
 
 ![ComponentDiagram](.github/res/ComponentDiagram.svg)
 
-For this template, nine different software components have been used as shown in the diagram.
+For this template, eight different software components have been used as shown in the diagram.
 
 1. In the innermost layer, we have an entity which is a java module.
 2. Then In the second layer, we have useCase another java module.
-3. For the third layer, we have three modules: controller and gateway are java modules. But ViewModel is an android module with a minimum dependency
-   on the android platform as possible.
+3. For the third layer, we have two modules: repository and ViewModel both of them are android module with as minimum dependency as possible on the
+   android platform.
 4. And in the outermost layer, We have 4 heavily dependent on the android framework modules. The application is our actual application module. UI,
    Remote and DB are also android modules.
 
 Of Course, you can have more layers but I don’t think having fewer layers will be a good idea. For this template, we are trying to have the most basic
 implementation possible so we go with 4 layers.
 
-# Entity
+# Enterprise Business Rules Layer
 
-In our entity, we have our [Movie](entity/src/main/java/com/khoshnaw/entity/Movie.kt) Class which have some movie properties.
+## Entity
+
+Entities are business objects of the application. They encapsulate the most abstract information about our business rules that are less likely to
+change when something external changes. It is preferred to make our entities a simple data class that just encapsulates data and not behaviours. I.e
+it is preferred to not have functions in our entity class.
+
+For example in our entity, we have our [Movie](entity/src/main/java/com/khoshnaw/entity/Movie.kt) Class which have some movie properties. Those
+properties will not be changed if we change the navigation of our application. or added a filter for example.
 
 ```
 data class Movie(
@@ -76,10 +83,10 @@ data class Movie(
 )
 ```
 
-## TestFixtures
+### TestFixtures
 
-In this module, we also have some test fixtures. [MovieDummies](entity/src/testFixtures/java/com/khoshnaw/entity/MovieDummies.kt) have some dummy
-movie objects that we will need in our tests.
+In this module, we also have some test fixtures. [MovieDummies](entity/src/testFixtures/java/com/khoshnaw/entity/MovieDummies.kt) has some dummy movie
+objects that we will be needed in our tests.
 
 ```
 @Suppress("unused", "MemberVisibilityCanBePrivate")
@@ -151,41 +158,46 @@ object ExceptionDummies {
 class FakeException : Exception()
 ```
 
-# UseCase
+For more information about test fixtures check out [Using test fixtures
+](https://docs.gradle.org/current/userguide/java_testing.html#sec:java_test_fixtures)
+
+# Application Business Rules Layer
+
+## UseCase
 
 In most clean architecture implementations you see that use cases are just a class with a single method. I don’t know where that concept comes from.
 But I don’t think that this concept is related to clean architecture. UseCase is much more than a class with a single method. It is your user story.
 your business rules. You basically need to translate the user story that you have in your Jira ticket to a UseCase class in your Application Business
 Rules layer.
 
-## Base Implementation
+### Base Implementation
 
 Back to our template in the base package, you will see InputPort, OutputPort And UseCase, base classes.
 
 ![Architecture](.github/res/UseCaseClassDiagram.svg)
 
-As you can see the controller has an object of the UseCase that has an InputPort type. And then the UseCase has an Object of ViewModel with the type
-OutputPort. This will reverse the dependency between UseCase and ViewModel. Let’s look at the actual code.
+As you can see the ViewModel has an object of the UseCase that has an InputPort type. And then the UseCase also has an Object of ViewModel with the
+type OutputPort. This will reverse the dependency between UseCase and ViewModel. Let’s look at the actual code.
 
 ```
 interface InputPort<in O : OutputPort> {
-suspend fun registerOutputPort(outputPort: O)
+    suspend fun registerOutputPort(outputPort: O)
 }
 ```
 
-Our InputPort has a general type of OutputPort. We will be using this general type in the registerOutputPort function to register the ViewModel in the
-UseCase as an outputPort. You might think that this is better to be done with dependency injection. Well, you are absolutely right, But I faced some
-limitations with android ViewModels that made me not able to use dependency injection to bind the ViewModel to the outPort. So I’m sticking to this
-function for now. Maybe in the future, I will find a better solution for this.
+Our `InputPort` has a general type of `OutputPort`. We will be using this general type in the `registerOutputPort` function to register
+the `ViewModel` in the `UseCase` as an `outputPort`. You might think that this is better to be done with dependency injection. Well, you are
+absolutely right, But I faced some limitations with android ViewModels that made me not able to use dependency injection to bind the ViewModel to the
+outPort. So I’m sticking to this function for now. Maybe in the future, I will find a better solution for this.
 
-The OutputPort is a simple interface.
+The `OutputPort` is a simple interface.
 
 ```
 interface OutputPort
 ```
 
-Now coming to the main course, UseCase has a general type of OutputPort that we use for the outputPort variable. The onReady function will be called
-right after the outputPort is registered. So you can run your setup code. We also have the default implementation for registerOutputPort.
+Now coming to the main course, UseCase has a general type of `OutputPort` that we use for the outputPort variable. The onReady function will be called
+right after the `outputPort` is registered. So you can run your setup code. We also have the default implementation for `registerOutputPort`.
 
 ```
 abstract class UseCase<O : OutputPort> : InputPort<O> {
@@ -200,29 +212,30 @@ abstract class UseCase<O : OutputPort> : InputPort<O> {
 }
 ```
 
-Then last but not least we have the base Gateway interface. Which is an empty interface that might be useful in future for some polymorphism
-implementation. We will discuss Gateways in more detail later on. But for now, you just need to know that Usecases will use a gateway to access data
-in our android framework. Like data in remote API or local DB.
+Then last but not least we have the base Repository interface. Which is an empty interface that might be useful in future for some polymorphism
+implementation. We will discuss Repository in more detail later on. But for now, you just need to know that Usecases will use a Repository to access
+data in our android framework. Like data in remote API or local DB.
 
 ```
-interface Gateway
+interface Repository
 ```
 
-# Gateways
+### Repository interfaces
 
-For this template, we only have one gateway called [MovieGateway](useCase/src/main/java/com/khoshnaw/usecase/movie/gateway/MovieGateway.kt)
+For this template, we only have one repository
+called [MovieRepository](useCase/src/main/java/com/khoshnaw/usecase/movie/repository/MovieRepository.kt)
 
 ```
-interface MovieGateway : Gateway {
+interface MovieRepository : Repository {
     suspend fun updateMovieList()
     suspend fun observeMovies(): Flow<List<Movie>>
     suspend fun loadMovieSize(): Int
 }
 ```
 
-## LoadMovieList
+### LoadMovieList
 
-Let's look at [LoadMovieListInputPort](useCase/src/main/java/com/khoshnaw/usecase/movie/loadMovieList/LoadMovieListInputPort.kt). Your input port has
+Let's look at [LoadMovieListInputPort](useCase/src/main/java/com/khoshnaw/usecase/movie/loadMovieList/LoadMovieListInputPort.kt). Our input port has
 one command that starts updating a movie list in the system cash.
 
 ```
@@ -232,8 +245,8 @@ interface LoadMovieListInputPort : InputPort<LoadMovieListOutputPort> {
 ```
 
 Then we have [LoadMovieListOutputPort](useCase/src/main/java/com/khoshnaw/usecase/movie/loadMovieList/LoadMovieListOutputPort.kt) which has two
-commands showLoading that hide and show loading while the movie is loading. And observeMovies provides a flow that can be used to observe the list of
-movies in our cash.
+commands `showLoading` that hide and show loading while the movie is loading. And `observeMovies` provides a flow that can be used to observe the list
+of movies in our cash.
 
 ```
 interface LoadMovieListOutputPort : OutputPort {
@@ -242,17 +255,17 @@ interface LoadMovieListOutputPort : OutputPort {
 }
 ```
 
-Now let's check the [LoadMovieList](useCase/src/main/java/com/khoshnaw/usecase/movie/loadMovieList/LoadMovieList.kt). Our usecase has a movieGateway
-object that will be used to access systems data. In onReady we are making our output port observe the locally cached movie list using our movieGateway
-object. When the usecase is ready we also load new movies if we don’t have any movies in our cash.
+Now let's check the [LoadMovieList](useCase/src/main/java/com/khoshnaw/usecase/movie/loadMovieList/LoadMovieList.kt). Our usecase has a
+`MovieRepository` object that will be used to access systems data. In onReady we are making our output port observe the locally cached movie list
+using our `MovieRepository` object. When the usecase is ready we also load new movies if we don’t have any movies in our cash.
 
-The startUpdatingMovieList is used to start the loading of a new movie process. First, we tell our output port to show the loading. Then we try to
-update our movies locally using our gateway, then we hide the loading again. Notice that if we fail to update movies we throw an exception. But we are
-throwing the exception after we hide the loading.
+The `startUpdatingMovieList` is used to start the loading of a new movie process. First, we tell our output port to show the loading. Then we try to
+update our movies locally using our repository, then we hide the loading again. Notice that if we fail to update movies we throw an exception. But we
+are throwing the exception after we hide the loading.
 
 ```
 class LoadMovieList @Inject constructor(
-    private val movieGateway: MovieGateway,
+    private val movieRepository: MovieRepository,
 ) : UseCase<LoadMovieListOutputPort>(), LoadMovieListInputPort {
 
     override suspend fun onReady() {
@@ -268,159 +281,205 @@ class LoadMovieList @Inject constructor(
     }
 
     private suspend fun loadMoviesIfNeeded() {
-        if (movieGateway.loadMovieSize() <= 0) startUpdatingMovieList()
+        if (movieRepository.loadMovieSize() <= 0) startUpdatingMovieList()
     }
 
-    private suspend fun observeMovies() = outputPort.observeMovies(movieGateway.observeMovies())
+    private suspend fun observeMovies() = outputPort.startObserveMovies(movieRepository.observeMovies())
 
     private suspend fun showLoading() = outputPort.showLoading(true)
 
     private suspend fun hideLoading() = outputPort.showLoading(false)
 
-    private suspend fun updateMovies() = movieGateway.updateMovieList()
+    private suspend fun updateMovies() = movieRepository.updateMovieList()
 
 }
 ```
 
-# Gateway
+# Interface Adapter Layer
 
-The gateway module is a pure java module. This module contains our gateway implementation with it is data sources.
+## Repository
 
-![GatewayClassDiagram](.github/res/GatewayClassDiagram.svg)
+The repository module is an android module but it's dependency on android frame work is as minimum as possible. This module contains our repository
+implementation with it is data source interfaces.
 
-As shown in the UML diagram, our usecase has a weak reference to the gatewayImp class which is the gateway implementation in the third layer of our
-architecture. Then our gateway implementation has multiple local or remote data sources. Those interfaces are in the third layer as well. But the
-implementation of those data sources is in the fourth layer. The Implementation of the remote data sources is in the remote module. And we call them
-API data sources. Those data sources are using public movie DB APIs. And then the implementation of the local data source is in the DB module and we
-call them DBDataSource. DB data sources are using room databases to do their tasks.
+![RepositoryClassDiagram](.github/res/RepositoryClassDiagram.svg)
 
-## Base Implementation
+As shown in the UML diagram, our usecase has a weak reference to the repositoryImp class which is the repository implementation in the third layer of
+our architecture. Then our repository implementation has multiple local or remote data sources. Those interfaces are in the third layer as well. But
+the implementation of those data sources is in the fourth layer. The Implementation of the remote data sources is in the remote module. And we call
+them API data sources. Those data sources are using public movie DB APIs. And then the implementation of the local data source is in the DB module and
+we call them DBDataSource. DB data sources are using room databases to do their tasks.
 
-Our base implementation is just an empty class called [GatewayImp](gateway/src/main/java/com/khoshnaw/gateway/base/GatewayImp.kt) that implements the
-Base Gateway interface. Again this can be useful in future for polymorphism reasons.
+### Base Implementation
 
-```
-abstract class GatewayImp : Gateway
-```
-
-## gatewayImps
-
-Our only GatewayImp is MovieGatewayImp this is gateway is responsible to provide movie data that the system needs. The gateway has one remote data
-source and one local data source. It is also implementing our MovieGateway interface in the second layer.
-
-Then the updateMovieList function is using a remote data source to load new remote movies and then uses the local data source to update the locally
-cashed movie list.
-
-The function observeMovies is returning a flow of movies that can be used to observe the locally cashed movies.
-
-And loadMovieSize is just returning the size of locally cached movies.
+Our base implementation is just an empty class called [RepositoryImp](repository/src/main/java/com/khoshnaw/repository/base/RepositoryImp.kt) that
+implements the Base Repository interface. Again this can be useful in future for polymorphism reasons.
 
 ```
-class MovieGatewayImp @Inject constructor(
+abstract class RepositoryImp : Repository
+```
+
+### Local
+
+#### LocalDataSources
+
+Our local data source [MovieLocalDataSource](repository/src/main/java/com/khoshnaw/repository/local/dataSource/MovieLocalDataSource.kt) has three
+functions to update the movie list another to observe the movies and the last one to load movies size in cash.
+
+```
+interface MovieLocalDataSource {
+    suspend fun updateMovieList(movieList: List<MovieLocalDTO>)
+    suspend fun observeMovies(): Flow<List<MovieLocalDTO>>
+    suspend fun loadMovieSize(): Int
+}
+```
+
+#### Local DTO
+
+Our local DTO is a data transfer object used by our room library to cash data in our database. check
+out [MovieLocalDTO](repository/src/main/java/com/khoshnaw/repository/local/dto/MovieLocalDTO.kt) as an example. notice that we can have `@PrimaryKey`
+to make our id a primary key to our movie table.
+
+```
+@Entity(tableName = "movie")
+data class MovieLocalDTO(
+    @PrimaryKey val id: String,
+    val posterPath: String,
+    val title: String,
+    val voteAverage: Double
+)
+```
+
+#### Local DTO Mappers
+
+DB mappers are like other mappers in the project they are mapping entity objects to DBDTO objects and vice versa. check
+out [MovieMappers](repository/src/main/java/com/khoshnaw/repository/local/mapper/MovieMappers.kt) as an example.
+
+```
+internal fun MovieLocalDTO.toEntity() = Movie(
+    id = id,
+    posterPath = posterPath,
+    title = title,
+    voteAverage = voteAverage,
+)
+
+internal fun List<MovieLocalDTO>.toEntity() = map { it.toEntity() }
+
+internal fun Movie.toLocalDTO() = MovieLocalDTO(
+    id = id,
+    posterPath = posterPath,
+    title = title,
+    voteAverage = voteAverage,
+)
+
+internal fun List<Movie>.toLocalDTO() = map { it.toLocalDTO() }
+```
+
+### Remote
+
+#### RemoteDataSource
+
+The remote data source [MovieRemoteDataSource](repository/src/main/java/com/khoshnaw/repository/remote/dataSource/MovieRemoteDataSource.kt) has one
+function to load a list of remote movies.
+
+```
+interface MovieRemoteDataSource {
+    suspend fun loadMovieList(): List<MovieRemoteDTO>
+}
+```
+
+#### RemoteDTO
+
+The package DTO has our remoteDTO s like [MovieRemoteDTO](repository/src/main/java/com/khoshnaw/repository/remote/dto/MovieRemoteDTO.kt) those DTO are
+data transfer objects that can be used to pars API JSON or encode data to JSON.
+
+```
+data class MovieRemoteDTO(
+    val id: String,
+    @Json(name = "poster_path") val posterPath: String,
+    @Json(name = "original_title") val title: String,
+    @Json(name = "vote_average") val voteAverage: Double,
+)
+```
+
+#### RemoteDTO Mappers
+
+Our mappers are responsible to map entities to RemoteDTO or vice versa. For example, check
+out [MovieMapper.kt](repository/src/main/java/com/khoshnaw/repository/remote/mapper/MovieMappers.kt) file.
+
+```
+internal fun MovieRemoteDTO.toEntity() = Movie(
+    id = id,
+    posterPath = posterPath,
+    title = title,
+    voteAverage = voteAverage,
+)
+
+internal fun List<MovieRemoteDTO>.toEntity() = map { it.toEntity() }
+```
+
+### RepositoryImp
+
+Our only RepositoryImp is `MovieRepositoryImp` this is repository is responsible to provide movie data that the system needs. The repository has one
+remote data source and one local data source. It is also implementing our `MovieRepository` interface in the second layer.
+
+Then the `updateMovieList` function is using a remote data source to load new remote movies and then uses the local data source to update the locally
+cashed movie list. The function `observeMovies` is returning a flow of movies that can be used to observe the locally cashed movies.
+And `loadMovieSize`
+is just returning the size of locally cached movies.
+
+```
+class MovieRepositoryImp @Inject constructor(
     private val movieRemoteDataSource: MovieRemoteDataSource,
     private val movieLocalDataSource: MovieLocalDataSource,
-) : GatewayImp(), MovieGateway {
+) : RepositoryImp(), MovieRepository {
 
-    override suspend fun updateMovieList() =
-        movieLocalDataSource.updateMovieList(movieRemoteDataSource.loadMovieList())
+    override suspend fun updateMovieList() = movieLocalDataSource.updateMovieList(
+        movieRemoteDataSource.loadMovieList().toEntity().toLocalDTO()
+    )
 
-    override suspend fun observeMovies() = movieLocalDataSource.observeMovies()
+    override suspend fun observeMovies() = movieLocalDataSource.observeMovies().map {
+        val a = it.toEntity()
+        a
+    }
 
     override suspend fun loadMovieSize(): Int = movieLocalDataSource.loadMovieSize()
 
 }
 ```
 
-## LocalDataSources
-
-Our local data source [MovieLocalDataSource](gateway/src/main/java/com/khoshnaw/gateway/localDataSource/MovieLocalDataSource.kt) has three functions
-to update the movie list another to observe the movies and the last one to load movies size.
-
-```
-interface MovieLocalDataSource {
-    suspend fun updateMovieList(movieList: List<Movie>)
-    suspend fun observeMovies(): Flow<List<Movie>>
-    suspend fun loadMovieSize(): Int
-}
-```
-
-## RemoteDataSource
-
-The remote data source [MovieRemoteDataSource](gateway/src/main/java/com/khoshnaw/gateway/remoteDataSource/MovieRemoteDataSource.kt) has one function
-to load a list of remote movies.
-
-```
-interface MovieRemoteDataSource {
-    suspend fun loadMovieList(): List<Movie>
-}
-```
-
-# Controller
-
-Controllers are intermediates between our view model and use cases. A controller can have multiple use cases of the type input port.
-
-## Base Implementation
-
-Our base implementation named (Controller)[controller/src/main/java/com/khoshnaw/controller/base/Controller.kt] has a generic type InputPort, Also
-another generic type OutputPort. We need an object of the inputPort in order to be able to register the output port to the input. And then the
-registerOutputPort do the registration of the output port.
-
-```
-abstract class Controller<out I : InputPort<O>, in O : OutputPort> {
-    abstract val inputPort: I
-
-    suspend fun registerOutputPort(outputPort: O) = inputPort.registerOutputPort(outputPort)
-}
-```
-
-## Controllers
-
-Our [MovieController](controller/src/main/java/com/khoshnaw/controller/movie/MovieController.kt) have two functions one to start loading movies. And
-another to show a specific movie. That is just printing a log.
-
-```
-class MovieController @Inject constructor(
-    override val inputPort: LoadMovieListInputPort,
-) : Controller<LoadMovieListInputPort, LoadMovieListOutputPort>() {
-
-    suspend fun loadMoviesList() = inputPort.startUpdatingMovieList()
-
-    suspend fun showMovie(movie: Movie) = println("showing movie : $movie")
-}
-```
-
-# ViewModel
+## ViewModel
 
 Our ViewModel module is an Android module that has as minimum dependency on the android framework as possible. This module contains ViewModels in the
 MVI architecture pattern.
 
 MVI is the abbreviation of Model - View - Intent. But In the MVI architecture pattern, we also have other components like ViewModel and State.
 
-### Model
+#### Model
 
 The model holds data and the logic of the application. The view cannot access the model. Instead, ViewModel exposes the model to the view throw
 observables. In our template, the first and second layer of the architecture acts as the model in the MVI architecture pattern. So Use Cases and
 entities are our models in MVI.
 
-### View
+#### View
 
 The view is observing the mutable states provided by ViewModel and draws the UI accordingly. In android fragments and activities are our views. The
 view is also responsible for sending intents to the ViewModel.
 
-### Intent
+#### Intent
 
 The intent is an action that the user performs like clicking a button or swapping the screen. or some system events like when the connection is down.
 
-### ViewModel
+#### ViewModel
 
 ViewModel is the intermediate between view and model. When the user interacts with the view. The view is sending an intent to the ViewModel and
 ViewModel is using the module to responds to the Intent. And then updates the UI throw an observable property called state.
 
-### State
+#### State
 
 The state is representing a UI state. States contain all the data that is required to draw a specific UI screen.
 
-## Base Implementation
+### Base Implementation
 
 For ViewModel Base Implementation first, we have an abstract class
 called [BaseViewModel](viewModel/src/main/java/com/khoshnaw/viewmodel/base/BaseViewModel.kt) Which is extending android ViewModel and also implements
@@ -446,8 +505,8 @@ interface MVIState
 
 For the ViewModel implementation, we will have an abstract class
 called [MVIViewModel](viewModel/src/main/java/com/khoshnaw/viewmodel/mvi/MVIViewModel.kt) that will extend our BaseViewModel.The class also have two
-generics State and Intent. Our kotlin channel intent will be used to get intents from the view. using intent the view can send a one-time event to
-ViewModel. The State LiveData will be used by the ViewModel to update the View.
+generics State and Intent. Our kotlin channel intent will be used to get intents from the view. using `intent` the view can send a one-time event to
+ViewModel. The `State` LiveData will be used by the ViewModel to update the View.
 
 ```
 abstract class MVIViewModel<S : MVIState, I : MVIIntent> : BaseViewModel() {
@@ -460,65 +519,90 @@ We also need another class called [StandardViewModel](viewModel/src/main/java/co
 some default configuration that is needed in most of our ViewModels. This class have some default behaviour for injecting output ports, consuming
 intents that come from the view. and also showing a default error message when something goes wrong.
 
-```
-abstract class StandardViewModel<S : MVIState, I : MVIIntent> : MVIViewModel<S, I>() {
+notice
 
-    override val intents: Channel<I> = Channel()
+```
+@Suppress("MemberVisibilityCanBePrivate")
+abstract class StandardViewModel<S : MVIState, I : MVIIntent>(
+    private val backgroundDispatcher: CoroutineContext = Dispatchers.IO
+) : MVIViewModel<S, I>() {
+
+    override val intents: Channel<I> by lazy {
+        Channel<I>().tryToConsume()
+    }
     private val _state = MutableLiveData<S>()
     override val state: LiveData<S> = _state
+    val error = Channel<ErrorMessage>()
 
-    val error = Channel<String>()
-
-    protected fun <O : OutputPort> O.init() = viewModelScope.launch(Dispatchers.IO) {
-        injectOutputPorts()
-        consumeIntents()
+    init {
+        tryToInjectOutputPorts()
     }
 
-    private suspend fun <O : OutputPort> O.injectOutputPorts() = this::class.memberProperties.map {
-        it.isAccessible = true
-        it.getter.call(this)
-    }.filterIsInstance<Controller<*, O>>().forEach {
-        it.registerOutputPort(this)
-    }
-
-    private suspend fun consumeIntents() = intents.consumeAsFlow().collect {
-        tryToHandleIntent(it)
+    //region intent
+    private fun Channel<I>.tryToConsume(): Channel<I> {
+        launchInIO { tryTo { consumeAsFlow().collect { tryToHandleIntent(it) } } }
+        return this@tryToConsume
     }
 
     private suspend fun tryToHandleIntent(intent: I) = tryTo {
         handleIntent(intent)
     }
 
-    private suspend fun tryTo(callback: suspend () -> Unit) = try {
+    protected open suspend fun handleIntent(intent: I): Any = Unit
+    //endregion intent
+
+    //region injection
+    private fun <O : OutputPort> O.tryToInjectOutputPorts() {
+        launchInIO { tryTo { injectOutputPorts() } }
+    }
+
+    private suspend fun <O : OutputPort> O.injectOutputPorts() = this::class.memberProperties.map {
+        it.isAccessible = true
+        it.getter.call(this)
+    }.filterIsInstance<InputPort<O>>().forEach {
+        it.registerOutputPort(this@injectOutputPorts)
+    }
+    //endregion injection
+
+    //region error
+    open fun updateError(e: Throwable) = updateError(ErrorMessage.DEFAULT)
+
+    open fun updateError(message: ErrorMessage) {
+        launchInIO { error.send(message) }
+    }
+    //endregion error
+
+    //region utils
+    protected suspend fun tryTo(callback: suspend () -> Unit) = try {
         callback()
     } catch (e: Throwable) {
         Timber.e(e)
-        onError(e)
+        updateError(e)
     }
-
-    open fun onError(e: Throwable) {
-        viewModelScope.launch {
-            error.send("some thing went wrong")
-        }
-    }
-
-    protected open suspend fun handleIntent(intent: I): Any = Unit
 
     protected fun <T> Flow<T>.collectResult(
-        action: suspend (value: T) -> Unit
-    ) = viewModelScope.launch(Dispatchers.Main) { tryTo { collect { action(it) } } }
+        action: (value: T) -> Unit
+    ) = launchInIO { tryTo { collect { tryTo { action(it) } } } }
 
-    protected fun updateState(state: S) {
-        _state.postValue(state)
-    }
+    protected fun updateState(state: S) = _state.postValue(state)
+
+    protected fun launchInIO(
+        start: CoroutineStart = CoroutineStart.DEFAULT,
+        block: suspend CoroutineScope.() -> Unit
+    ) = viewModelScope.launch(
+        context = backgroundDispatcher,
+        start = start,
+        block = block,
+    )
+    //endregion utils
 }
 ```
 
-## UI DTO
+### UI DTO
 
-UI DTO s are data transfer objects between our business logic and our UI. The MovieUIDTO is an example.
-The [MovieUIDTO](viewModel/src/main/java/com/khoshnaw/viewmodel/dto/MovieUIDTO.kt) is implementing StandardStateListItem so it can be used in our
-StandardAdapters.
+UI DTO s are data transfer objects between our business logic and our UI. The `MovieUIDTO` is an example.
+The [MovieUIDTO](viewModel/src/main/java/com/khoshnaw/viewmodel/dto/MovieUIDTO.kt) is implementing `StandardStateListItem` so it can be used in our
+`StandardAdapters`.
 
 ```
 data class MovieUIDTO(
@@ -529,79 +613,87 @@ data class MovieUIDTO(
 ) : StandardStateListItem
 ```
 
-## Mappers
+### UI DTO Mappers
 
 The UI mappers are mapping our entity objects to the UID TO objects. for example,
-the [MovieMappers](viewModel/src/main/java/com/khoshnaw/viewmodel/mapper/MovieMappers.kt) is mapping our movie class to
-the [MovieUIDTO](viewModel/src/main/java/com/khoshnaw/viewmodel/dto/MovieUIDTO.kt) notice that we are setting the base URL for poster path and we also
-change not average to string so it can be used easier by our UI.
+the [MovieMappers](viewModel/src/main/java/com/khoshnaw/viewmodel/mapper/MovieMappers.kt) is mapping our `movie` class to the `MovieUIDTO` notice that
+we are setting the base URL for poster path and we also change average to string so it can be used easier by our UI.
 
 ```
-fun Movie.toDTO() = MovieUIDTO(
+internal fun Movie.toUIDTO() = MovieUIDTO(
     id = id,
     posterPath = BuildConfig.TMDB_API_BASE_IMG_URL + posterPath,
     title = title,
     voteAverage = voteAverage.toString(),
 )
 
-fun List<Movie>.toDTO() = map { it.toDTO() }
+internal fun List<Movie>.toUIDTO() = map { it.toUIDTO() }
 ```
 
-## MovieViewModel
+### MovieViewModel
 
-Check out [MoviesIntent](viewModel/src/main/java/com/khoshnaw/viewmodel/movies/MoviesIntent.kt) as you can see we have two intents RefreshMovies which
-asks the view model to refresh the movie list and OnMovieClicked which will be used to inform the view model that a movie has been clicked
+Check out [MoviesIntent](viewModel/src/main/java/com/khoshnaw/viewmodel/movies/MoviesIntent.kt) as you can see we have two intents `RefreshMovies`
+which asks the view model to refresh the movie list and `OnMovieClicked` which will be used to inform the view model that a movie has been clicked
 
 ```
 sealed class MoviesIntent : MVIIntent {
 
     object RefreshMovies : MoviesIntent()
 
-    class OnMovieClicked(val movie: Movie) : MoviesIntent()
+    class OnMovieClicked(
+        val position: Int,
+        val id: String,
+    ) : MoviesIntent()
 
 }
 ```
 
-For the [MoviesState](viewModel/src/main/java/com/khoshnaw/viewmodel/movies/MoviesState.kt) we have a movie list state which has a list of movies to
-show and a boolean that indicates whether the loading is showing or not.
+For the [MoviesState](viewModel/src/main/java/com/khoshnaw/viewmodel/movies/MoviesState.kt) we have a `MovieList` state which has a list
+of `MovieUIDTO` to show and a boolean that indicates whether the loading is showing or not.
 
 ```
 sealed class MoviesState(
-    open val movies: List<Movie> = listOf(),
+    open val movies: List<MovieUIDTO> = listOf(),
 ) : MVIState {
 
     class MovieList(
-        override val movies: List<Movie>,
+        override val movies: List<MovieUIDTO>,
         val isLoading: Boolean = false
     ) : MoviesState(movies)
 
 }
 ```
 
-The [MoviesViewModel](viewModel/src/main/java/com/khoshnaw/viewmodel/movies/MoviesViewModel.kt) has an init block that call the init() method in the
-super class which is injecting MovieViewModel as an output port to the controller. then handleIntent(intent: MoviesIntent) method handling movie state
-using the movie controller. observeMovies(flow: Flow<List>) method is overriding from LoadMovieListOutputPort interface which is giving a flow so the
-view model can observe changes in the local movie list. and the showLoading(loading: Boolean) inform view model to show the loading or not.
+The [MoviesViewModel](viewModel/src/main/java/com/khoshnaw/viewmodel/movies/MoviesViewModel.kt) then `handleIntent(intent: MoviesIntent)` method
+handling movie state using the movie movieInputPort. `observeMovies(flow: Flow<List>)` method is overriding from LoadMovieListOutputPort interface
+which is giving a flow so the view model can observe changes in the local movie list. and the `showLoading(loading: Boolean)` inform view model to
+show the loading or not.
 
 ```
 @HiltViewModel
 class MoviesViewModel @Inject constructor(
-    private val movieController: MovieController
+    private val movieInputPort: LoadMovieListInputPort
 ) : StandardViewModel<MoviesState, MoviesIntent>(),
     LoadMovieListOutputPort {
 
-    init {
-        init()
-    }
-
     override suspend fun handleIntent(intent: MoviesIntent) = when (intent) {
-        MoviesIntent.RefreshMovies -> movieController.loadMoviesList()
-        is MoviesIntent.OnMovieClicked -> movieController.showMovie(intent.movie)
+        is MoviesIntent.RefreshMovies -> handleRefreshMovies()
+        is MoviesIntent.OnMovieClicked -> handleMovieClicked(intent)
     }
 
-    override suspend fun observeMovies(flow: Flow<List<Movie>>) {
+    private suspend fun handleRefreshMovies() {
+        movieInputPort.startUpdatingMovieList()
+    }
+
+    private fun handleMovieClicked(intent: MoviesIntent.OnMovieClicked) {
+        state.value?.movies?.getOrNull(intent.position)?.takeIf { it.id == intent.id }?.let {
+            println("showing movie : $it")
+        }
+    }
+
+    override suspend fun startObserveMovies(flow: Flow<List<Movie>>) {
         flow.collectResult {
-            updateState(MoviesState.MovieList(it))
+            updateState(MoviesState.MovieList(it.toUIDTO()))
         }
     }
 
@@ -613,13 +705,18 @@ class MoviesViewModel @Inject constructor(
 }
 ```
 
-# UI
+# Framework Layer
 
-The UI module contains any UI related code Activity, Fragment, Adapter, XML resources etc...,
+## UI
 
-## Base Implementation
+The UI module contains any UI related code Activity, Fragment, Adapter, XML resources etc..., Notice that our architecture make sure that our UI model
+is as dumb as possible. Since our entities and use-cases are responsible for the business logic. And then our ViewModel is translating between our UI
+and our use-cases. This will make sure that our UI doesn't have any important code. It is just showing what the view model telling it to show. And
+Then tells the ViewModel what the user is doing.
 
-### Activity
+### Base Implementation
+
+#### Activity
 
 At the top level, we have [BaseActivity](ui/src/main/java/com/khoshnaw/ui/base/activity/BaseActivity.kt) which is not doing much. it is just a good
 practice to have this class.
@@ -628,8 +725,8 @@ practice to have this class.
 abstract class BaseActivity : AppCompatActivity()
 ```
 
-And then we have the [MVIActivity](ui/src/main/java/com/khoshnaw/ui/mvi/MVIActivity.kt) which
-implements [MVIView](ui/src/main/java/com/khoshnaw/ui/mvi/MVIView.kt) and has two generics for data binding and ViewModel.
+And then we have the [MVIActivity](ui/src/main/java/com/khoshnaw/ui/mvi/MVIActivity.kt) which implements `MVIView` and has two generics for data
+binding and ViewModel.
 
 ```
 abstract class MVIActivity<B : ViewDataBinding, V : StandardViewModel<*, *>> :
@@ -641,7 +738,7 @@ abstract class MVIActivity<B : ViewDataBinding, V : StandardViewModel<*, *>> :
 this is the id of the ViewModel in the xml layouts.
 
 ```
-interface MVIView<B : ViewDataBinding, V : StandardViewModel<*, *>> {
+interface MVIView<B : ViewDataBinding, V : MVIViewModel<*, *>> {
     val binding: B
     val viewModel: V
     val viewModelVariableId: Int
@@ -651,14 +748,12 @@ interface MVIView<B : ViewDataBinding, V : StandardViewModel<*, *>> {
 ```
 
 Then We have [StandardActivity](ui/src/main/java/com/khoshnaw/ui/standard/activity/StandardActivity.kt) which has some common behaviours for our
-activity. for example we choose that the default value for viewModelVariableId in our activities are BR.viewModel. But you still can change that by
-overriding the variable. then in the onCreate method, we use binding to set content view so you don't need to do that in every activity.
+activity. for example we choose that the default value for `viewModelVariableId` in our activities are `BR.viewModel`. But you still can change that
+by overriding the variable. then in the `onCreate` method, we use binding to set content view so you don't need to do that in every activity.
 
-We also inject the view model into the data binding object. and then we call observeState() method which is observing the view model states. and we
-also observe the errors from the view model. and we also have the onViewReady() method which will be called when the view is ready for extra change
-that the child activity might need.
-
-We also have run the intent method which is used by the sub-activities to run an intent in the lifecycle scope of the activity.
+We also inject the view model into the data binding object. and then we call `observeState()` method which is observing the view model states. and we
+observe the errors from the view model. and we also have the `onViewReady()` method which will be called when the view is ready for extra change that
+the child activity might need.
 
 ```
 abstract class StandardActivity<B : ViewDataBinding, V : StandardViewModel<*, *>> :
@@ -688,10 +783,16 @@ abstract class StandardActivity<B : ViewDataBinding, V : StandardViewModel<*, *>
         }
     }
 
-    override fun showError(message: String) {
-        Timber.tag("delete_me").i(message)
-        Snackbar.make(binding.root, message, Snackbar.LENGTH_SHORT).show()
+    override fun showError(message: ErrorMessage) {
+        val messageStr = if (message == ErrorMessage.DEFAULT) getString(R.string.default_error)
+        else message.message
+
+        showError(messageStr)
     }
+
+    private fun showError(messageStr: String) = Snackbar
+        .make(binding.root, messageStr, Snackbar.LENGTH_SHORT)
+        .show()
 
     override fun onViewReady() = Unit
     override fun handleState(state: MVIState) = Unit
@@ -699,7 +800,7 @@ abstract class StandardActivity<B : ViewDataBinding, V : StandardViewModel<*, *>
 }
 ```
 
-### Fragment
+#### Fragment
 
 For the Fragments we have a similar structure as activity the [BaseFragment](ui/src/main/java/com/khoshnaw/ui/base/fragment/BaseFragment.kt) is an
 important empty class. Notice that the BaseFragment is getting its layout from the constructor. this is making implementing data binding easier.
@@ -708,7 +809,8 @@ important empty class. Notice that the BaseFragment is getting its layout from t
 abstract class BaseFragment(@LayoutRes contentLayoutId: Int) : Fragment(contentLayoutId)
 ```
 
-And then we have [MVIFragment](ui/src/main/java/com/khoshnaw/ui/mvi/MVIFragment.kt) which is very similar to MVIActivity. It is implementing MVIView
+And then we have [MVIFragment](ui/src/main/java/com/khoshnaw/ui/mvi/MVIFragment.kt) which is very similar to `MVIActivity`. It is
+implementing `MVIView`
 in addition to data binding and view model generics.
 
 ```
@@ -718,7 +820,7 @@ abstract class MVIFragment<B : ViewDataBinding, V : StandardViewModel<*, *>>(
     MVIView<B, V>
 ```
 
-And then [StandardFragment](ui/src/main/java/com/khoshnaw/ui/standard/fragment/StandardFragment.kt) is also similar to StandardActivity. but notice
+And then [StandardFragment](ui/src/main/java/com/khoshnaw/ui/standard/fragment/StandardFragment.kt) is also similar to `StandardActivity`. but notice
 that the standard fragment is using the main activity viewModel to send the error. this will give us a more stable error message implementation.
 
 ```
@@ -748,10 +850,10 @@ abstract class StandardFragment<B : ViewDataBinding, V : StandardViewModel<*, *>
         }
     }
 
-    override fun showError(message: String) {
+    override fun showError(message: ErrorMessage) {
         if (activity is StandardView<*, *>) {
             val standardActivity = (activity as StandardView<*, *>)
-            standardActivity.viewModel.sendError(message)
+            standardActivity.viewModel.updateError(message)
         }
     }
 
@@ -760,13 +862,13 @@ abstract class StandardFragment<B : ViewDataBinding, V : StandardViewModel<*, *>
 }
 ```
 
-## Movie Fragment
+### Movie Fragment
 
 In the [MoviesFragment](ui/src/main/java/com/khoshnaw/ui/view/movies/MoviesFragment.kt) we are giving the implementation for binding and ViewModel
-using property delegation. And when the user swipes the list to refresh the movies we are running MoviesIntent.RefreshMovies intent this will inform
+using property delegation. And when the user swipes the list to refresh the movies we are running `MoviesIntent.RefreshMovies` intent this will inform
 the view model to refresh the list.
 
-in handleState function, we are handling the MovieList state by showing the list and the loading if the UI is in the loading state.
+In `handleState` function, we are handling the `MovieList` state by showing the list and the loading if the UI is in the loading state.
 
 ```
 @AndroidEntryPoint
@@ -793,21 +895,24 @@ class MoviesFragment : StandardFragment<FragmentMoviesBinding, MoviesViewModel>(
 
     private fun handleMovieList(moviesState: MoviesState.MovieList) {
         binding.swipeRefresh.isRefreshing = moviesState.isLoading
-        moviesAdapter.items = moviesState.movies.toDTO()
+        moviesAdapter.items = moviesState.movies
     }
 
 }
 ```
 
-# Remote
+## Remote
 
-The Remote module is an Android module that is heavenly depending on the android framework to do any remote operation. This module is using tools like
-OkHttp, Retrofit and Moshi. To perform a network HTTP requests to the Movie DB API then parse and map the result to an entity represented object.
+The Remote module is an Android module that is heavenly depending on the android framework to do the system remote operation. This module is using
+tools like OkHttp, Retrofit and Moshi. To perform a network HTTP requests to the Movie DB API then parse and map the result to an entity represented
+object. Again there isn't any important code in this module it is rather just performing what the repository is asking in the third layer.
 
 ## APIDataSource
 
 The API data source is the actual implementation of the remote data sources. Those classes are using movie DB API to access the remote data in the
 system.
+
+### Base Implementation
 
 The base implementation is an empty Class called [APIDataSource](remote/src/main/java/com/khoshnaw/remote/apiDataSource/base/APIDataSource.kt).
 
@@ -815,123 +920,63 @@ The base implementation is an empty Class called [APIDataSource](remote/src/main
 abstract class APIDataSource
 ```
 
+### Movie API DataSource
+
 The [MovieAPIDataSource](remote/src/main/java/com/khoshnaw/remote/apiDataSource/movie/MovieAPIDataSource.kt) is using movieApi that is provided by
-retrofit to perform movie-related remote operating. Like loading movie list using LoadMovieList function. Notice that the movieApi class is returning
-a MovieRemoteDTO movie object but we use a mapper to map the DTO to an entity.
+retrofit to perform movie-related remote operating. Like loading movie list using LoadMovieList function.
 
 ```
 class MovieAPIDataSource @Inject constructor(
     private val movieApi: MovieApi
 ) : APIDataSource(), MovieRemoteDataSource {
-    override suspend fun loadMovieList(): List<Movie> =
-        movieApi.loadMovieList().bodyOrException().movieList.toEntity()
+
+    override suspend fun loadMovieList(
+    ): List<MovieRemoteDTO> = movieApi.loadMovieList().bodyOrException().movieList
+
 }
 ```
 
-## RemoteDTO
-
-The package DTO has our remoteDTO s like [MovieRemoteDTO](remote/src/main/java/com/khoshnaw/remote/dto/MovieRemoteDTO.kt) those DTO are data transfer
-objects that can be used to pars API JSON or encode data to JSON.
-
-```
-data class MovieRemoteDTO(
-    val id: String,
-    @Json(name = "poster_path") val posterPath: String,
-    @Json(name = "original_title") val title: String,
-    @Json(name = "vote_average") val voteAverage: Double,
-)
-```
-
-## Mapper
-
-Our mappers are responsible to map entities to RemoteDTO or vice versa. For example, check
-out [MovieMapper.kt](remote/src/main/java/com/khoshnaw/remote/mapper/MovieMappers.kt) file.
-
-```
-fun MovieRemoteDTO.toEntity() = Movie(
-    id = id,
-    posterPath = posterPath,
-    title = title,
-    voteAverage = voteAverage,
-)
-
-fun List<MovieRemoteDTO>.toEntity() = map { it.toEntity() }
-```
-
-# DB
+## DB
 
 The DB module is also an Android module that is heavenly depending on the android framework to cash data locally. This module is using the Room
-library to perform its actions.
+library to perform its actions. and also we need to make this module as dumb as possible. It just needs to do what is the repository is asking it to
+do.
 
-## DBDataSource
+### Base Implementation
 
-DB data sources is the actual implementation of the Local data source introduced in the gateway module. Those data sources are using room DB to cash
-data locally and perform operations on it.
+The base implementation is an empty Class called [DBDataSource](db/src/main/java/com/khoshnaw/db/dbDataSource/base/DBDataSource.kt).
 
-Our [MovieDBDataSource](db/src/main/java/com/khoshnaw/db/movie/MovieDBDataSource.kt) Implements MovieLocalDataSource interface and gives concrete
-implementation for it. and notice that it takes a MovieDao object in its constructor and uses it to perform its operations. for example,
-updateMovieList function is using insertAll function in MovieDao to insert the movies to the movie table. and notice that it is using toLocalDTO to
-map the movie entity to MovieLocalDTO which is needed by insertAll method.
+```
+abstract class DBDataSource
+```
+
+## Movie DB DataSource
+
+DB data sources is the actual implementation of the Local data source introduced in the repository module. Those data sources are using room DB to
+cash data locally and perform operations on it.
+
+Our [MovieDBDataSource](db/src/main/java/com/khoshnaw/db/dbDataSource/movie/MovieDBDataSource.kt) Implements `MovieLocalDataSource` interface and
+gives concrete implementation for it. and notice that it takes a MovieDao object in its constructor and uses it to perform its operations. for
+example, `updateMovieList` function is using insertAll function in `MovieDao` to insert the movies to the movie table.
 
 ```
 class MovieDBDataSource @Inject constructor(
     private val movieDao: MovieDao
-) : MovieLocalDataSource {
+) : DBDataSource(), MovieLocalDataSource {
 
-    override suspend fun updateMovieList(movieList: List<Movie>): Unit =
-        movieDao.insertAll(movieList.toLocalDTO())
+    override suspend fun updateMovieList(movieList: List<MovieLocalDTO>): Unit =
+        movieDao.insertAll(movieList)
 
-    override suspend fun observeMovies(): Flow<List<Movie>> =
-        movieDao.observeMovies().map { it.toEntity() }
+    override suspend fun observeMovies(): Flow<List<MovieLocalDTO>> =
+        movieDao.observeMovies()
 
     override suspend fun loadMovieSize(): Int = movieDao.loadMovieSize()
 }
 ```
 
-## Local DTO
+## APP
 
-Our local DTO is used by our room library to cash data in our database. check
-out [MovieLocalDTO](db/src/main/java/com/khoshnaw/db/dto/MovieLocalDTO.kt) as an example. notice that we can have @PrimaryKey to make our id a primary
-key to our movie table.
-
-```
-@Entity(tableName = "movie")
-data class MovieLocalDTO(
-    @PrimaryKey val id: String,
-    val posterPath: String,
-    val title: String,
-    val voteAverage: Double
-)
-```
-
-## Mapper
-
-DB mappers are like other mappers in the project they are mapping entity objects to DBDTO objects and vice versa. check
-out [MovieMappers](db/src/main/java/com/khoshnaw/db/mapper/MovieMappers.kt) as an example.
-
-```
-fun MovieLocalDTO.toEntity() = Movie(
-    id = id,
-    posterPath = posterPath,
-    title = title,
-    voteAverage = voteAverage,
-)
-
-fun List<MovieLocalDTO>.toEntity() = map { it.toEntity() }
-
-fun Movie.toLocalDTO() = MovieLocalDTO(
-    id = id,
-    posterPath = posterPath,
-    title = title,
-    voteAverage = voteAverage,
-)
-
-fun List<Movie>.toLocalDTO() = map { it.toLocalDTO() }
-```
-
-# APP
-
-Our App module is the actual application. it contains our Hilt/Dagger modules. so it has the DI configuration. In addition to App class. notice that
+Our App module is the actual application. it contains our Hilt/Dagger modules. So it has the DI configuration. In addition to App class. notice that
 in our [app/build](app/build.gradle) that the app is depending on all our other modules. which is actually a limitation in the hilt library.
 HiltAndroidApp needs to have access to all our modules in order to work.
 
@@ -939,20 +984,13 @@ HiltAndroidApp needs to have access to all our modules in order to work.
 dependencies {
     //region setup
     api project(path: ':ui')
-    api project(path: ':controller')
     api project(path: ':db')
     api project(path: ':remote')
-    
-    ... 
     //endregion setup
     
     ...
 }
 ```
-
-# What to improve
-
-check out [issues](https://github.com/MuhammadKhoshnaw/BasicMVIApp/issues)
 
 ```
 Copyright (c) <2021> <Muhammad Khoshnaw>
