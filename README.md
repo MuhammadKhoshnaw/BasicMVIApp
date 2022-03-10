@@ -256,8 +256,8 @@ interface LoadMovieListOutputPort : OutputPort {
 ```
 
 Now let's check the [LoadMovieList](useCase/src/main/java/com/khoshnaw/usecase/movie/loadMovieList/LoadMovieList.kt). Our usecase has a
-`MovieRepository` object that will be used to access systems data. In onReady we are making our output port observe the locally cached movie list using
-our `MovieRepository` object. When the usecase is ready we also load new movies if we don’t have any movies in our cash.
+`MovieRepository` object that will be used to access systems data. In onReady we are making our output port observe the locally cached movie list
+using our `MovieRepository` object. When the usecase is ready we also load new movies if we don’t have any movies in our cash.
 
 The `startUpdatingMovieList` is used to start the loading of a new movie process. First, we tell our output port to show the loading. Then we try to
 update our movies locally using our repository, then we hide the loading again. Notice that if we fail to update movies we throw an exception. But we
@@ -337,8 +337,8 @@ interface MovieLocalDataSource {
 #### Local DTO
 
 Our local DTO is a data transfer object used by our room library to cash data in our database. check
-out [MovieLocalDTO](repository/src/main/java/com/khoshnaw/repository/local/dto/MovieLocalDTO.kt) as an example. notice that we can have `@PrimaryKey` to
-make our id a primary key to our movie table.
+out [MovieLocalDTO](repository/src/main/java/com/khoshnaw/repository/local/dto/MovieLocalDTO.kt) as an example. notice that we can have `@PrimaryKey`
+to make our id a primary key to our movie table.
 
 ```
 @Entity(tableName = "movie")
@@ -424,7 +424,8 @@ Our only RepositoryImp is `MovieRepositoryImp` this is repository is responsible
 remote data source and one local data source. It is also implementing our `MovieRepository` interface in the second layer.
 
 Then the `updateMovieList` function is using a remote data source to load new remote movies and then uses the local data source to update the locally
-cashed movie list. The function `observeMovies` is returning a flow of movies that can be used to observe the locally cashed movies. And `loadMovieSize`
+cashed movie list. The function `observeMovies` is returning a flow of movies that can be used to observe the locally cashed movies.
+And `loadMovieSize`
 is just returning the size of locally cached movies.
 
 ```
@@ -504,8 +505,8 @@ interface MVIState
 
 For the ViewModel implementation, we will have an abstract class
 called [MVIViewModel](viewModel/src/main/java/com/khoshnaw/viewmodel/mvi/MVIViewModel.kt) that will extend our BaseViewModel.The class also have two
-generics State and Intent. Our kotlin channel intent will be used to get intents from the view. using intent the view can send a one-time event to
-ViewModel. The State LiveData will be used by the ViewModel to update the View.
+generics State and Intent. Our kotlin channel intent will be used to get intents from the view. using `intent` the view can send a one-time event to
+ViewModel. The `State` LiveData will be used by the ViewModel to update the View.
 
 ```
 abstract class MVIViewModel<S : MVIState, I : MVIIntent> : BaseViewModel() {
@@ -597,9 +598,9 @@ abstract class StandardViewModel<S : MVIState, I : MVIIntent>(
 
 ### UI DTO
 
-UI DTO s are data transfer objects between our business logic and our UI. The MovieUIDTO is an example.
-The [MovieUIDTO](viewModel/src/main/java/com/khoshnaw/viewmodel/dto/MovieUIDTO.kt) is implementing StandardStateListItem so it can be used in our
-StandardAdapters.
+UI DTO s are data transfer objects between our business logic and our UI. The `MovieUIDTO` is an example.
+The [MovieUIDTO](viewModel/src/main/java/com/khoshnaw/viewmodel/dto/MovieUIDTO.kt) is implementing `StandardStateListItem` so it can be used in our
+`StandardAdapters`.
 
 ```
 data class MovieUIDTO(
@@ -615,7 +616,7 @@ data class MovieUIDTO(
 The UI mappers are mapping our entity objects to the UID TO objects. for example,
 the [MovieMappers](viewModel/src/main/java/com/khoshnaw/viewmodel/mapper/MovieMappers.kt) is mapping our movie class to
 the [MovieUIDTO](viewModel/src/main/java/com/khoshnaw/viewmodel/dto/MovieUIDTO.kt) notice that we are setting the base URL for poster path and we also
-change not average to string so it can be used easier by our UI.
+change average to string so it can be used easier by our UI.
 
 ```
 fun Movie.toDTO() = MovieUIDTO(
@@ -630,8 +631,8 @@ fun List<Movie>.toDTO() = map { it.toDTO() }
 
 ### MovieViewModel
 
-Check out [MoviesIntent](viewModel/src/main/java/com/khoshnaw/viewmodel/movies/MoviesIntent.kt) as you can see we have two intents RefreshMovies which
-asks the view model to refresh the movie list and OnMovieClicked which will be used to inform the view model that a movie has been clicked
+Check out [MoviesIntent](viewModel/src/main/java/com/khoshnaw/viewmodel/movies/MoviesIntent.kt) as you can see we have two intents `RefreshMovies`
+which asks the view model to refresh the movie list and `OnMovieClicked` which will be used to inform the view model that a movie has been clicked
 
 ```
 sealed class MoviesIntent : MVIIntent {
@@ -659,9 +660,9 @@ sealed class MoviesState(
 }
 ```
 
-The [MoviesViewModel](viewModel/src/main/java/com/khoshnaw/viewmodel/movies/MoviesViewModel.kt) then handleIntent(intent: MoviesIntent) method
-handling movie state using the movie movieInputPort. observeMovies(flow: Flow<List>) method is overriding from LoadMovieListOutputPort interface which
-is giving a flow so the view model can observe changes in the local movie list. and the showLoading(loading: Boolean) inform view model to show the
+The [MoviesViewModel](viewModel/src/main/java/com/khoshnaw/viewmodel/movies/MoviesViewModel.kt) then `handleIntent(intent: MoviesIntent)` method
+handling movie state using the movie movieInputPort. `observeMovies(flow: Flow<List>)` method is overriding from LoadMovieListOutputPort interface which
+is giving a flow so the view model can observe changes in the local movie list. and the `showLoading(loading: Boolean)` inform view model to show the
 loading or not.
 
 ```
