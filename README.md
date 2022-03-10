@@ -68,8 +68,8 @@ implementation possible so we go with 4 layers.
 ## Entity
 
 Entities are business objects of the application. They encapsulate the most abstract information about our business rules that are less likely to
-change when something external changes. It is prefered to make our entities a simple data class that just encapsulates data and not behaviours. I.e it
-is preferred to not have functions in our entity class.
+change when something external changes. It is preferred to make our entities a simple data class that just encapsulates data and not behaviours. I.e
+it is preferred to not have functions in our entity class.
 
 For example in our entity, we have our [Movie](entity/src/main/java/com/khoshnaw/entity/Movie.kt) Class which have some movie properties. Those
 properties will not be changed if we change the navigation of our application. or added a filter for example.
@@ -185,19 +185,19 @@ interface InputPort<in O : OutputPort> {
 }
 ```
 
-Our InputPort has a general type of OutputPort. We will be using this general type in the registerOutputPort function to register the ViewModel in the
-UseCase as an outputPort. You might think that this is better to be done with dependency injection. Well, you are absolutely right, But I faced some
-limitations with android ViewModels that made me not able to use dependency injection to bind the ViewModel to the outPort. So I’m sticking to this
-function for now. Maybe in the future, I will find a better solution for this.
+Our `InputPort` has a general type of `OutputPort`. We will be using this general type in the `registerOutputPort` function to register
+the `ViewModel` in the `UseCase` as an `outputPort`. You might think that this is better to be done with dependency injection. Well, you are
+absolutely right, But I faced some limitations with android ViewModels that made me not able to use dependency injection to bind the ViewModel to the
+outPort. So I’m sticking to this function for now. Maybe in the future, I will find a better solution for this.
 
-The OutputPort is a simple interface.
+The `OutputPort` is a simple interface.
 
 ```
 interface OutputPort
 ```
 
-Now coming to the main course, UseCase has a general type of OutputPort that we use for the outputPort variable. The onReady function will be called
-right after the outputPort is registered. So you can run your setup code. We also have the default implementation for registerOutputPort.
+Now coming to the main course, UseCase has a general type of `OutputPort` that we use for the outputPort variable. The onReady function will be called
+right after the `outputPort` is registered. So you can run your setup code. We also have the default implementation for `registerOutputPort`.
 
 ```
 abstract class UseCase<O : OutputPort> : InputPort<O> {
@@ -245,8 +245,8 @@ interface LoadMovieListInputPort : InputPort<LoadMovieListOutputPort> {
 ```
 
 Then we have [LoadMovieListOutputPort](useCase/src/main/java/com/khoshnaw/usecase/movie/loadMovieList/LoadMovieListOutputPort.kt) which has two
-commands showLoading that hide and show loading while the movie is loading. And observeMovies provides a flow that can be used to observe the list of
-movies in our cash.
+commands `showLoading` that hide and show loading while the movie is loading. And `observeMovies` provides a flow that can be used to observe the list
+of movies in our cash.
 
 ```
 interface LoadMovieListOutputPort : OutputPort {
@@ -256,10 +256,10 @@ interface LoadMovieListOutputPort : OutputPort {
 ```
 
 Now let's check the [LoadMovieList](useCase/src/main/java/com/khoshnaw/usecase/movie/loadMovieList/LoadMovieList.kt). Our usecase has a
-MovieRepository object that will be used to access systems data. In onReady we are making our output port observe the locally cached movie list using
-our MovieRepository object. When the usecase is ready we also load new movies if we don’t have any movies in our cash.
+`MovieRepository` object that will be used to access systems data. In onReady we are making our output port observe the locally cached movie list using
+our `MovieRepository` object. When the usecase is ready we also load new movies if we don’t have any movies in our cash.
 
-The startUpdatingMovieList is used to start the loading of a new movie process. First, we tell our output port to show the loading. Then we try to
+The `startUpdatingMovieList` is used to start the loading of a new movie process. First, we tell our output port to show the loading. Then we try to
 update our movies locally using our repository, then we hide the loading again. Notice that if we fail to update movies we throw an exception. But we
 are throwing the exception after we hide the loading.
 
