@@ -337,7 +337,7 @@ interface MovieLocalDataSource {
 #### Local DTO
 
 Our local DTO is a data transfer object used by our room library to cash data in our database. check
-out [MovieLocalDTO](repository/src/main/java/com/khoshnaw/repository/local/dto/MovieLocalDTO.kt) as an example. notice that we can have @PrimaryKey to
+out [MovieLocalDTO](repository/src/main/java/com/khoshnaw/repository/local/dto/MovieLocalDTO.kt) as an example. notice that we can have `@PrimaryKey` to
 make our id a primary key to our movie table.
 
 ```
@@ -420,11 +420,11 @@ internal fun List<MovieRemoteDTO>.toEntity() = map { it.toEntity() }
 
 ### RepositoryImp
 
-Our only RepositoryImp is MovieRepositoryImp this is repository is responsible to provide movie data that the system needs. The repository has one
-remote data source and one local data source. It is also implementing our MovieRepository interface in the second layer.
+Our only RepositoryImp is `MovieRepositoryImp` this is repository is responsible to provide movie data that the system needs. The repository has one
+remote data source and one local data source. It is also implementing our `MovieRepository` interface in the second layer.
 
-Then the updateMovieList function is using a remote data source to load new remote movies and then uses the local data source to update the locally
-cashed movie list. The function observeMovies is returning a flow of movies that can be used to observe the locally cashed movies. And loadMovieSize
+Then the `updateMovieList` function is using a remote data source to load new remote movies and then uses the local data source to update the locally
+cashed movie list. The function `observeMovies` is returning a flow of movies that can be used to observe the locally cashed movies. And `loadMovieSize`
 is just returning the size of locally cached movies.
 
 ```
