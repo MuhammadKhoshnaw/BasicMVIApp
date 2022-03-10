@@ -220,7 +220,7 @@ data in our android framework. Like data in remote API or local DB.
 interface Repository
 ```
 
-### Repository
+### Repository interfaces
 
 For this template, we only have one repository
 called [MovieRepository](useCase/src/main/java/com/khoshnaw/usecase/movie/repository/MovieRepository.kt)
@@ -350,7 +350,7 @@ data class MovieLocalDTO(
 )
 ```
 
-#### Mapper
+#### Local DTO Mappers
 
 DB mappers are like other mappers in the project they are mapping entity objects to DBDTO objects and vice versa. check
 out [MovieMappers](repository/src/main/java/com/khoshnaw/repository/local/mapper/MovieMappers.kt) as an example.
@@ -402,7 +402,7 @@ data class MovieRemoteDTO(
 )
 ```
 
-#### Mapper
+#### RemoteDTO Mappers
 
 Our mappers are responsible to map entities to RemoteDTO or vice versa. For example, check
 out [MovieMapper.kt](remote/src/main/java/com/khoshnaw/remote/mapper/MovieMappers.kt) file.
@@ -449,8 +449,6 @@ class MovieRepositoryImp @Inject constructor(
 
 }
 ```
-
-
 
 ## ViewModel
 
