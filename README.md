@@ -590,7 +590,7 @@ data class MovieUIDTO(
 ) : StandardStateListItem
 ```
 
-### Mappers
+### UI DTO Mappers
 
 The UI mappers are mapping our entity objects to the UID TO objects. for example,
 the [MovieMappers](viewModel/src/main/java/com/khoshnaw/viewmodel/mapper/MovieMappers.kt) is mapping our movie class to
@@ -674,13 +674,15 @@ class MoviesViewModel @Inject constructor(
 }
 ```
 
-# UI
+# Framework Layer
+
+## UI
 
 The UI module contains any UI related code Activity, Fragment, Adapter, XML resources etc...,
 
-## Base Implementation
+### Base Implementation
 
-### Activity
+#### Activity
 
 At the top level, we have [BaseActivity](ui/src/main/java/com/khoshnaw/ui/base/activity/BaseActivity.kt) which is not doing much. it is just a good
 practice to have this class.
@@ -760,7 +762,7 @@ abstract class StandardActivity<B : ViewDataBinding, V : StandardViewModel<*, *>
 }
 ```
 
-### Fragment
+#### Fragment
 
 For the Fragments we have a similar structure as activity the [BaseFragment](ui/src/main/java/com/khoshnaw/ui/base/fragment/BaseFragment.kt) is an
 important empty class. Notice that the BaseFragment is getting its layout from the constructor. this is making implementing data binding easier.
@@ -821,7 +823,7 @@ abstract class StandardFragment<B : ViewDataBinding, V : StandardViewModel<*, *>
 }
 ```
 
-## Movie Fragment
+### Movie Fragment
 
 In the [MoviesFragment](ui/src/main/java/com/khoshnaw/ui/view/movies/MoviesFragment.kt) we are giving the implementation for binding and ViewModel
 using property delegation. And when the user swipes the list to refresh the movies we are running MoviesIntent.RefreshMovies intent this will inform
@@ -860,7 +862,7 @@ class MoviesFragment : StandardFragment<FragmentMoviesBinding, MoviesViewModel>(
 }
 ```
 
-# Remote
+## Remote
 
 The Remote module is an Android module that is heavenly depending on the android framework to do any remote operation. This module is using tools like
 OkHttp, Retrofit and Moshi. To perform a network HTTP requests to the Movie DB API then parse and map the result to an entity represented object.
@@ -889,7 +891,7 @@ class MovieAPIDataSource @Inject constructor(
 }
 ```
 
-# DB
+## DB
 
 The DB module is also an Android module that is heavenly depending on the android framework to cash data locally. This module is using the Room
 library to perform its actions.
@@ -919,7 +921,7 @@ class MovieDBDataSource @Inject constructor(
 }
 ```
 
-# APP
+## APP
 
 Our App module is the actual application. it contains our Hilt/Dagger modules. so it has the DI configuration. In addition to App class. notice that
 in our [app/build](app/build.gradle) that the app is depending on all our other modules. which is actually a limitation in the hilt library.
