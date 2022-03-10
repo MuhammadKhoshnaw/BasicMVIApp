@@ -255,13 +255,13 @@ interface LoadMovieListOutputPort : OutputPort {
 }
 ```
 
-Now let's check the [LoadMovieList](useCase/src/main/java/com/khoshnaw/usecase/movie/loadMovieList/LoadMovieList.kt). Our usecase has a movieGateway
-object that will be used to access systems data. In onReady we are making our output port observe the locally cached movie list using our movieGateway
-object. When the usecase is ready we also load new movies if we don’t have any movies in our cash.
+Now let's check the [LoadMovieList](useCase/src/main/java/com/khoshnaw/usecase/movie/loadMovieList/LoadMovieList.kt). Our usecase has a
+MovieRepository object that will be used to access systems data. In onReady we are making our output port observe the locally cached movie list using
+our MovieRepository object. When the usecase is ready we also load new movies if we don’t have any movies in our cash.
 
 The startUpdatingMovieList is used to start the loading of a new movie process. First, we tell our output port to show the loading. Then we try to
-update our movies locally using our gateway, then we hide the loading again. Notice that if we fail to update movies we throw an exception. But we are
-throwing the exception after we hide the loading.
+update our movies locally using our repository, then we hide the loading again. Notice that if we fail to update movies we throw an exception. But we
+are throwing the exception after we hide the loading.
 
 ```
 class LoadMovieList @Inject constructor(
@@ -295,31 +295,34 @@ class LoadMovieList @Inject constructor(
 }
 ```
 
-# Gateway
+# Interface Adapter Layer
 
-The gateway module is a pure java module. This module contains our gateway implementation with it is data sources.
+## Repository
 
-![GatewayClassDiagram](.github/res/RepositoryClassDiagram.svg)
+The repository module is an android module but it dependency on android frame work is as minimum as possible. This module contains our repository
+implementation with it is data source interfaces.
 
-As shown in the UML diagram, our usecase has a weak reference to the gatewayImp class which is the gateway implementation in the third layer of our
-architecture. Then our gateway implementation has multiple local or remote data sources. Those interfaces are in the third layer as well. But the
-implementation of those data sources is in the fourth layer. The Implementation of the remote data sources is in the remote module. And we call them
-API data sources. Those data sources are using public movie DB APIs. And then the implementation of the local data source is in the DB module and we
-call them DBDataSource. DB data sources are using room databases to do their tasks.
+![RepositoryClassDiagram](.github/res/RepositoryClassDiagram.svg)
 
-## Base Implementation
+As shown in the UML diagram, our usecase has a weak reference to the repositoryImp class which is the repository implementation in the third layer of
+our architecture. Then our repository implementation has multiple local or remote data sources. Those interfaces are in the third layer as well. But
+the implementation of those data sources is in the fourth layer. The Implementation of the remote data sources is in the remote module. And we call
+them API data sources. Those data sources are using public movie DB APIs. And then the implementation of the local data source is in the DB module and
+we call them DBDataSource. DB data sources are using room databases to do their tasks.
 
-Our base implementation is just an empty class called [GatewayImp](gateway/src/main/java/com/khoshnaw/gateway/base/GatewayImp.kt) that implements the
-Base Gateway interface. Again this can be useful in future for polymorphism reasons.
+### Base Implementation
+
+Our base implementation is just an empty class called [RepositoryImp](repository/src/main/java/com/khoshnaw/repository/base/RepositoryImp.kt) that
+implements the Base Repository interface. Again this can be useful in future for polymorphism reasons.
 
 ```
-abstract class GatewayImp : Gateway
+abstract class RepositoryImp : Repository
 ```
 
-## gatewayImps
+### RepositoryImp
 
-Our only GatewayImp is MovieGatewayImp this is gateway is responsible to provide movie data that the system needs. The gateway has one remote data
-source and one local data source. It is also implementing our MovieGateway interface in the second layer.
+Our only RepositoryImp is MovieRepositoryImp this is repository is responsible to provide movie data that the system needs. The repository has one
+remote data source and one local data source. It is also implementing our MovieRepository interface in the second layer.
 
 Then the updateMovieList function is using a remote data source to load new remote movies and then uses the local data source to update the locally
 cashed movie list.
@@ -329,111 +332,81 @@ The function observeMovies is returning a flow of movies that can be used to obs
 And loadMovieSize is just returning the size of locally cached movies.
 
 ```
-class MovieGatewayImp @Inject constructor(
+class MovieRepositoryImp @Inject constructor(
     private val movieRemoteDataSource: MovieRemoteDataSource,
     private val movieLocalDataSource: MovieLocalDataSource,
-) : GatewayImp(), MovieGateway {
+) : RepositoryImp(), MovieRepository {
 
-    override suspend fun updateMovieList() =
-        movieLocalDataSource.updateMovieList(movieRemoteDataSource.loadMovieList())
+    override suspend fun updateMovieList() = movieLocalDataSource.updateMovieList(
+        movieRemoteDataSource.loadMovieList().toEntity().toLocalDTO()
+    )
 
-    override suspend fun observeMovies() = movieLocalDataSource.observeMovies()
+    override suspend fun observeMovies() = movieLocalDataSource.observeMovies().map {
+        val a = it.toEntity()
+        a
+    }
 
     override suspend fun loadMovieSize(): Int = movieLocalDataSource.loadMovieSize()
 
 }
 ```
 
-## LocalDataSources
+### LocalDataSources
 
-Our local data source [MovieLocalDataSource](gateway/src/main/java/com/khoshnaw/gateway/localDataSource/MovieLocalDataSource.kt) has three functions
-to update the movie list another to observe the movies and the last one to load movies size.
+Our local data source [MovieLocalDataSource](repository/src/main/java/com/khoshnaw/repository/local/dataSource/MovieLocalDataSource.kt) has three
+functions to update the movie list another to observe the movies and the last one to load movies size in cash.
 
 ```
 interface MovieLocalDataSource {
-    suspend fun updateMovieList(movieList: List<Movie>)
-    suspend fun observeMovies(): Flow<List<Movie>>
+    suspend fun updateMovieList(movieList: List<MovieLocalDTO>)
+    suspend fun observeMovies(): Flow<List<MovieLocalDTO>>
     suspend fun loadMovieSize(): Int
 }
 ```
 
-## RemoteDataSource
+### RemoteDataSource
 
-The remote data source [MovieRemoteDataSource](gateway/src/main/java/com/khoshnaw/gateway/remoteDataSource/MovieRemoteDataSource.kt) has one function
-to load a list of remote movies.
+The remote data source [MovieRemoteDataSource](repository/src/main/java/com/khoshnaw/repository/remote/dataSource/MovieRemoteDataSource.kt) has one
+function to load a list of remote movies.
 
 ```
 interface MovieRemoteDataSource {
-    suspend fun loadMovieList(): List<Movie>
+    suspend fun loadMovieList(): List<MovieRemoteDTO>
 }
 ```
 
-# Controller
-
-Controllers are intermediates between our view model and use cases. A controller can have multiple use cases of the type input port.
-
-## Base Implementation
-
-Our base implementation named (Controller)[controller/src/main/java/com/khoshnaw/controller/base/Controller.kt] has a generic type InputPort, Also
-another generic type OutputPort. We need an object of the inputPort in order to be able to register the output port to the input. And then the
-registerOutputPort do the registration of the output port.
-
-```
-abstract class Controller<out I : InputPort<O>, in O : OutputPort> {
-    abstract val inputPort: I
-
-    suspend fun registerOutputPort(outputPort: O) = inputPort.registerOutputPort(outputPort)
-}
-```
-
-## Controllers
-
-Our [MovieController](controller/src/main/java/com/khoshnaw/controller/movie/MovieController.kt) have two functions one to start loading movies. And
-another to show a specific movie. That is just printing a log.
-
-```
-class MovieController @Inject constructor(
-    override val inputPort: LoadMovieListInputPort,
-) : Controller<LoadMovieListInputPort, LoadMovieListOutputPort>() {
-
-    suspend fun loadMoviesList() = inputPort.startUpdatingMovieList()
-
-    suspend fun showMovie(movie: Movie) = println("showing movie : $movie")
-}
-```
-
-# ViewModel
+## ViewModel
 
 Our ViewModel module is an Android module that has as minimum dependency on the android framework as possible. This module contains ViewModels in the
 MVI architecture pattern.
 
 MVI is the abbreviation of Model - View - Intent. But In the MVI architecture pattern, we also have other components like ViewModel and State.
 
-### Model
+#### Model
 
 The model holds data and the logic of the application. The view cannot access the model. Instead, ViewModel exposes the model to the view throw
 observables. In our template, the first and second layer of the architecture acts as the model in the MVI architecture pattern. So Use Cases and
 entities are our models in MVI.
 
-### View
+#### View
 
 The view is observing the mutable states provided by ViewModel and draws the UI accordingly. In android fragments and activities are our views. The
 view is also responsible for sending intents to the ViewModel.
 
-### Intent
+#### Intent
 
 The intent is an action that the user performs like clicking a button or swapping the screen. or some system events like when the connection is down.
 
-### ViewModel
+#### ViewModel
 
 ViewModel is the intermediate between view and model. When the user interacts with the view. The view is sending an intent to the ViewModel and
 ViewModel is using the module to responds to the Intent. And then updates the UI throw an observable property called state.
 
-### State
+#### State
 
 The state is representing a UI state. States contain all the data that is required to draw a specific UI screen.
 
-## Base Implementation
+### Base Implementation
 
 For ViewModel Base Implementation first, we have an abstract class
 called [BaseViewModel](viewModel/src/main/java/com/khoshnaw/viewmodel/base/BaseViewModel.kt) Which is extending android ViewModel and also implements
@@ -527,7 +500,7 @@ abstract class StandardViewModel<S : MVIState, I : MVIIntent> : MVIViewModel<S, 
 }
 ```
 
-## UI DTO
+### UI DTO
 
 UI DTO s are data transfer objects between our business logic and our UI. The MovieUIDTO is an example.
 The [MovieUIDTO](viewModel/src/main/java/com/khoshnaw/viewmodel/dto/MovieUIDTO.kt) is implementing StandardStateListItem so it can be used in our
@@ -542,7 +515,7 @@ data class MovieUIDTO(
 ) : StandardStateListItem
 ```
 
-## Mappers
+### Mappers
 
 The UI mappers are mapping our entity objects to the UID TO objects. for example,
 the [MovieMappers](viewModel/src/main/java/com/khoshnaw/viewmodel/mapper/MovieMappers.kt) is mapping our movie class to
@@ -560,7 +533,7 @@ fun Movie.toDTO() = MovieUIDTO(
 fun List<Movie>.toDTO() = map { it.toDTO() }
 ```
 
-## MovieViewModel
+### MovieViewModel
 
 Check out [MoviesIntent](viewModel/src/main/java/com/khoshnaw/viewmodel/movies/MoviesIntent.kt) as you can see we have two intents RefreshMovies which
 asks the view model to refresh the movie list and OnMovieClicked which will be used to inform the view model that a movie has been clicked
