@@ -69,7 +69,7 @@ implementation possible so we go with 4 layers.
 
 Entities are business objects of the application. They encapsulate the most abstract information about our business rules that are less likely to
 change when something external changes. It is prefered to make our entities a simple data class that just encapsulates data and not behaviours. I.e it
-is prefered to not have functions in our entity class.
+is preferred to not have functions in our entity class.
 
 For example in our entity, we have our [Movie](entity/src/main/java/com/khoshnaw/entity/Movie.kt) Class which have some movie properties. Those
 properties will not be changed if we change the navigation of our application. or added a filter for example.
@@ -319,6 +319,105 @@ implements the Base Repository interface. Again this can be useful in future for
 abstract class RepositoryImp : Repository
 ```
 
+### Local
+
+#### LocalDataSources
+
+Our local data source [MovieLocalDataSource](repository/src/main/java/com/khoshnaw/repository/local/dataSource/MovieLocalDataSource.kt) has three
+functions to update the movie list another to observe the movies and the last one to load movies size in cash.
+
+```
+interface MovieLocalDataSource {
+    suspend fun updateMovieList(movieList: List<MovieLocalDTO>)
+    suspend fun observeMovies(): Flow<List<MovieLocalDTO>>
+    suspend fun loadMovieSize(): Int
+}
+```
+
+#### Local DTO
+
+Our local DTO is used by our room library to cash data in our database. check
+out [MovieLocalDTO](repository/src/main/java/com/khoshnaw/repository/local/dto/MovieLocalDTO.kt) as an example. notice that we can have @PrimaryKey to
+make our id a primary key to our movie table.
+
+```
+@Entity(tableName = "movie")
+data class MovieLocalDTO(
+    @PrimaryKey val id: String,
+    val posterPath: String,
+    val title: String,
+    val voteAverage: Double
+)
+```
+
+#### Mapper
+
+DB mappers are like other mappers in the project they are mapping entity objects to DBDTO objects and vice versa. check
+out [MovieMappers](repository/src/main/java/com/khoshnaw/repository/local/mapper/MovieMappers.kt) as an example.
+
+```
+internal fun MovieLocalDTO.toEntity() = Movie(
+    id = id,
+    posterPath = posterPath,
+    title = title,
+    voteAverage = voteAverage,
+)
+
+internal fun List<MovieLocalDTO>.toEntity() = map { it.toEntity() }
+
+internal fun Movie.toLocalDTO() = MovieLocalDTO(
+    id = id,
+    posterPath = posterPath,
+    title = title,
+    voteAverage = voteAverage,
+)
+
+internal fun List<Movie>.toLocalDTO() = map { it.toLocalDTO() }
+```
+
+### Remote
+
+#### RemoteDataSource
+
+The remote data source [MovieRemoteDataSource](repository/src/main/java/com/khoshnaw/repository/remote/dataSource/MovieRemoteDataSource.kt) has one
+function to load a list of remote movies.
+
+```
+interface MovieRemoteDataSource {
+    suspend fun loadMovieList(): List<MovieRemoteDTO>
+}
+```
+
+#### RemoteDTO
+
+The package DTO has our remoteDTO s like [MovieRemoteDTO](remote/src/main/java/com/khoshnaw/remote/dto/MovieRemoteDTO.kt) those DTO are data transfer
+objects that can be used to pars API JSON or encode data to JSON.
+
+```
+data class MovieRemoteDTO(
+    val id: String,
+    @Json(name = "poster_path") val posterPath: String,
+    @Json(name = "original_title") val title: String,
+    @Json(name = "vote_average") val voteAverage: Double,
+)
+```
+
+#### Mapper
+
+Our mappers are responsible to map entities to RemoteDTO or vice versa. For example, check
+out [MovieMapper.kt](remote/src/main/java/com/khoshnaw/remote/mapper/MovieMappers.kt) file.
+
+```
+fun MovieRemoteDTO.toEntity() = Movie(
+    id = id,
+    posterPath = posterPath,
+    title = title,
+    voteAverage = voteAverage,
+)
+
+fun List<MovieRemoteDTO>.toEntity() = map { it.toEntity() }
+```
+
 ### RepositoryImp
 
 Our only RepositoryImp is MovieRepositoryImp this is repository is responsible to provide movie data that the system needs. The repository has one
@@ -351,29 +450,7 @@ class MovieRepositoryImp @Inject constructor(
 }
 ```
 
-### LocalDataSources
 
-Our local data source [MovieLocalDataSource](repository/src/main/java/com/khoshnaw/repository/local/dataSource/MovieLocalDataSource.kt) has three
-functions to update the movie list another to observe the movies and the last one to load movies size in cash.
-
-```
-interface MovieLocalDataSource {
-    suspend fun updateMovieList(movieList: List<MovieLocalDTO>)
-    suspend fun observeMovies(): Flow<List<MovieLocalDTO>>
-    suspend fun loadMovieSize(): Int
-}
-```
-
-### RemoteDataSource
-
-The remote data source [MovieRemoteDataSource](repository/src/main/java/com/khoshnaw/repository/remote/dataSource/MovieRemoteDataSource.kt) has one
-function to load a list of remote movies.
-
-```
-interface MovieRemoteDataSource {
-    suspend fun loadMovieList(): List<MovieRemoteDTO>
-}
-```
 
 ## ViewModel
 
@@ -814,36 +891,6 @@ class MovieAPIDataSource @Inject constructor(
 }
 ```
 
-## RemoteDTO
-
-The package DTO has our remoteDTO s like [MovieRemoteDTO](remote/src/main/java/com/khoshnaw/remote/dto/MovieRemoteDTO.kt) those DTO are data transfer
-objects that can be used to pars API JSON or encode data to JSON.
-
-```
-data class MovieRemoteDTO(
-    val id: String,
-    @Json(name = "poster_path") val posterPath: String,
-    @Json(name = "original_title") val title: String,
-    @Json(name = "vote_average") val voteAverage: Double,
-)
-```
-
-## Mapper
-
-Our mappers are responsible to map entities to RemoteDTO or vice versa. For example, check
-out [MovieMapper.kt](remote/src/main/java/com/khoshnaw/remote/mapper/MovieMappers.kt) file.
-
-```
-fun MovieRemoteDTO.toEntity() = Movie(
-    id = id,
-    posterPath = posterPath,
-    title = title,
-    voteAverage = voteAverage,
-)
-
-fun List<MovieRemoteDTO>.toEntity() = map { it.toEntity() }
-```
-
 # DB
 
 The DB module is also an Android module that is heavenly depending on the android framework to cash data locally. This module is using the Room
@@ -851,8 +898,8 @@ library to perform its actions.
 
 ## DBDataSource
 
-DB data sources is the actual implementation of the Local data source introduced in the gateway module. Those data sources are using room DB to cash
-data locally and perform operations on it.
+DB data sources is the actual implementation of the Local data source introduced in the repository module. Those data sources are using room DB to
+cash data locally and perform operations on it.
 
 Our [MovieDBDataSource](db/src/main/java/com/khoshnaw/db/movie/MovieDBDataSource.kt) Implements MovieLocalDataSource interface and gives concrete
 implementation for it. and notice that it takes a MovieDao object in its constructor and uses it to perform its operations. for example,
@@ -872,47 +919,6 @@ class MovieDBDataSource @Inject constructor(
 
     override suspend fun loadMovieSize(): Int = movieDao.loadMovieSize()
 }
-```
-
-## Local DTO
-
-Our local DTO is used by our room library to cash data in our database. check
-out [MovieLocalDTO](db/src/main/java/com/khoshnaw/db/dto/MovieLocalDTO.kt) as an example. notice that we can have @PrimaryKey to make our id a primary
-key to our movie table.
-
-```
-@Entity(tableName = "movie")
-data class MovieLocalDTO(
-    @PrimaryKey val id: String,
-    val posterPath: String,
-    val title: String,
-    val voteAverage: Double
-)
-```
-
-## Mapper
-
-DB mappers are like other mappers in the project they are mapping entity objects to DBDTO objects and vice versa. check
-out [MovieMappers](db/src/main/java/com/khoshnaw/db/mapper/MovieMappers.kt) as an example.
-
-```
-fun MovieLocalDTO.toEntity() = Movie(
-    id = id,
-    posterPath = posterPath,
-    title = title,
-    voteAverage = voteAverage,
-)
-
-fun List<MovieLocalDTO>.toEntity() = map { it.toEntity() }
-
-fun Movie.toLocalDTO() = MovieLocalDTO(
-    id = id,
-    posterPath = posterPath,
-    title = title,
-    voteAverage = voteAverage,
-)
-
-fun List<Movie>.toLocalDTO() = map { it.toLocalDTO() }
 ```
 
 # APP
@@ -935,10 +941,6 @@ dependencies {
     ...
 }
 ```
-
-# What to improve
-
-check out [issues](https://github.com/MuhammadKhoshnaw/BasicMVIApp/issues)
 
 ```
 Copyright (c) <2021> <Muhammad Khoshnaw>
