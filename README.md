@@ -14,7 +14,7 @@ architecture pattern is my weapon of choice.
 # Application
 
 For this template, we don't need to go crazy with features. We just need enough to understand the architecture and have some basic configurations that
-we can reuse In future. The application is a basic movie app. That uses [TMDB API](https://www.themoviedb.org/documentation/api) to cash a list of
+we can reuse In future. The application is a basic movie app. That uses [TMDB API](https://www.themoviedb.org/documentation/api) to cache a list of
 popular movies. And then show it to the user. With the ability to refresh the cache when the user needed it.
 
 - Add the key `tmdb_api_key={API_KEY}` in your `local.properties` file to run the project
@@ -236,7 +236,7 @@ interface MovieRepository : Repository {
 ### LoadMovieList
 
 Let's look at [LoadMovieListInputPort](useCase/src/main/java/com/khoshnaw/usecase/movie/loadMovieList/LoadMovieListInputPort.kt). Our input port has
-one command that starts updating a movie list in the system cash.
+one command that starts updating a movie list in the system cache.
 
 ```
 interface LoadMovieListInputPort : InputPort<LoadMovieListOutputPort> {
@@ -246,7 +246,7 @@ interface LoadMovieListInputPort : InputPort<LoadMovieListOutputPort> {
 
 Then we have [LoadMovieListOutputPort](useCase/src/main/java/com/khoshnaw/usecase/movie/loadMovieList/LoadMovieListOutputPort.kt) which has two
 commands `showLoading` that hide and show loading while the movie is loading. And `observeMovies` provides a flow that can be used to observe the list
-of movies in our cash.
+of movies in our cache.
 
 ```
 interface LoadMovieListOutputPort : OutputPort {
@@ -257,7 +257,7 @@ interface LoadMovieListOutputPort : OutputPort {
 
 Now let's check the [LoadMovieList](useCase/src/main/java/com/khoshnaw/usecase/movie/loadMovieList/LoadMovieList.kt). Our usecase has a
 `MovieRepository` object that will be used to access systems data. In onReady we are making our output port observe the locally cached movie list
-using our `MovieRepository` object. When the usecase is ready we also load new movies if we don’t have any movies in our cash.
+using our `MovieRepository` object. When the usecase is ready we also load new movies if we don’t have any movies in our cache.
 
 The `startUpdatingMovieList` is used to start the loading of a new movie process. First, we tell our output port to show the loading. Then we try to
 update our movies locally using our repository, then we hide the loading again. Notice that if we fail to update movies we throw an exception. But we
@@ -324,7 +324,7 @@ abstract class RepositoryImp : Repository
 #### LocalDataSources
 
 Our local data source [MovieLocalDataSource](repository/src/main/java/com/khoshnaw/repository/local/dataSource/MovieLocalDataSource.kt) has three
-functions to update the movie list another to observe the movies and the last one to load movies size in cash.
+functions to update the movie list another to observe the movies and the last one to load movies size in cache.
 
 ```
 interface MovieLocalDataSource {
@@ -336,7 +336,7 @@ interface MovieLocalDataSource {
 
 #### Local DTO
 
-Our local DTO is a data transfer object used by our room library to cash data in our database. check
+Our local DTO is a data transfer object used by our room library to cache data in our database. check
 out [MovieLocalDTO](repository/src/main/java/com/khoshnaw/repository/local/dto/MovieLocalDTO.kt) as an example. notice that we can have `@PrimaryKey`
 to make our id a primary key to our movie table.
 
@@ -424,7 +424,7 @@ Our only RepositoryImp is `MovieRepositoryImp` this is repository is responsible
 remote data source and one local data source. It is also implementing our `MovieRepository` interface in the second layer.
 
 Then the `updateMovieList` function is using a remote data source to load new remote movies and then uses the local data source to update the locally
-cashed movie list. The function `observeMovies` is returning a flow of movies that can be used to observe the locally cashed movies.
+cached movie list. The function `observeMovies` is returning a flow of movies that can be used to observe the locally cached movies.
 And `loadMovieSize`
 is just returning the size of locally cached movies.
 
@@ -938,7 +938,7 @@ class MovieAPIDataSource @Inject constructor(
 
 ## DB
 
-The DB module is also an Android module that is heavenly depending on the android framework to cash data locally. This module is using the Room
+The DB module is also an Android module that is heavenly depending on the android framework to cache data locally. This module is using the Room
 library to perform its actions. and also we need to make this module as dumb as possible. It just needs to do what is the repository is asking it to
 do.
 
@@ -953,7 +953,7 @@ abstract class DBDataSource
 ## Movie DB DataSource
 
 DB data sources is the actual implementation of the Local data source introduced in the repository module. Those data sources are using room DB to
-cash data locally and perform operations on it.
+cache data locally and perform operations on it.
 
 Our [MovieDBDataSource](db/src/main/java/com/khoshnaw/db/dbDataSource/movie/MovieDBDataSource.kt) Implements `MovieLocalDataSource` interface and
 gives concrete implementation for it. and notice that it takes a MovieDao object in its constructor and uses it to perform its operations. for
